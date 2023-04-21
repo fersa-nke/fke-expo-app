@@ -1,12 +1,18 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-
+import { Provider } from 'react-redux';
+import { store } from './src/redux/Store';
+import RootNavigator from './src/navigation/RootNavigator';
+import { PersistGate } from 'redux-persist/integration/react';
+import persistStore from 'redux-persist/es/persistStore';
+let persistor = persistStore(store);
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+  <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+      <RootNavigator />
+     </PersistGate>
+    </Provider>
   );
 }
 

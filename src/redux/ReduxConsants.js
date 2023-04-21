@@ -1,0 +1,17 @@
+export const GET_SIGNED_USER = 'GET_SIGNED_USER';
+export const ADD_SIGNED_USER_DATA = 'ADD_SIGNED_USER_DATA';
+export const REMOVE_USER_DATA = 'REMOVE_USER_DATA';
+export const LOGIN_FAILED = 'LOGIN_FAILED';
+export const GET_JOBS = 'GET_JOBS';
+export const DELETE_jOB_ITEM = 'DELETE_jOB_ITEM';
+export const ADD_JOB_ITEM = 'ADD_JOB_ITEM';
+
+
+export const GET_EXCHANGE_TYPES = 'GET_EXCHANGE_TYPES';
+export const GET_SHAFT_POSITIONS = 'GET_SHAFT_POSITIONS';
+export const GET_REASON_OF_CHANGES = 'GET_REASON_OF_CHANGES';
+export const GET_BRANDS = 'GET_BRANDS';
+export const GET_MODELS = 'GET_MODELS';
+export const GET_BEARING_TYPES = 'GET_BEARING_TYPES';
+
+
