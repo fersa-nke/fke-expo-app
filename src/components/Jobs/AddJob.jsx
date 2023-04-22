@@ -134,23 +134,32 @@ const AddJob = ({ navigation }) => {
       {scan ? (
         <View style={Styles.container}>
           <BarCodeScanner
-            style={{ flex: 1, width: '100%', height: (Dimensions.get("window").height - 200) }}
-            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-          />
+            style={[StyleSheet.absoluteFill, Styles.container, { flex: 1, width: Dimensions.get("window").width, height: (Dimensions.get("window").height - 140) }]}
+            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}>
+        <View style={Styles.layerTop} />
+        <View style={Styles.layerCenter}>
+          <View style={Styles.layerLeft} />
+          <View style={Styles.focused} />
+          <View style={Styles.layerRight} />
+        </View>
+        <View style={Styles.layerBottom}>
+            <Button
+              text="Close"
+              style={{margin: 40}}
+              onPress={() => {
+                setScan(false), setScanned(false);
+              }}
+            />
+          </View>
+        </BarCodeScanner>
+    
           {scanned && (
             <Button
               text="Tap to Scan Again"
               onPress={() => setScanned(false)}
             />
           )}
-          <View style={GBStyles.container}>
-            <Button
-              text="Close"
-              onPress={() => {
-                setScan(false), setScanned(false);
-              }}
-            />
-          </View>
+         
         </View>
       ) : (
         <View style={GBStyles.container}>
@@ -333,6 +342,7 @@ const AddJob = ({ navigation }) => {
   );
 };
 
+const opacity = 'rgba(0, 0, 0, .6)';
 const Styles = StyleSheet.create({
   addReportBtnText: {
     color: theme.textBlue,
@@ -347,6 +357,29 @@ const Styles = StyleSheet.create({
     borderRadius: 5,
     overflow: "hidden",
   },
+  layerTop: {
+    flex: 1,
+    backgroundColor: opacity
+  },
+  layerCenter: {
+    flex: 1,
+    flexDirection: 'row'
+  },
+  layerLeft: {
+    flex: 1,
+    backgroundColor: opacity
+  },
+  focused: {
+    flex: 10
+  },
+  layerRight: {
+    flex: 1,
+    backgroundColor: opacity
+  },
+  layerBottom: {
+    flex: 1,
+    backgroundColor: opacity
+  }
 });
 
 export default AddJob;

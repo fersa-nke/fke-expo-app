@@ -1,10 +1,10 @@
 import {GET_JOBS, ADD_JOB_ITEM, DELETE_jOB_ITEM} from './../ReduxConsants';
 
-const initialState = {
+const initialJobState = {
   jobs: []
 }
 
-export default function jobsReducer(state = initialState, action) {
+export default function jobsReducer(state = initialJobState, action) {
   switch (action.type) {
     case GET_JOBS:
       return {...state, jobs: action.payload};
@@ -20,6 +20,4 @@ export default function jobsReducer(state = initialState, action) {
     default:
       return state;
   }
-}
-
-;
+};
