@@ -1,17 +1,26 @@
-import React from 'react';
-import { createIconSetFromIcoMoon } from 'react-native-vector-icons';
-import { View } from 'react-native';
-import IcomoonConfig from '@NkeProject-theme/selection.json';
-const Icomoon = createIconSetFromIcoMoon(IcomoonConfig);
-const Icon = ({ name, size, color, onPress, ...rest }) => {
-    return <View>
-        <Icomoon
-            name={name}
-            size={size}
-            color={color}
-            onPress={onPress}
-            {...rest}
-        />
+import React from "react";
+import { View } from "react-native";
+import { useFonts } from "expo-font";
+import { createIconSetFromIcoMoon } from "@expo/vector-icons";
+
+const Icon = createIconSetFromIcoMoon(
+  require("../assets/fonts/selection.json"),
+  "IcoMoon",
+  "icomoon.ttf"
+);
+
+const IconComp = ({ name, size, color, onPress, ...rest }) => {
+  const [fontsLoaded] = useFonts({
+    IcoMoon: require("../assets/fonts/icomoon.ttf"),
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+  return (
+    <View>
+      <Icon name={name} size={size} color={color} onPress={onPress} {...rest} />
     </View>
-}
-export default Icon;
+  );
+};
+export default IconComp;

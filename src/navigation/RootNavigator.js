@@ -16,7 +16,9 @@ import AddJob from './../components/Jobs/AddJob';
 import { HeaderLeft, HeaderRight } from '../shared/Header';
 import JobDetails from './../components/Jobs/JobDetails';
 import AddReport from './../components/Reports/AddReport';
+import ReportView from './../components/Reports/ReportView';
 import { useSelector, connect } from 'react-redux';
+import { SafeAreaView } from 'react-native';
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
 
@@ -26,7 +28,7 @@ const RootNavigator = () => {
   const userdata = useSelector((state)=> state.userReducer);
   console.log('user data------------------>',userdata);
   return (
-    <>
+    <><SafeAreaView style={{flex: 1}}>
       <Ribbon />
       <NavigationContainer>
         <Stack.Navigator
@@ -38,7 +40,7 @@ const RootNavigator = () => {
               component={Jobs}
               options={{
                 headerLeft: HeaderLeft,
-                headerRight: HeaderRight,
+                headerRight: () => <HeaderRight showSeach={true} />,
                 title: null,
               }}
             />
@@ -73,6 +75,13 @@ const RootNavigator = () => {
                 headerBackVisible: true,
               }}
             />
+            <Stack.Screen
+              name="ReportView"
+              component={ReportView}
+              options={{
+                title: 'REPORT VIEW'
+              }}
+            />
             </>  : <>
               <Stack.Screen
             name="Login"
@@ -83,6 +92,7 @@ const RootNavigator = () => {
           
         </Stack.Navigator>
       </NavigationContainer>
+      </SafeAreaView>
     </>
   );
 };

@@ -1,87 +1,39 @@
-import React, { useEffect } from 'react';
-import { Text, View, StyleSheet, ScrollView, SafeAreaView, Dimensions } from 'react-native';
-import { FloatingAction } from 'react-native-floating-action';
-import GBStyles from '../../assets/globalstyles';
-import JobCard from './JobCard';
-import BarCode from '../../assets/images/qr.png';
-import Button from '../../shared/Button';
-import theme from '../../assets/theme';
-import { useSelector, useDispatch } from 'react-redux';
-import { getJobs, removeJob } from '../../redux/Jobs/JobsActions';
-import { getExchangeTypes, getBearingTypes, getBrands, getModels, getReasonOfChanges, getShaftPositions } from '../../redux/Master/MasterActions';
-// const jobs = [
-//   {
-//     id: 1,
-//     url: BarCode,
-//     windFarm: 'Salesforce Developer Salesforce Developer',
-//     windTurbine: 'vertical axis turbine',
-//     date: '03-04-2023',
-//     operator: 'John Doe',
-//   },
-//   {
-//     id: 2,
-//     url: BarCode,
-//     windFarm: 'Salesforce Developer',
-//     windTurbine: 'vertical axis turbine',
-//     date: '03-04-2023',
-//     operator: 'John Doe',
-//   },
-//   {
-//     id: 3,
-//     url: BarCode,
-//     windFarm: 'Salesforce Developer',
-//     windTurbine: 'vertical axis turbine',
-//     date: '03-04-2023',
-//     operator: 'John Doe',
-//   },
-//   {
-//     id: 4,
-//     url: BarCode,
-//     windFarm: 'Salesforce Developer',
-//     windTurbine: 'vertical axis turbine',
-//     date: '03-04-2023',
-//     operator: 'John Doe',
-//   },
-//   {
-//     id: 5,
-//     url: BarCode,
-//     windFarm: 'Salesforce Developer',
-//     windTurbine: 'vertical axis turbine',
-//     date: '03-04-2023',
-//     operator: 'John Doe',
-//   },
-//   {
-//     id: 6,
-//     url: BarCode,
-//     windFarm: 'Salesforce Developer',
-//     windTurbine: 'vertical axis turbine',
-//     date: '03-04-2023',
-//     operator: 'John Doe',
-//   },
-//   {
-//     id: 7,
-//     url: BarCode,
-//     windFarm: 'Salesforce Developer',
-//     windTurbine: 'vertical axis turbine',
-//     date: '03-04-2023',
-//     operator: 'John Doe',
-//   },
-//   {
-//     id: 8,
-//     url: BarCode,
-//     windFarm: 'Salesforce Developer',
-//     windTurbine: 'vertical axis turbine',
-//     date: '03-04-2023',
-//     operator: 'John Doe',
-//   },
-// ];
-function Jobs({ navigation }) {
+import React, { useEffect } from "react";
+import {
+  Text,
+  View,
+  StyleSheet,
+  ScrollView,
+  SafeAreaView,
+  Dimensions,
+} from "react-native";
+import { FloatingAction } from "react-native-floating-action";
+import GBStyles from "../../assets/globalstyles";
+import JobCard from "./JobCard";
+import BarCode from "../../assets/images/qr.png";
+import Button from "../../shared/Button";
+import theme from "../../assets/theme";
+import Ribbon from "../../shared/Ribbon";
+import { useSelector, useDispatch } from "react-redux";
+import { getJobs, removeJob } from "../../redux/Jobs/JobsActions";
+import {
+  getExchangeTypes,
+  getBearingTypes,
+  getBrands,
+  getModels,
+  getReasonOfChanges,
+  getShaftPositions,
+} from "../../redux/Master/MasterActions";
+import { useNavigation } from "@react-navigation/native";
+
+function Jobs() {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const fetchJobs = () => dispatch(getJobs());
-  const removeFromJobs = job => dispatch(removeJob(job));
+  const removeFromJobs = (job) => dispatch(removeJob(job));
   const jobs = useSelector((state) => state.jobsReducer.jobs);
 
-  console.log('loaded jobs ***********************************>', jobs);
+  console.log("loaded jobs ***********************************>", jobs);
   const fetchExchangeTypes = () => dispatch(getExchangeTypes());
   const fetchShaftPositions = () => dispatch(getShaftPositions());
   const fetchReasonOfChanges = () => dispatch(getReasonOfChanges());
@@ -99,7 +51,7 @@ function Jobs({ navigation }) {
     fetchBearingTypes();
   }, []);
 
-  const handleRemoveJob = job => {
+  const handleRemoveJob = (job) => {
     removeFromJobs(job);
   };
 
@@ -108,16 +60,16 @@ function Jobs({ navigation }) {
       <ScrollView style={Styles.jobs}>
         <View style={GBStyles.container}>
           <Text style={GBStyles.pageTitle}>Jobs</Text>
-          <JobCard list={jobs} onPress={(navigation) => navigation.navigate("JobDetails")} />
+          <JobCard
+            list={jobs}
+            onPress={() => navigation.navigate("JobDetails")}
+          />
         </View>
-
-
       </ScrollView>
-      <Button
-        text="add job"
-        style={Styles.addJobBtn}
-        buttonIcon={true}
-        onPress={() => navigation.navigate('AddJob')}
+      <FloatingAction
+        onPressMain={() => navigation.navigate("AddJob")}
+        showBackground={false}
+        color={theme.bgBlue}
       />
     </>
   );
@@ -128,14 +80,14 @@ const Styles = StyleSheet.create({
     backgroundColor: theme.bgLight,
   },
   addJobBtn: {
-    position: 'absolute',
+    position: "absolute",
     height: 48,
     width: 150,
     borderRadius: 24,
-    top: Dimensions.get('window').height - 160,
-    left: '50%',
+    top: Dimensions.get("window").height - 160,
+    left: "50%",
     transform: [{ translateX: -70 }],
-    zIndex: 1
+    zIndex: 1,
   },
 });
 

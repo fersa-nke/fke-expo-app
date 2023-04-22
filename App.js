@@ -8,10 +8,10 @@ import persistStore from 'redux-persist/es/persistStore';
 let persistor = persistStore(store);
 export default function App() {
   return (
-  <Provider store={store}>
+    <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-      <RootNavigator />
-     </PersistGate>
+        <RootNavigator />
+      </PersistGate>
     </Provider>
   );
 }

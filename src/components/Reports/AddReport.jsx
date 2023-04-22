@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, Text, ScrollView} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import theme from '../../assets/theme';
 import GBStyles from '../../assets/globalstyles';
 import Ripple from 'react-native-material-ripple';
@@ -8,7 +9,8 @@ import Input from '../../shared/Input';
 import Row from '../../shared/Row';
 import Button from '../../shared/Button';
 
-const AddReport = ({navigation}) => {
+const AddReport = () => {
+ const navigation = useNavigation();
   return (
     <ScrollView style={{backgroundColor: theme.bgWhite}}>
       <View style={GBStyles.container}>

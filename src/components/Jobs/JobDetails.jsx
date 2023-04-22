@@ -22,7 +22,7 @@ import {useNavigation} from '@react-navigation/native';
 
 const DetailsView = () => {
   return (
-    <ScrollView>
+    <ScrollView style={{backgroundColor: theme.bgWhite}}>
       <View style={[GBStyles.container, {flex: 1}]}>
         <ListItem
           valueStyle={{fontWeight: '400'}}
