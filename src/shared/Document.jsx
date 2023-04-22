@@ -39,10 +39,13 @@ const Document = ({ fileDate, fileName, fileType }) => {
             <Text style={Styles.fileName} numberOfLines={1}>
               {fileName}
             </Text>
-            <Text style={Styles.fileDate}>{fileDate}</Text>
+            <Text style={Styles.fileDate} numberOfLines={1}>{new Date(fileDate).toDateString()}</Text>
           </View>
+          <Ripple style={[GBStyles.rippleBtn, {marginRight: 8}]}>
+            <Icon name="Download" size={18} color={theme.textBlue} />
+          </Ripple>
           <Ripple style={GBStyles.rippleBtn}>
-            <Icon name="Delete" size={20} color={theme.textBlue} />
+            <Icon name="Delete" size={18} color={theme.textRed} />
           </Ripple>
         </Row>
       </TouchableOpacity>
@@ -108,6 +111,7 @@ const Styles = StyleSheet.create({
     color: theme.textBlack,
     fontWeight: "700",
     marginBottom: 3,
+    marginRight: 16
   },
   fileDate: {
     fontSize: 12,

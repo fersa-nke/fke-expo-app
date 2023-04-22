@@ -151,8 +151,8 @@ const Styles = StyleSheet.create({
     fontSize: 16,
     color: theme.textBlack,
     fontWeight: '700',
-    textTransform: 'uppercase',
-    marginLeft: 16
+    textAlign: 'center',
+    flex: 1
   },
   modalBody: {
     flex: 1,
@@ -163,8 +163,7 @@ const Styles = StyleSheet.create({
     paddingVertical: 16,
     textAlign: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: theme.border,
-    marginHorizontal: 24,
+    borderBottomColor: theme.border
   },
   circle: {
     width: 10,

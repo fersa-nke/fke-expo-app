@@ -18,7 +18,7 @@ import JobDetails from './../components/Jobs/JobDetails';
 import AddReport from './../components/Reports/AddReport';
 import ReportView from './../components/Reports/ReportView';
 import { useSelector, connect } from 'react-redux';
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView, Text } from 'react-native';
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
 
@@ -33,7 +33,7 @@ const RootNavigator = () => {
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName={ isLogin ? 'Jobs' : 'Login'}
-          screenOptions={{ headerTitleAlign: 'center' }}>
+          screenOptions={{ headerTitleAlign: 'center', headerTitleStyle: {textTransform: 'uppercase'} }}>
             {isLogin ?  <>
             <Stack.Screen
               name="Jobs"
@@ -48,7 +48,7 @@ const RootNavigator = () => {
               name="AddJob"
               component={AddJob}
               options={{
-                title: 'ADD JOB',
+                title: 'Add Job',
                 headerTitleStyle: {
                   fontSize: 16,
                   fontWeight: '700',
@@ -59,7 +59,7 @@ const RootNavigator = () => {
               name="AddReport"
               component={AddReport}
               options={{
-                title: 'ADD REPORT',
+                title: 'Add Report',
                 headerTitleStyle: {
                   fontSize: 16,
                   fontWeight: '700',
@@ -79,7 +79,7 @@ const RootNavigator = () => {
               name="ReportView"
               component={ReportView}
               options={{
-                title: 'REPORT VIEW'
+                title: 'Report View'
               }}
             />
             </>  : <>

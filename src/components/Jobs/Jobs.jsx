@@ -4,7 +4,7 @@ import {
   View,
   StyleSheet,
   ScrollView,
-  SafeAreaView,
+  StatusBar,
   Dimensions,
 } from "react-native";
 import { FloatingAction } from "react-native-floating-action";
@@ -61,6 +61,7 @@ function Jobs() {
 
   return (
     <>
+    <StatusBar barStyle="dark-content" backgroundColor={theme.bgWhite} />
       <ScrollView style={Styles.jobs}>
         <View style={GBStyles.container}>
           <Text style={GBStyles.pageTitle}>Jobs</Text>

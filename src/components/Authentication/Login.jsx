@@ -21,6 +21,10 @@ import { login } from "../../redux/Login/LoginActions";
 const Login = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const isLogin = useSelector((state) => state.userReducer.isLogin);
+  const [operatorLogin, setOperatorLogin] = useState(false);
+  const [customerLogin, setCustomerLogin] = useState(true);
+  const [showCustomerPswd, setShowCustomerPswd] = useState(true);
+  const [showOperatorPswd, setShowOperatorPswd] = useState(true);
 
   console.log(isLogin, "user loggin details");
   const dispatch = useDispatch();
@@ -91,6 +95,18 @@ const Login = ({ navigation }) => {
     console.log("login status---->", isLogin);
   };
 
+  const handleCustomerLogin = () => {
+    setCustomerLogin(true);
+    setOperatorLogin(false);
+    setShowOperatorPswd(true);
+  };
+
+  const handleOperatorLogin = () => {
+    setOperatorLogin(true);
+    setCustomerLogin(false);
+    setShowCustomerPswd(true);
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor={theme.bgWhite} />
@@ -112,34 +128,77 @@ const Login = ({ navigation }) => {
         </View>
         <View style={{ padding: 16 }}>
           <View style={Styles.tabRow}>
-            <Ripple style={[Styles.tab, Styles.tabActive]}>
+            <Ripple
+              style={[
+                Styles.tab,
+                customerLogin === true ? Styles.tabActive : "",
+              ]}
+              onPress={handleCustomerLogin}
+            >
               <Text style={Styles.tabText}>Customer</Text>
             </Ripple>
-            <Ripple style={Styles.tab}>
+            <Ripple
+              style={[
+                Styles.tab,
+                operatorLogin === true ? Styles.tabActive : "",
+              ]}
+              onPress={handleOperatorLogin}
+            >
               <Text style={Styles.tabText}>Operator</Text>
             </Ripple>
           </View>
-          <View style={{ marginBottom: 20 }}>
-            <Input
-              labelName="Customer ID"
-              placeholder="Enter Customer ID"
-              mand={true}
-              handleChangeText={handleEmailChange}
-            />
-          </View>
-          <View style={{ marginBottom: 24 }}>
-            <Input
-              labelName="Password"
-              placeholder="Enter password"
-              mand={true}
-              secureTextEntry={true}
-              appendIconName="Eye"
-              appendIconSize={22}
-              appendIconColor={theme.textBlue}
-              handleChangeText={handlePasswordChange}
-            />
-          </View>
-          <Button text="login" onPress={handleSubmitPress} />
+          {customerLogin && (
+            <>
+              <View style={{ marginBottom: 20 }}>
+                <Input
+                  labelName="Customer ID"
+                  placeholder="Enter Customer ID"
+                  mand={true}
+                  handleChangeText={handleEmailChange}
+                />
+              </View>
+              <View style={{ marginBottom: 24 }}>
+                <Input
+                  labelName="Password"
+                  placeholder="Enter Password"
+                  mand={true}
+                  secureTextEntry={showCustomerPswd}
+                  appendIconName={showCustomerPswd === true ? "Eye" : "Eyeoff"}
+                  appendIconSize={showCustomerPswd === true ? 24 : 22}
+                  appendIconColor={theme.textBlue}
+                  handleChangeText={handlePasswordChange}
+                  handlePress={() => setShowCustomerPswd(!showCustomerPswd)}
+                />
+              </View>
+              <Button text="login" onPress={handleSubmitPress} />
+            </>
+          )}
+          {operatorLogin && (
+            <>
+              <View style={{ marginBottom: 20 }}>
+                <Input
+                  labelName="Operator ID"
+                  placeholder="Enter Operator ID"
+                  mand={true}
+                  handleChangeText={handleEmailChange}
+                />
+              </View>
+              <View style={{ marginBottom: 24 }}>
+                <Input
+                  labelName="Password"
+                  placeholder="Enter Password"
+                  mand={true}
+                  secureTextEntry={showOperatorPswd}
+                  appendIconName={showOperatorPswd === true ? "Eye" : "Eyeoff"}
+                  appendIconSize={showOperatorPswd === true ? 24 : 22}
+                  appendIconColor={theme.textBlue}
+                  handleChangeText={handlePasswordChange}
+                  handlePress={() => setShowOperatorPswd(!showOperatorPswd)}
+                />
+              </View>
+              <Button text="login" onPress={handleSubmitPress} />
+            </>
+          )}
           <Image
             source={fersa_logo}
             style={{ marginVertical: 24, alignSelf: "center" }}

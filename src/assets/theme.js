@@ -6,5 +6,6 @@ export default {
     textGray: '#727272',
     textBlue: '#004A81',
     textWhite: '#FFFFFF',
-    border: '#F4F4F4'
+    border: '#F4F4F4',
+    textRed: '#FF0000'
 };

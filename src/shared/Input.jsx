@@ -22,7 +22,8 @@ function Input({
   appendIconName,
   appendIconSize,
   handlePress,
-  style
+  style,
+  multiline
 }) {
   return (
     <>
@@ -51,6 +52,7 @@ function Input({
           onChangeText={handleChangeText}
           onSubmitEditing={onSubmitEditing}
           secureTextEntry={secureTextEntry}
+          multiline={multiline}
         />
         {appendIconName && (
           <Ripple style={Styles.inputCircle} onPress={handlePress}>

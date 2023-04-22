@@ -55,6 +55,7 @@ const AddJob = ({ navigation }) => {
   const [startDate, setStartDate] = useState(new Date())
   const [show, setShow] = useState(false);
   const [scanLoading, setScanLoading] = useState(false);
+  const [matrixNumber, setMatrixNumber] = useState(false);
 
   const getBarCodeScannerPermissions = async () => {
     const { status } = await BarCodeScanner.requestPermissionsAsync();
@@ -133,7 +134,7 @@ const AddJob = ({ navigation }) => {
       {scan ? (
         <View style={Styles.container}>
           <BarCodeScanner
-            style={{ flex: 1, height: (Dimensions.get("window").height - 200) }}
+            style={{ flex: 1, width: '100%', height: (Dimensions.get("window").height - 200) }}
             onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
           />
           {scanned && (
@@ -174,6 +175,27 @@ const AddJob = ({ navigation }) => {
               value={result}
             />
           </View>
+          {matrixNumber && <><View style={{ marginBottom: 20 }}>
+            <Input
+              labelName="Batch Number"
+              placeholder="Enter Batch Number"
+              value={result}
+            />
+          </View>
+          <View style={{ marginBottom: 20 }}>
+            <Input
+              labelName="IR Number"
+              placeholder="Enter IR Number"
+              value={result}
+            />
+          </View>
+          <View style={{ marginBottom: 20 }}>
+            <Input
+              labelName="OR Number"
+              placeholder="Enter OR Number"
+              value={result}
+            />
+          </View></>}
           <View style={{ marginBottom: 20 }}>
             <Input
               labelName="Start Date"
@@ -279,7 +301,7 @@ const AddJob = ({ navigation }) => {
             <Input labelName="Operator ID" placeholder="Enter Operator ID" />
           </View>
           <View style={{ marginBottom: 20 }}>
-            <Input labelName="Comments" placeholder="Enter Comments" />
+            <Input labelName="Comments" placeholder="Enter Comments" multiline={true} />
           </View>
           <Ripple
             style={Styles.addReportBtn}
