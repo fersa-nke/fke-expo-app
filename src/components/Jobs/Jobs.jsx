@@ -55,6 +55,10 @@ function Jobs() {
     removeFromJobs(job);
   };
 
+  const navigateToJobDetails = (Id) => {
+    navigation.navigate('JobDetails',{id: Id});
+  }
+
   return (
     <>
       <ScrollView style={Styles.jobs}>
@@ -62,7 +66,7 @@ function Jobs() {
           <Text style={GBStyles.pageTitle}>Jobs</Text>
           <JobCard
             list={jobs}
-            onPress={() => navigation.navigate("JobDetails")}
+            onHandlePress={navigateToJobDetails}
           />
         </View>
       </ScrollView>

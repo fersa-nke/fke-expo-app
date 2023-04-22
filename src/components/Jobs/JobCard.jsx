@@ -7,13 +7,13 @@ import Row from '../../shared/Row';
 import Ripple from 'react-native-material-ripple';
 import BarCode from '../../assets/images/qr.png';
 import { useNavigation } from '@react-navigation/native';
-function JobCard(props, {onPress}) {
-  const jobs = props.list;
+function JobCard({list, onHandlePress}) {
+  const jobs = list;
   const navigation = useNavigation();
   return (
     <>
       {jobs?.map(job => (
-        <TouchableOpacity onPress={onPress} key={job.Id}>
+        <TouchableOpacity onPress={() => onHandlePress(job)} key={job.Id}>
           <Row style={[Styles.card]}>
             <Text style={Styles.offline}>Offline</Text>
             <Image
@@ -38,7 +38,7 @@ function JobCard(props, {onPress}) {
                 </Row>
                 <Ripple
                   style={Styles.circleBtn}
-                  onPress={() => navigation?.navigate('JobDetails')}>
+                  onPress={() => navigation?.navigate('JobDetails', {id:job.Id, viewType: 'reports'})}>
                   <Icon name="Report" size={14} color={theme.textBlue} />
                 </Ripple>
               </Row>

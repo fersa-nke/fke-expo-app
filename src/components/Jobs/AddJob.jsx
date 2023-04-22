@@ -7,6 +7,7 @@ import {
   Linking,
   TouchableOpacity,
   Dimensions,
+  Platform,
 } from "react-native";
 import theme from "../../assets/theme";
 import GBStyles from "../../assets/globalstyles";
@@ -20,6 +21,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { saveJob } from "../../redux/Jobs/JobsActions";
 // import {RNCamera} from 'react-native-camera';
 import { BarCodeScanner } from "expo-barcode-scanner";
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 
 const bearingTypes = [
   {
@@ -44,15 +47,33 @@ const AddJob = ({ navigation }) => {
   const masterData = useSelector((state) => state.masterReducer);
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
+  const [selectedReasonForChange, setSelectedReasonForChange] = useState({});
+  const [selectedBrand, setSelectedBrand] = useState({});
+  const [selectedShaftPositon, setSelectedShaftPositon] = useState({});
+  const [selectedExchange, setSelectedExchange] = useState({});
+  const [selectedBearingType, setSelectedBearingType] = useState({});
+  const [startDate, setStartDate] = useState(new Date())
+  const [show, setShow] = useState(false);
+  const [scanLoading, setScanLoading] = useState(false);
 
-  useEffect(() => {
-    const getBarCodeScannerPermissions = async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status === "granted");
-    };
+  const getBarCodeScannerPermissions = async () => {
+    const { status } = await BarCodeScanner.requestPermissionsAsync();
+    setHasPermission(status === "granted");
+  };
 
-    getBarCodeScannerPermissions();
-  }, []);
+  const showScanner = async () => {
+    setScanLoading(true);
+    await getBarCodeScannerPermissions();
+    setScan(true);
+    setScanLoading(false);
+  }
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    console.log(currentDate);
+    setShow(false);
+    setStartDate(currentDate);
+  };
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
@@ -60,10 +81,10 @@ const AddJob = ({ navigation }) => {
     // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
   };
 
-  if (hasPermission === null) {
+  if (scanLoading && hasPermission === null) {
     return <Text>Requesting for camera permission</Text>;
   }
-  if (hasPermission === false) {
+  if (scan && hasPermission === false) {
     return <Text>No access to camera</Text>;
   }
 
@@ -91,12 +112,11 @@ const AddJob = ({ navigation }) => {
       Model: [],
       "Farm Name": "test form",
       Comments: "MRC - 6328 changes",
-      "Reason Of Change": [
-        {
-          Id: 1,
-          Name: "New installation",
-        },
-      ],
+      "Reasons List": [selectedReasonForChange],
+      "Part Type List": [selectedBearingType],
+      "Exchange Type List": [selectedExchange],
+      "Brand List": [selectedBrand],
+      "Shaft Position List": [selectedShaftPositon],
       Customer: [
         {
           Id: 9,
@@ -111,10 +131,10 @@ const AddJob = ({ navigation }) => {
   return (
     <ScrollView style={{ backgroundColor: theme.bgWhite }}>
       {scan ? (
-        <View style={{ flex: 1, height: Dimensions.get("window").height }}>
+        <View style={Styles.container}>
           <BarCodeScanner
+            style={{ flex: 1, height: (Dimensions.get("window").height - 200) }}
             onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-            style={StyleSheet.absoluteFillObject}
           />
           {scanned && (
             <Button
@@ -134,7 +154,7 @@ const AddJob = ({ navigation }) => {
       ) : (
         <View style={GBStyles.container}>
           <Ripple
-            onPress={() => setScan(true)}
+            onPress={showScanner}
             style={{ alignSelf: "center", marginBottom: 24, marginTop: 12 }}
           >
             <Icon
@@ -161,13 +181,25 @@ const AddJob = ({ navigation }) => {
               appendIconName="Calendar"
               appendIconColor={theme.textBlue}
               appendIconSize={16}
+              value={startDate.toLocaleDateString()}
+              handlePress={() => setShow(true)}
             />
+            {show && (
+              <DateTimePicker
+                value={startDate}
+                mode='date'
+                onChange={onChange}
+                display= {Platform.OS === 'ios' ? "spinner" : 'calendar'}
+              />
+            )}
           </View>
           <View style={{ marginBottom: 20 }}>
             <Select
-              selectedValue={""}
+              selectedValue={masterData.exhangeTypes?.Name}
               disabled={false}
-              //handlePress={handleSelectBrand}
+              handlePress={(item) =>
+                setSelectedExchange({ Id: item.Id, Name: item.Name })
+              }
               placeholder="Select Exchange"
               label="Exchange"
               modalTitle="Select Exchange"
@@ -183,9 +215,11 @@ const AddJob = ({ navigation }) => {
           </View>
           <View style={{ marginBottom: 20 }}>
             <Select
-              selectedValue={""}
+              selectedValue={masterData.shaftPositions?.Name}
               disabled={false}
-              //handlePress={handleSelectBrand}
+              handlePress={(item) =>
+                setSelectedShaftPositon({ Id: item.Id, Name: item.Name })
+              }
               placeholder="Select Shaft Position"
               label="Shaft Position"
               modalTitle="Select Shaft Position"
@@ -201,9 +235,11 @@ const AddJob = ({ navigation }) => {
           </View>
           <View style={{ marginBottom: 20 }}>
             <Select
-              selectedValue={""}
+              selectedValue={masterData.reasonOfChanges?.Name}
               disabled={false}
-              //handlePress={handleSelectBrand}
+              handlePress={(item) =>
+                setSelectedReasonForChange({ Id: item.Id, Name: item.Name })
+              }
               placeholder="Select Reason"
               label="Reason for Change"
               modalTitle="Select Reason"
@@ -213,9 +249,11 @@ const AddJob = ({ navigation }) => {
           </View>
           <View style={{ marginBottom: 20 }}>
             <Select
-              selectedValue={""}
+              selectedValue={masterData.brands?.Name}
               disabled={false}
-              //handlePress={handleSelectBrand}
+              handlePress={(item) =>
+                setSelectedBrand({ Id: item.Id, Name: item.Name })
+              }
               placeholder="Select Bearing Brand"
               label="Previous Bearing Brand"
               modalTitle="Select Bearing Brand"
@@ -225,9 +263,11 @@ const AddJob = ({ navigation }) => {
           </View>
           <View style={{ marginBottom: 20 }}>
             <Select
-              selectedValue={""}
+              selectedValue={masterData.bearingTypes?.Name}
               disabled={false}
-              //handlePress={handleSelectBrand}
+              handlePress={(item) =>
+                setSelectedBearingType({ Id: item.Id, Name: item.Name })
+              }
               placeholder="Select Bearing Type"
               label="Previous Bearing Type"
               modalTitle="Select Bearing Type"

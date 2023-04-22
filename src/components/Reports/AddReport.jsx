@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, ScrollView} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import theme from '../../assets/theme';
@@ -9,8 +9,21 @@ import Input from '../../shared/Input';
 import Row from '../../shared/Row';
 import Button from '../../shared/Button';
 
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 const AddReport = () => {
  const navigation = useNavigation();
+ const [documents, setDocuments] = useState([]);
+ const [startDate, setStartDate] = useState(new Date())
+ const [show, setShow] = useState(false);
+ const onChange = (event, selectedDate) => {
+  const currentDate = selectedDate;
+  console.log(currentDate);
+  setShow(false);
+  setStartDate(currentDate);
+};
+
+
   return (
     <ScrollView style={{backgroundColor: theme.bgWhite}}>
       <View style={GBStyles.container}>
@@ -18,17 +31,24 @@ const AddReport = () => {
           labelName="Report Name"
           style={{marginBottom: 12}}
         />
-        <Document
-          fileDate="06-04-2023"
-          fileName="Reports.jpeg"
-          fileType="Image"
-        />
-        <Ripple style={GBStyles.upload}>
-          <Text style={GBStyles.uploadTitle}>upload report</Text>
-          <Text style={GBStyles.uploadHelpText}>
-            Please upload PDF, jPG, JPEG, PNG formate files only.
-          </Text>
-        </Ripple>
+       <Input
+              labelName="Date"
+              placeholder="DD/MM/YYYY"
+              style={{marginBottom: 12}}
+              appendIconName="Calendar"
+              appendIconColor={theme.textBlue}
+              appendIconSize={16}
+              value={startDate.toLocaleDateString()}
+              handlePress={() => setShow(true)}
+            />
+            {show && (
+              <DateTimePicker
+                value={startDate}
+                mode='date'
+                onChange={onChange}
+                display= {Platform.OS === 'ios' ? "spinner" : 'calendar'}
+              />
+            )}
         <Row>
             <Button
               text="Save"

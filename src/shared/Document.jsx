@@ -25,11 +25,16 @@ const Document = ({ fileDate, fileName, fileType }) => {
     setPreviewModal(true);
   };
 
+  const IconsType = {
+    "application/pdf": 'Pdf',
+    "application/image": 'Image'
+  }
+
   return (
     <>
       <TouchableOpacity onPress={handlePreviewModal}>
         <Row style={Styles.document}>
-          <Icon name={fileType} size={40} color={theme.textGray} />
+          <Icon name={IconsType[fileType]} size={40} color={theme.textGray} />
           <View style={{ flex: 1, marginLeft: 12 }}>
             <Text style={Styles.fileName} numberOfLines={1}>
               {fileName}

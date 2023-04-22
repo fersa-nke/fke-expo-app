@@ -6,6 +6,7 @@ import {
   Text,
   Modal,
   ScrollView,
+  SafeAreaView,
 } from 'react-native';
 import Ripple from 'react-native-material-ripple';
 import theme from '../assets/theme';
@@ -30,7 +31,7 @@ const Select = ({
   const [value, setValue] = useState(selectedValue);
 
   useEffect(() => {
-    console.log('defaultvalue ', value, selectedValue);
+    // console.log('defaultvalue ', value, selectedValue);
     setValue(selectedValue);
   }, [selectedValue]);
   const onSelectValue = item => {
@@ -69,6 +70,7 @@ const Select = ({
         </Ripple>
       </View>
       <Modal visible={modal} animationType="slide" transparent={true}>
+        <SafeAreaView style={{flex:1}}>
         <Ribbon />
         <View style={Styles.modalContent}>
           <View style={Styles.modalHeader}>
@@ -92,6 +94,7 @@ const Select = ({
             ))}
           </ScrollView>
         </View>
+        </SafeAreaView>
       </Modal>
     </>
   );

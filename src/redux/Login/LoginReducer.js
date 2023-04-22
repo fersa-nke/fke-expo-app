@@ -7,7 +7,8 @@ const initialState = {
     isLogin: false
 }
 
-const userReducer = (state = initialState, action) => {
+export default function userReducer(state = initialState, action) {
+    console.log('login reducer calling------------->', action, state);
     switch (action.type) {
         case ADD_SIGNED_USER_DATA:
             return {
@@ -37,4 +38,3 @@ const userReducer = (state = initialState, action) => {
     }
 }
 
-export default userReducer;

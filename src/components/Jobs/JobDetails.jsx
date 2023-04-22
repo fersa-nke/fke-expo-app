@@ -79,9 +79,11 @@ const renderTabs = SceneMap({
   reports: ReportsView,
 });
 
-const JobDetails = () => {
+const JobDetails = ({route}) => {
+  const { id, viewType } = route.params;
   const layout = useWindowDimensions();
-  const [index, setIndex] = React.useState(0);
+  console.log('viewType ________________>', viewType);
+  const [index, setIndex] = React.useState(viewType == 'reports' ? 1 : 0);
   const [routes] = React.useState([
     {key: 'details', title: 'DETAILES'},
     {key: 'reports', title: 'REPORTS'},
