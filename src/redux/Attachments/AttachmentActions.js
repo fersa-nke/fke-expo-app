@@ -1,13 +1,12 @@
 
 import API from '../../services/Api';
-import { GET_JOBS, REMOVE_JOB_ITEM, SELECTED_JOB_ID, ADD_JOB_ITEM } from '../ReduxConsants';
 // Define action types
+import {GET_ATTACHMENTS, ADD_ATTACHMENT_ITEM, DELETE_ATTACHMENT_ITEM} from './../ReduxConsants';
 
 // Construct a BASE URL for API endpoint
 const BASE_URL = `nocodb/data/NKE-Tracebility/Jobs`;
 
-
-export const getJobs = () => {
+export const getAttachments = () => {
     return async (dispatch, getState) => {
     const token = getState().userReducer.token;
     API.GET(`${BASE_URL}`, token)
@@ -15,7 +14,7 @@ export const getJobs = () => {
             //Hide Loader
             if (res) {
                 dispatch({
-                  type: GET_JOBS,
+                  type: GET_ATTACHMENTS,
                   payload: res.list,
                 });
             } else {
@@ -29,24 +28,15 @@ export const getJobs = () => {
     }
 };
 
-export const setSelectedJobId = id => dispatch => {
-    return (dispatch, getState) => {
-        dispatch({
-            type: SELECTED_JOB_ID,
-            payload: id,
-          });
-    }
-}
-
-export const saveJob = jobData => dispatch => {
+export const saveReportAttachment = attachmentData => dispatch => {
   return async (dispatch, getState) => {
     const token = getState().userReducer.token;
-    API.PATCH(`${BASE_URL}`, token, jobData)
+    API.PATCH(`${BASE_URL}`, token, attachmentData)
         .then(res => {
             //Hide Loader
             if (res) {
                 dispatch({
-                  type: ADD_JOB_ITEM,
+                  type: ADD_ATTACHMENT_ITEM,
                   payload: res,
                 });
             } else {
@@ -61,15 +51,15 @@ export const saveJob = jobData => dispatch => {
   
 };
 
-export const removeJob = job => dispatch => {
+export const removeAttachment = attachment => dispatch => {
   return async (dispatch, getState) => {
     const token = getState().userReducer.token;
-    API.DELETE(`${BASE_URL}/${job.Id}`, token)
+    API.DELETE(`${BASE_URL}/${attachment.Id}`, token)
         .then(res => {
             //Hide Loader
             if (res) {
                 dispatch({
-                  type: REMOVE_JOB_ITEM,
+                  type: DELETE_ATTACHMENT_ITEM,
                   payload: res,
                 });
             } else {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -19,22 +19,37 @@ import qrCode from '../../assets/images/barcode.png';
 import Document from '../../shared/Document';
 import Report from '../Reports/Report';
 import {useNavigation} from '@react-navigation/native';
+import { useSelector, useDispatch } from "react-redux";
 
 const DetailsView = () => {
+  
+  const selectedJobId = useSelector((state) => state.jobsReducer.selectedJobId);
+  const jobs = useSelector((state) => state.jobsReducer.jobs);
+  const [job, setJob] = useState();
+  
+    useEffect(() => {
+     if(jobs && jobs.length > 0) {
+      const filterJob = jobs.filter(j => j.Id === selectedJobId);
+      console.log('fetched job details', selectedJobId , filterJob);
+      setJob(filterJob);
+     }
+    }, []);
+  
   return (
     <ScrollView style={{backgroundColor: theme.bgWhite}}>
-      <View style={[GBStyles.container, {flex: 1}]}>
+      {job && <View style={[GBStyles.container, {flex: 1}]}>
         <ListItem
           valueStyle={{fontWeight: '400'}}
           label="Reason for Change"
-          value="Hitachi Vantara combines technology, intellectual property and industry knowledge to deliver data-managing solutions that help enterprises improve their customers' experiences."
+          value={job['Reasons List'][0].Name}
         />
-        <ListItem label="Data Matrix Code" value="1234625870" />
-        <ListItem label="Brand" value="Metal" />
-        <ListItem label="Model" value="MD1258T58" />
-        <ListItem label="Frame Name" value="MD1258T58" />
-        <ListItem label="Position" value="Center" />
-      </View>
+        <ListItem label="Data Matrix Code" value={job.DataMatirx} />
+        <ListItem label="Brand" value={job['Brand List'][0].Name} />
+        <ListItem label="Model" value={job['Model List'][0].Name} />
+        <ListItem label="Wind Farm" value={job['Wind Farm']} />
+        <ListItem label="Shaft Position" value={job['Shaft Position List'][0].Name} />
+        <ListItem label="Part Type" value={job['Part Type List'][0].Name} />
+      </View> }
     </ScrollView>
   );
 };
@@ -82,9 +97,10 @@ const renderTabs = SceneMap({
 const JobDetails = ({route}) => {
   const { id, viewType } = route.params;
   const layout = useWindowDimensions();
+
   console.log('viewType ________________>', viewType);
-  const [index, setIndex] = React.useState(viewType == 'reports' ? 1 : 0);
-  const [routes] = React.useState([
+  const [index, setIndex] = useState(viewType == 'reports' ? 1 : 0);
+  const [routes] = useState([
     {key: 'details', title: 'DETAILES'},
     {key: 'reports', title: 'REPORTS'},
   ]);

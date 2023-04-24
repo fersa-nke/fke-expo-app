@@ -8,14 +8,17 @@ import Document from "../../shared/Document";
 import Input from "../../shared/Input";
 import Row from "../../shared/Row";
 import Button from "../../shared/Button";
-
+import { useSelector, useDispatch } from "react-redux";
+import { saveJobReport } from "../../redux/Reports/ReportsAction";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 const AddReport = () => {
   const navigation = useNavigation();
-  const [documents, setDocuments] = useState([]);
+  const [reportName, setReportName] = useState('');
   const [startDate, setStartDate] = useState(new Date());
   const [show, setShow] = useState(false);
+  const dispatch = useDispatch();
+
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
     console.log(currentDate);
@@ -23,10 +26,20 @@ const AddReport = () => {
     setStartDate(currentDate);
   };
 
+  const handleSubmitPress = () => {
+    setLoading(true);
+    let data = {
+      jobId: 1,
+      Date: startDate,
+      Name:  reportName
+    };
+    dispatch(saveJobReport(data));
+  };
+
   return (
     <ScrollView style={{ backgroundColor: theme.bgWhite }}>
       <View style={GBStyles.container}>
-        <Input placeholder="Report Name" labelName="Report Name" style={{ marginBottom: 20 }} />
+        <Input placeholder="Report Name" labelName="Report Name" handleChangeText={setReportName} style={{ marginBottom: 20 }} />
         <View style={{ marginBottom: 24 }}>
         <Input
           labelName="Date"
@@ -50,7 +63,7 @@ const AddReport = () => {
           <Button
             text="Save"
             style={{ flex: 1, marginRight: 8 }}
-            onPress={() => navigation.navigate("ReportView")}
+            onPress={handleSubmitPress}
           />
           <Button
             text="Cancel"

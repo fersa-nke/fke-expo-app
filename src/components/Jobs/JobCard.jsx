@@ -13,7 +13,7 @@ function JobCard({list, onHandlePress}) {
   return (
     <>
       {jobs?.map(job => (
-        <TouchableOpacity onPress={() => onHandlePress(job)} key={job.Id}>
+        <TouchableOpacity onPress={() => onHandlePress(job.Id)} key={job.Id}>
           <Row style={[Styles.card]}>
             <Text style={Styles.offline}>Offline</Text>
             <Image

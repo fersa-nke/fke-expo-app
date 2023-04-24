@@ -9,10 +9,13 @@ import Row from '../../shared/Row';
 import Document from '../../shared/Document';
 import Button from '../../shared/Button';
 import * as DocumentPicker from 'expo-document-picker';
+import { useSelector, useDispatch } from "react-redux";
+import {saveReportAttachment } from '../../redux/Attachments/AttachmentActions';
 
 function ReportView() {
   const navigation = useNavigation();
   const [documents, setDocuments] = useState([]);
+  const dispatch = useDispatch();
 
  const pickFile = async () => {
   try {
@@ -27,6 +30,7 @@ function ReportView() {
         res.id = `${new Date().getTime()}`;
         res.fileDate = `${new Date()}`;
         let temparray = [...documents, res];
+        dispatch(saveReportAttachment(res));        
         setDocuments(temparray);
         console.log('documents ------------>',temparray, res);
       } 
