@@ -1,13 +1,12 @@
 
 import API from '../../services/Api';
-import { GET_JOBS, REMOVE_JOB_ITEM, SELECTED_JOB_ID, ADD_JOB_ITEM } from '../ReduxConsants';
 // Define action types
+import {GET_REPORTS, ADD_REPORT_ITEM, DELETE_REPORT_ITEM} from './../ReduxConsants';
 
 // Construct a BASE URL for API endpoint
 const BASE_URL = `nocodb/data/NKE-Tracebility/Jobs`;
 
-
-export const getJobs = () => {
+export const getReports = () => {
     return async (dispatch, getState) => {
     const token = getState().userReducer.token;
     API.GET(`${BASE_URL}`, token)
@@ -15,7 +14,7 @@ export const getJobs = () => {
             //Hide Loader
             if (res) {
                 dispatch({
-                  type: GET_JOBS,
+                  type: GET_REPORTS,
                   payload: res.list,
                 });
             } else {
@@ -29,24 +28,15 @@ export const getJobs = () => {
     }
 };
 
-export const setSelectedJobId = id => dispatch => {
-    return (dispatch, getState) => {
-        dispatch({
-            type: SELECTED_JOB_ID,
-            payload: id,
-          });
-    }
-}
-
-export const saveJob = jobData => dispatch => {
+export const saveJobReport = reportData => dispatch => {
   return async (dispatch, getState) => {
     const token = getState().userReducer.token;
-    API.PATCH(`${BASE_URL}`, token, jobData)
+    API.PATCH(`${BASE_URL}`, token, reportData)
         .then(res => {
             //Hide Loader
             if (res) {
                 dispatch({
-                  type: ADD_JOB_ITEM,
+                  type: ADD_REPORT_ITEM,
                   payload: res,
                 });
             } else {
@@ -61,15 +51,15 @@ export const saveJob = jobData => dispatch => {
   
 };
 
-export const removeJob = job => dispatch => {
+export const removeReport = report => dispatch => {
   return async (dispatch, getState) => {
     const token = getState().userReducer.token;
-    API.DELETE(`${BASE_URL}/${job.Id}`, token)
+    API.DELETE(`${BASE_URL}/${report.Id}`, token)
         .then(res => {
             //Hide Loader
             if (res) {
                 dispatch({
-                  type: REMOVE_JOB_ITEM,
+                  type: DELETE_REPORT_ITEM,
                   payload: res,
                 });
             } else {

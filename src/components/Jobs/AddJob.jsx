@@ -44,8 +44,8 @@ const AddJob = ({ navigation }) => {
   const [scan, setScan] = useState(false);
   const [result, setResult] = useState("");
   const dispatch = useDispatch();
-  const saveJobData = () => dispatch(saveJob());
   const masterData = useSelector((state) => state.masterReducer);
+  const userData = useSelector((state) => state.userReducer.user);
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [selectedReasonForChange, setSelectedReasonForChange] = useState({});
@@ -57,7 +57,15 @@ const AddJob = ({ navigation }) => {
   const [show, setShow] = useState(false);
   const [scanLoading, setScanLoading] = useState(false);
   const [matrixNumber, setMatrixNumber] = useState(false);
-
+  const [comments, setComments] = useState('');
+  const [jobName, setJobName] = useState('');
+  const [orNumber, setOrNumber] = useState('');
+  const [irNumber, setIrNumber] = useState('');
+  const [batchNumber, setBatchNumber] = useState('');
+  const [generatorModel, setGeneratorModel] = useState('');
+  const [windForm, setWindForm] = useState('');
+  const [windTurbine, setWindTurbine] = useState('');
+  
   const getBarCodeScannerPermissions = async () => {
     const { status } = await BarCodeScanner.requestPermissionsAsync();
     setHasPermission(status === "granted");
@@ -106,28 +114,27 @@ const AddJob = ({ navigation }) => {
   const handleSubmitPress = () => {
     setLoading(true);
     let data = {
-      DataMatirx: "D123",
-      Date: "2023-03-20",
-      JobId: "1213",
-      Name: "test job",
-      Brand: [],
-      Model: [],
-      "Farm Name": "test form",
-      Comments: "MRC - 6328 changes",
+      DataMatirx: result,
+      Date: startDate,
+      Name: jobName,
+      Brand: [selectedBrand],
+      Model: [selectedModel],
+      "Wind Farm": windForm,
+      "Wind Turbine": windTurbine,
+      "OR Number": orNumber,
+      "IR Number": irNumber,
+      "Batch Number": batchNumber,
+      "Generator Model": generatorModel,
+      Comments: comments,
       "Reasons List": [selectedReasonForChange],
       "Part Type List": [selectedBearingType],
       "Exchange Type List": [selectedExchange],
       "Brand List": [selectedBrand],
       "Shaft Position List": [selectedShaftPositon],
-      Customer: [
-        {
-          Id: 9,
-          Name: "Customer2",
-        },
-      ],
-      Operator: [],
+      CustomerId: userData?.CustomerId,
+      OperatorId: userData?.OperatorId
     };
-    dispatch(saveJobData(data));
+    dispatch(saveJob(data));
   };
 
   return (
@@ -186,29 +193,37 @@ const AddJob = ({ navigation }) => {
               labelName="Data Matrix Code"
               placeholder="Enter Data Matrix Code"
               value={result}
+              disabled = {true}
             />
           </View>
           {matrixNumber && <><View style={{ marginBottom: 20 }}>
             <Input
               labelName="Batch Number"
               placeholder="Enter Batch Number"
-              value={result}
+              handleChangeText={setBatchNumber}
             />
           </View>
           <View style={{ marginBottom: 20 }}>
             <Input
               labelName="IR Number"
               placeholder="Enter IR Number"
-              value={result}
+              handleChangeText={setIrNumber}
             />
           </View>
           <View style={{ marginBottom: 20 }}>
             <Input
               labelName="OR Number"
               placeholder="Enter OR Number"
-              value={result}
+              handleChangeText={setOrNumber}
             />
           </View></>}
+          <View style={{ marginBottom: 20 }}>
+            <Input
+              labelName="Job Name"
+              placeholder="Enter Job Name"
+              handleChangeText={setJobName}
+            />
+          </View>
           <View style={{ marginBottom: 20 }}>
             <Input
               labelName="Start Date"
@@ -243,10 +258,10 @@ const AddJob = ({ navigation }) => {
             />
           </View>
           <View style={{ marginBottom: 20 }}>
-            <Input labelName="Wind Farm" placeholder="Enter Wind Farm" />
+            <Input labelName="Wind Farm" handleChangeText={setWindForm} placeholder="Enter Wind Farm" />
           </View>
           <View style={{ marginBottom: 20 }}>
-            <Input labelName="Wind Turbine" placeholder="Enter Wind Turbine" />
+            <Input labelName="Wind Turbine" handleChangeText={setWindTurbine} placeholder="Enter Wind Turbine" />
           </View>
           <View style={{ marginBottom: 20 }}>
             <Select
@@ -266,6 +281,7 @@ const AddJob = ({ navigation }) => {
             <Input
               labelName="Generator Model"
               placeholder="Enter Generator Model"
+              handleChangeText={setGeneratorModel}
             />
           </View>
           <View style={{ marginBottom: 20 }}>
@@ -311,12 +327,9 @@ const AddJob = ({ navigation }) => {
             />
           </View>
           <View style={{ marginBottom: 20 }}>
-            <Input labelName="Operator ID" placeholder="Enter Operator ID" />
+            <Input handleChangeText={setComments} labelName="Comments" placeholder="Enter Comments" multiline={true} />
           </View>
-          <View style={{ marginBottom: 20 }}>
-            <Input labelName="Comments" placeholder="Enter Comments" multiline={true} />
-          </View>
-          <Ripple
+          {/* <Ripple
             style={Styles.addReportBtn}
             onPress={() => navigation.navigate("AddReport")}
           >
@@ -326,7 +339,7 @@ const AddJob = ({ navigation }) => {
                 Add report
               </Text>
             </Row>
-          </Ripple>
+          </Ripple> */}
           <Row>
             <Button
               text="Save"

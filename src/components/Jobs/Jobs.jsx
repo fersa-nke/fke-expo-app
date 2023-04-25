@@ -15,7 +15,7 @@ import Button from "../../shared/Button";
 import theme from "../../assets/theme";
 import Ribbon from "../../shared/Ribbon";
 import { useSelector, useDispatch } from "react-redux";
-import { getJobs, removeJob } from "../../redux/Jobs/JobsActions";
+import { getJobs, removeJob, setSelectedJobId } from "../../redux/Jobs/JobsActions";
 import {
   getExchangeTypes,
   getBearingTypes,
@@ -57,8 +57,10 @@ function Jobs() {
   };
 
   const navigateToJobDetails = (Id) => {
-    navigation.navigate("JobDetails", { id: Id });
-  };
+  
+    dispatch(setSelectedJobId(Id));
+    navigation.navigate('JobDetails',{id: Id});
+  }
 
   return (
     <>
