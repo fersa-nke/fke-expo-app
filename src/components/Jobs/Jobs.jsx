@@ -25,6 +25,7 @@ import {
   getShaftPositions,
 } from "../../redux/Master/MasterActions";
 import { useNavigation } from "@react-navigation/native";
+import {JobsInitialLoader} from "../../shared/InitialLoaders";
 
 function Jobs() {
   const dispatch = useDispatch();
@@ -56,19 +57,24 @@ function Jobs() {
   };
 
   const navigateToJobDetails = (Id) => {
-    navigation.navigate('JobDetails',{id: Id});
-  }
+    navigation.navigate("JobDetails", { id: Id });
+  };
 
   return (
     <>
-    <StatusBar barStyle="dark-content" backgroundColor={theme.bgWhite} />
+      <StatusBar barStyle="dark-content" backgroundColor={theme.bgWhite} />
       <ScrollView style={Styles.jobs}>
         <View style={GBStyles.container}>
           <Text style={GBStyles.pageTitle}>Jobs</Text>
-          <JobCard
-            list={jobs}
-            onHandlePress={navigateToJobDetails}
-          />
+          {(jobs.length > 0) ? (
+            <JobCard list={jobs} onHandlePress={navigateToJobDetails} />
+          ) : (
+            <>
+              {[1, 2, 3, 4, 5, 6].map((idx) => (
+                <JobsInitialLoader key={idx} />
+              ))}
+            </>
+          )}
         </View>
       </ScrollView>
       <FloatingAction

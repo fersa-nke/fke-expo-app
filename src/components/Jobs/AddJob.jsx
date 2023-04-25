@@ -22,6 +22,7 @@ import { saveJob } from "../../redux/Jobs/JobsActions";
 // import {RNCamera} from 'react-native-camera';
 import { BarCodeScanner } from "expo-barcode-scanner";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { FieldInitialLoader } from "../../shared/InitialLoaders";
 
 
 const bearingTypes = [
@@ -131,6 +132,9 @@ const AddJob = ({ navigation }) => {
 
   return (
     <ScrollView style={{ backgroundColor: theme.bgWhite }}>
+     <View style={{padding: 18}}>{[1,2,3,4,5,6,7,8,9].map((idx)=>(
+       <FieldInitialLoader key={idx} />
+     ))}</View>
       {scan ? (
         <View style={Styles.container}>
           <BarCodeScanner
