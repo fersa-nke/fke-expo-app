@@ -5,8 +5,7 @@ import {
   View,
   Text,
   StyleSheet,
-  StatusBar,
-  Alert,
+  StatusBar
 } from "react-native";
 import Ripple from "react-native-material-ripple";
 import nke_logo from "../../assets/images/nke_logo.png";
@@ -15,8 +14,10 @@ import Input from "../../shared/Input";
 import Button from "../../shared/Button";
 import theme from "../../assets/theme";
 import Loader from "../../shared/Loader";
-import { useSelector, useDispatch, connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { login } from "../../redux/Login/LoginActions";
+import { Formik } from "formik";
+import * as Yup from "yup";
 
 const Login = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
@@ -29,12 +30,22 @@ const Login = ({ navigation }) => {
   console.log(isLogin, "user loggin details");
   const dispatch = useDispatch();
 
-  const [data, setData] = useState({
-    username: "operator@gmail.com",
-    password: "test",
-    check_textInputChange: false,
-    isValidUser: true,
-    isValidPassword: true,
+  const customerLoginSchema = Yup.object().shape({
+    username: Yup.string()
+      .email("Enter Customer Id")
+      .required("Enter Customer Id"),
+    password: Yup.string().required("Enter Password."),
+    //.min(8, "Password is too short - should be 8 chars minimum.")
+    //.matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
+  });
+
+  const operatorLoginSchema = Yup.object().shape({
+    username: Yup.string()
+      .email("Enter Operator Id")
+      .required("Enter Operator Id"),
+    password: Yup.string().required("Enter Password."),
+    //.min(8, "Password is too short - should be 8 chars minimum.")
+    //.matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
   });
 
   useEffect(() => {
@@ -43,54 +54,19 @@ const Login = ({ navigation }) => {
     }, 100);
   }, []);
 
-  const handleEmailChange = (val) => {
-    if (val.trim().length < 3) {
-      setData({
-        ...data,
-        username: val,
-        check_textInputChange: true,
-        isValidUser: true,
-      });
-    } else {
-      setData({
-        ...data,
-        username: val,
-        check_textInputChange: false,
-        isValidUser: false,
-      });
-    }
-  };
-
-  const handlePasswordChange = (val) => {
-    if (val.trim().length < 3) {
-      setData({
-        ...data,
-        password: val,
-        isValidPassword: true,
-      });
-    } else {
-      setData({
-        ...data,
-        password: val,
-        isValidPassword: false,
-      });
-    }
-  };
-
-  const handleSubmitPress = () => {
-    if (data.username.length == 0 || data.password.length == 0) {
-      Alert.alert(
-        "Wrong Input!",
-        "Username or password field cannot be empty.",
-        [{ text: "Okay" }]
-      );
-      return;
-    }
+  const handleSubmitPress = (values) => {
     setLoading(true);
+    let d = {
+      username: values.username,
+      password: values.password,
+      check_textInputChange: false,
+      isValidUser: true,
+      isValidPassword: true,
+    };
     // let dataToSend = { Email: data.username, Password: data.password };
     // Create the thunk function with the text the user wrote
     // Then dispatch the thunk function itself
-    const callLogin = login(data);
+    const callLogin = login(d);
     dispatch(callLogin);
     console.log("login status---->", isLogin);
   };
@@ -148,56 +124,110 @@ const Login = ({ navigation }) => {
             </Ripple>
           </View>
           {customerLogin && (
-            <>
-              <View style={{ marginBottom: 20 }}>
-                <Input
-                  labelName="Customer ID"
-                  placeholder="Enter Customer ID"
-                  mand={true}
-                  handleChangeText={handleEmailChange}
-                />
-              </View>
-              <View style={{ marginBottom: 24 }}>
-                <Input
-                  labelName="Password"
-                  placeholder="Enter Password"
-                  mand={true}
-                  secureTextEntry={showCustomerPswd}
-                  appendIconName={showCustomerPswd === true ? "Eye" : "Eyeoff"}
-                  appendIconSize={showCustomerPswd === true ? 24 : 22}
-                  appendIconColor={theme.textBlue}
-                  handleChangeText={handlePasswordChange}
-                  handlePress={() => setShowCustomerPswd(!showCustomerPswd)}
-                />
-              </View>
-              <Button text="login" onPress={handleSubmitPress} />
-            </>
+            <Formik
+              initialValues={{
+                username: "",
+                password: "",
+              }}
+              onSubmit={(values) => {
+                handleSubmitPress(values);
+              }}
+              validationSchema={customerLoginSchema}
+            >
+              {({ handleChange, errors, values, handleSubmit, touched }) => (
+                <>
+                  <View style={{ marginBottom: 20 }}>
+                    <Input
+                      labelName="Customer ID"
+                      placeholder="Enter Customer ID"
+                      mand={true}
+                      handleChangeText={handleChange("username")}
+                      value={values.username}
+                    />
+                    {errors.username && touched.username && (
+                      <Text style={Styles.validateError}>
+                        {errors.username}
+                      </Text>
+                    )}
+                  </View>
+                  <View style={{ marginBottom: 24 }}>
+                    <Input
+                      labelName="Password"
+                      placeholder="Enter Password"
+                      mand={true}
+                      secureTextEntry={showCustomerPswd}
+                      appendIconName={
+                        showCustomerPswd === true ? "Eye" : "Eyeoff"
+                      }
+                      appendIconSize={showCustomerPswd === true ? 24 : 22}
+                      appendIconColor={theme.textBlue}
+                      handleChangeText={handleChange("password")}
+                      handlePress={() => setShowCustomerPswd(!showCustomerPswd)}
+                      value={values.password}
+                    />
+                    {errors.password && touched.password ? (
+                      <Text style={Styles.validateError}>
+                        {errors.password}
+                      </Text>
+                    ) : null}
+                  </View>
+                  <Button text="login" onPress={() => handleSubmit()} />
+                </>
+              )}
+            </Formik>
           )}
           {operatorLogin && (
-            <>
-              <View style={{ marginBottom: 20 }}>
-                <Input
-                  labelName="Operator ID"
-                  placeholder="Enter Operator ID"
-                  mand={true}
-                  handleChangeText={handleEmailChange}
-                />
-              </View>
-              <View style={{ marginBottom: 24 }}>
-                <Input
-                  labelName="Password"
-                  placeholder="Enter Password"
-                  mand={true}
-                  secureTextEntry={showOperatorPswd}
-                  appendIconName={showOperatorPswd === true ? "Eye" : "Eyeoff"}
-                  appendIconSize={showOperatorPswd === true ? 24 : 22}
-                  appendIconColor={theme.textBlue}
-                  handleChangeText={handlePasswordChange}
-                  handlePress={() => setShowOperatorPswd(!showOperatorPswd)}
-                />
-              </View>
-              <Button text="login" onPress={handleSubmitPress} />
-            </>
+            <Formik
+              initialValues={{
+                username: "",
+                password: "",
+              }}
+              onSubmit={(values) => {
+                handleSubmitPress(values);
+              }}
+              validationSchema={operatorLoginSchema}
+            >
+              {({ handleChange, errors, values, handleSubmit, touched }) => (
+                <>
+                  <View style={{ marginBottom: 20 }}>
+                    <Input
+                      labelName="Operator ID"
+                      placeholder="Enter Operator ID"
+                      mand={true}
+                      handleChangeText={handleChange("username")}
+                      value={values.username}
+                    />
+                    {errors.username && touched.username && (
+                      <Text style={Styles.validateError}>
+                        {errors.username}
+                      </Text>
+                    )}
+                  </View>
+                  <View style={{ marginBottom: 24 }}>
+                    <Input
+                      labelName="Password"
+                      placeholder="Enter Password"
+                      mand={true}
+                      handleChangeText={handleChange("password")}
+                      value={values.password}
+                      secureTextEntry={showOperatorPswd}
+                      appendIconName={
+                        showOperatorPswd === true ? "Eye" : "Eyeoff"
+                      }
+                      appendIconSize={showOperatorPswd === true ? 24 : 22}
+                      appendIconColor={theme.textBlue}
+                      handlePress={() => setShowOperatorPswd(!showOperatorPswd)}
+                    />
+                    {errors.password && touched.password && (
+                      <Text style={Styles.validateError}>
+                        {errors.password}
+                      </Text>
+                    )}
+                  </View>
+                  <Button text="login" onPress={() => handleSubmit()} />
+                </>
+              )}
+            </Formik>
           )}
           <Image
             source={fersa_logo}
@@ -235,10 +265,11 @@ const Styles = StyleSheet.create({
     borderBottomColor: theme.bgBlue,
     borderStyle: "solid",
   },
-});
-
-const mapStateToProps = (state) => ({
-  isLogin: state.userReducer.isLogin,
+  validateError: {
+    fontSize: 12,
+    color: theme.textRed,
+    marginTop: 4,
+  },
 });
 
 export default Login;
