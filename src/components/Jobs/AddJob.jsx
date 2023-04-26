@@ -139,9 +139,9 @@ const AddJob = ({ navigation }) => {
 
   return (
     <ScrollView style={{ backgroundColor: theme.bgWhite }}>
-     <View style={{padding: 18}}>{[1,2,3,4,5,6,7,8,9].map((idx)=>(
+     {/* <View style={{padding: 18}}>{[1,2,3,4,5,6,7,8,9].map((idx)=>(
        <FieldInitialLoader key={idx} />
-     ))}</View>
+     ))}</View> */}
       {scan ? (
         <View style={Styles.container}>
           <BarCodeScanner

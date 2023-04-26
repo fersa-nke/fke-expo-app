@@ -57,9 +57,9 @@ function Jobs() {
   };
 
   const navigateToJobDetails = (Id) => {
-  
+    console.log(Id);
     dispatch(setSelectedJobId(Id));
-    navigation.navigate('JobDetails',{id: Id});
+    // navigation.navigate('JobDetails',{id: Id});
   }
 
   return (

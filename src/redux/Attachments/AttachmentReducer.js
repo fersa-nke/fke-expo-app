@@ -6,11 +6,11 @@ const initialAttachmentState = {
 
 export default function attachmentsReducer(state = initialAttachmentState, action) {
   switch (action.type) {
-    case GET_REPORTS:
+    case GET_ATTACHMENTS:
       return {...state, attachments: action.payload};
-    case ADD_REPORT_ITEM:
+    case ADD_ATTACHMENT_ITEM:
       return {...state, attachments: [...state.jobs, action.payload]};
-    case DELETE_REPORT_ITEM:
+    case DELETE_ATTACHMENT_ITEM:
       return {
         ...state,
         attachments: state.attachments.filter(

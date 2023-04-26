@@ -15,7 +15,7 @@ function JobCard({list, onHandlePress}) {
       {jobs?.map(job => (
         <TouchableOpacity onPress={() => onHandlePress(job.Id)} key={job.Id}>
           <Row style={[Styles.card]}>
-            <Text style={Styles.offline}>Offline</Text>
+            {job.offline && <Text style={Styles.offline}>Offline</Text> }
             <Image
               source={BarCode}
               width={100}

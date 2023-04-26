@@ -18,6 +18,7 @@ const persistConfig = {
 	key: 'JobsPersist',
 	storage: AsyncStorage
 }
+
 AsyncStorage.clear();
 
 const rootReducer = combineReducers({
@@ -26,7 +27,7 @@ const rootReducer = combineReducers({
 	reportsReducer : persistReducer(persistConfig, reportsReducer),
 	attachmentsReducer : persistReducer(persistConfig, attachmentsReducer),
 	masterReducer: persistReducer(persistConfig, masterReducer)
-})
+});
 
 // const rootReducer = combineReducers({
 //     userReducer,

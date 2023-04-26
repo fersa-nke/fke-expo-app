@@ -1,7 +1,7 @@
 
 import API from '../../services/Api';
 // Define action types
-import {GET_REPORTS, ADD_REPORT_ITEM, DELETE_REPORT_ITEM} from './../ReduxConsants';
+import { GET_REPORTS, ADD_REPORT_ITEM, DELETE_REPORT_ITEM} from './../ReduxConsants';
 
 // Construct a BASE URL for API endpoint
 const BASE_URL = `nocodb/data/NKE-Tracebility/Jobs`;
