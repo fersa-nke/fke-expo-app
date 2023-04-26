@@ -28,8 +28,8 @@ const DetailsView = () => {
   const [job, setJob] = useState();
   
     useEffect(() => {
-     if(jobs && jobs.length > 0) {
-      const filterJob = jobs.filter(j => j.Id === selectedJobId);
+     if(selectedJobId && jobs && jobs.length > 0) {
+      const filterJob = jobs.filter(j => j.Id === selectedJobId)[0];
       console.log('fetched job details', selectedJobId , filterJob);
       setJob(filterJob);
      }

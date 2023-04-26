@@ -14,6 +14,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 
 const AddReport = () => {
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
   const [reportName, setReportName] = useState('');
   const [startDate, setStartDate] = useState(new Date());
   const [show, setShow] = useState(false);

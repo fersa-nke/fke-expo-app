@@ -30,12 +30,10 @@ export const getJobs = () => {
 };
 
 export const setSelectedJobId = id => dispatch => {
-    return (dispatch, getState) => {
         dispatch({
             type: SELECTED_JOB_ID,
-            payload: id,
+            payload: id
           });
-    }
 }
 
 export const saveJob = jobData => dispatch => {
