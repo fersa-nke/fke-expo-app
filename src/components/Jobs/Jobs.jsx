@@ -42,7 +42,7 @@ function Jobs() {
 
   useEffect(() => {
    
-    dispatch(getJobs())
+    dispatch(getJobs());
     fetchExchangeTypes();
     fetchShaftPositions();
     fetchReasonOfChanges();
@@ -53,17 +53,7 @@ function Jobs() {
   }, []);
 
   const loadMore = () => {
-    
-    // if ((results.length) < totalCount) {
-    //   setShowLoadMore(false);
-    //   setPagerLoader(true);
-    //   let p = pageNumber + 1;
-    //   // fetch another next page results
-    //   setPageNumber(p);
-    //   fetchData(p);
-    // } else {
-    //   console.log("no loadmore button")
-    // }
+    dispatch(getJobs());
   }
 
   const handleRemoveJob = (job) => {

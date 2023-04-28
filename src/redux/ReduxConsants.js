@@ -9,6 +9,7 @@ export const GET_JOBS = 'GET_JOBS';
 export const DELETE_jOB_ITEM = 'DELETE_jOB_ITEM';
 export const ADD_JOB_ITEM = 'ADD_JOB_ITEM';
 export const SELECTED_JOB_ID = 'SELECTED_JOB_ID';
+export const LOADING_jOBS = 'LOADING_jOBS';
 
 export const GET_REPORTS = 'GET_REPORTS';
 export const DELETE_REPORT_ITEM = 'DELETE_REPORT_ITEM';

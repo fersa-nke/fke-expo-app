@@ -1,6 +1,6 @@
 
 import API from '../../services/Api';
-import { GET_JOBS, REMOVE_JOB_ITEM, SELECTED_JOB_ID, ADD_JOB_ITEM } from '../ReduxConsants';
+import { GET_JOBS, REMOVE_JOB_ITEM, SELECTED_JOB_ID, ADD_JOB_ITEM , LOADING_jOBS} from '../ReduxConsants';
 // Define action types
 
 // Construct a BASE URL for API endpoint
@@ -8,13 +8,19 @@ const BASE_URL = `nocodb/data/NKE-Tracebility/Jobs`;
 
 
 export const getJobs = () => {
-
     return async (dispatch, getState) => {
     const token = getState().userReducer.token;
-    const pageNo = getState().jobsReducer.pageInfo.page || 0;
-    const pageSize = getState().jobsReducer.pageInfo.pageSize|| 1;
-    console.log(pageSize);
-    alert('calling once api jobs,'+pageNo+','+pageSize);
+    const pageInfo =  getState().jobsReducer.pageInfo;
+    const pageNo = pageInfo.page || 0;
+    const pageSize = pageInfo.pageSize|| 5;
+    if(pageInfo.isLastPage) {
+        return false;
+    }
+    dispatch({
+        type: LOADING_jOBS,
+        payload: true,
+      });
+   // alert('calling once api jobs,'+pageNo+','+pageSize);
     API.GET(`${BASE_URL}`, token, {offset : pageNo, limit: pageSize})
         .then(res => {
             console.log('job list lenght', res.list.length);
@@ -25,6 +31,10 @@ export const getJobs = () => {
                   payload: res,
                 });
             } else {
+                dispatch({
+                    type: LOADING_jOBS,
+                    payload: false,
+                });
                 console.log('Unable to fetch JOB', res, res.list.length);
             }
         })
