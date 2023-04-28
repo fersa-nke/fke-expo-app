@@ -8,18 +8,21 @@ const BASE_URL = `nocodb/data/NKE-Tracebility/Jobs`;
 
 
 export const getJobs = () => {
+    console.log('calling once jobs');
     return async (dispatch, getState) => {
     const token = getState().userReducer.token;
-    API.GET(`${BASE_URL}`, token)
+    const pageNo = 0;
+    API.GET(`${BASE_URL}?offset=${pageNo}&limit=5`, token)
         .then(res => {
+            console.log(res.list.length);
             //Hide Loader
-            if (res) {
+            if (res && res.list && res.list.length > 0) {
                 dispatch({
                   type: GET_JOBS,
-                  payload: res.list,
+                  payload: res,
                 });
             } else {
-                console.log('Unable to fetch JOB');
+                console.log('Unable to fetch JOB', res, res.list.length);
             }
         })
         .catch((error) => {

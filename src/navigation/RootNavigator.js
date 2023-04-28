@@ -25,8 +25,6 @@ import { SafeAreaView, Text } from 'react-native';
 const Stack = createNativeStackNavigator();
 const RootNavigator = () => {
   const isLogin = useSelector((state)=> state.userReducer.isLogin);
-  const userdata = useSelector((state)=> state.jobsReducer.jobs);
-  console.log('user jobs------------------>',userdata);
   return (
     <><SafeAreaView style={{flex: 1}}>
       <Ribbon />

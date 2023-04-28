@@ -3,6 +3,7 @@ export const ADD_SIGNED_USER_DATA = 'ADD_SIGNED_USER_DATA';
 export const REMOVE_USER_DATA = 'REMOVE_USER_DATA';
 export const LOGIN_FAILED = 'LOGIN_FAILED';
 export const LOGIN_LOADING = 'LOGIN_LOADING';
+export const USER_LOGOUT = 'USER_LOGOUT';
 
 export const GET_JOBS = 'GET_JOBS';
 export const DELETE_jOB_ITEM = 'DELETE_jOB_ITEM';

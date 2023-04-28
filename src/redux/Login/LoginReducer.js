@@ -10,7 +10,6 @@ const initialState = {
 }
 
 export default function userReducer(state = initialState, action) {
-    console.log('login reducer calling------------->', action, state);
     switch (action.type) {
         case ADD_SIGNED_USER_DATA:
             return {

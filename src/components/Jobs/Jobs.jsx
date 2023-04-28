@@ -6,6 +6,7 @@ import {
   ScrollView,
   StatusBar,
   Dimensions,
+  ActivityIndicator
 } from "react-native";
 import { FloatingAction } from "react-native-floating-action";
 import GBStyles from "../../assets/globalstyles";
@@ -30,11 +31,10 @@ import {JobsInitialLoader} from "../../shared/InitialLoaders";
 function Jobs() {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const fetchJobs = () => dispatch(getJobs());
   const removeFromJobs = (job) => dispatch(removeJob(job));
   const jobs = useSelector((state) => state.jobsReducer.jobs);
-
-  console.log("loaded jobs ***********************************>", jobs);
+  const pagerLoader = useSelector((state) => state.jobsReducer.pageLoader);
+  const showLoadMore = useSelector((state) => state.jobsReducer.pageInfo.isLastPage);
   const fetchExchangeTypes = () => dispatch(getExchangeTypes());
   const fetchShaftPositions = () => dispatch(getShaftPositions());
   const fetchReasonOfChanges = () => dispatch(getReasonOfChanges());
@@ -43,14 +43,34 @@ function Jobs() {
   const fetchBearingTypes = () => dispatch(getBearingTypes());
 
   useEffect(() => {
-    fetchJobs();
+    const unsubscribe = navigation.addListener('state', () => {
+      
+    dispatch(getJobs())
     fetchExchangeTypes();
     fetchShaftPositions();
     fetchReasonOfChanges();
     fetchBrands();
     fetchModels();
     fetchBearingTypes();
-  }, []);
+
+    });
+    return unsubscribe;
+    
+  }, [dispatch, navigation]);
+
+  const loadMore = () => {
+    
+    // if ((results.length) < totalCount) {
+    //   setShowLoadMore(false);
+    //   setPagerLoader(true);
+    //   let p = pageNumber + 1;
+    //   // fetch another next page results
+    //   setPageNumber(p);
+    //   fetchData(p);
+    // } else {
+    //   console.log("no loadmore button")
+    // }
+  }
 
   const handleRemoveJob = (job) => {
     removeFromJobs(job);
@@ -78,6 +98,10 @@ function Jobs() {
             </>
           )}
         </View>
+        <View style={Styles.loadMoreCont} >
+            {pagerLoader && <ActivityIndicator size="large" />}
+            {showLoadMore === false && <Button title="Load more.." onPress={loadMore}></Button>}
+          </View>
       </ScrollView>
       <FloatingAction
         onPressMain={() => navigation.navigate("AddJob")}
@@ -102,6 +126,12 @@ const Styles = StyleSheet.create({
     transform: [{ translateX: -70 }],
     zIndex: 1,
   },
+  loadMoreBtn: {
+    marginBottom: 20
+  },
+  loadMoreCont: {
+    marginBottom: 10
+  }
 });
 
 export default Jobs;

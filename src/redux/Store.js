@@ -19,9 +19,8 @@ const persistConfig = {
 	storage: AsyncStorage
 }
 
-AsyncStorage.clear();
 
-const rootReducer = combineReducers({
+const appReducer  = combineReducers({
     userReducer : persistReducer(persistConfig, userReducer),
     jobsReducer : persistReducer(persistConfig, jobsReducer),
 	reportsReducer : persistReducer(persistConfig, reportsReducer),
@@ -39,6 +38,13 @@ const rootReducer = combineReducers({
 // 	middleware: composedEnhancer
 //     }
 // );
+
+const rootReducer = (state, action) => {
+	if (action.type === 'USER_LOGOUT') {
+	  return appReducer(undefined, action)
+	}
+	return appReducer(state, action)
+  }
 
 export const store = createStore(rootReducer, composedEnhancer);
 
