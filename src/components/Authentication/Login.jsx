@@ -18,6 +18,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { login } from "../../redux/Login/LoginActions";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import Message from "../../shared/Message";
 
 const Login = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
@@ -26,6 +27,7 @@ const Login = ({ navigation }) => {
   const [customerLogin, setCustomerLogin] = useState(true);
   const [showCustomerPswd, setShowCustomerPswd] = useState(true);
   const [showOperatorPswd, setShowOperatorPswd] = useState(true);
+  const [loginError, setLoginError] = useState(null);
 
   console.log(isLogin, "user loggin details");
   const dispatch = useDispatch();
@@ -91,7 +93,7 @@ const Login = ({ navigation }) => {
         <View
           style={{
             alignItems: "center",
-            height: 220,
+            height: 200,
             justifyContent: "center",
           }}
         >
@@ -123,6 +125,7 @@ const Login = ({ navigation }) => {
               <Text style={Styles.tabText}>Operator</Text>
             </Ripple>
           </View>
+          <Message title="Warning!" description="Invalid username and password" />
           {customerLogin && (
             <Formik
               initialValues={{
@@ -245,7 +248,7 @@ const Login = ({ navigation }) => {
 const Styles = StyleSheet.create({
   tabRow: {
     flexDirection: "row",
-    marginBottom: 44,
+    marginBottom: 30,
     alignSelf: "center",
   },
   tab: {

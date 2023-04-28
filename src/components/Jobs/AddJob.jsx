@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Text,
   StyleSheet,
   ScrollView,
   View,
-  Linking,
-  TouchableOpacity,
   Dimensions,
   Platform,
 } from "react-native";
@@ -19,26 +17,11 @@ import Ripple from "react-native-material-ripple";
 import Select from "../../shared/Select";
 import { useSelector, useDispatch } from "react-redux";
 import { saveJob } from "../../redux/Jobs/JobsActions";
-// import {RNCamera} from 'react-native-camera';
 import { BarCodeScanner } from "expo-barcode-scanner";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { FieldInitialLoader } from "../../shared/InitialLoaders";
-
-
-const bearingTypes = [
-  {
-    brandid: 1,
-    brandname: "HYBRID",
-  },
-  {
-    brandid: 2,
-    brandname: "INSULATED",
-  },
-  {
-    brandid: 3,
-    brandname: "STANDARD",
-  },
-];
+import { Formik } from "formik";
+import * as Yup from "yup";
 
 const AddJob = ({ navigation }) => {
   const [scan, setScan] = useState(false);
@@ -53,19 +36,34 @@ const AddJob = ({ navigation }) => {
   const [selectedShaftPositon, setSelectedShaftPositon] = useState({});
   const [selectedExchange, setSelectedExchange] = useState({});
   const [selectedBearingType, setSelectedBearingType] = useState({});
-  const [startDate, setStartDate] = useState(new Date())
+  const [startDate, setStartDate] = useState(new Date());
   const [show, setShow] = useState(false);
   const [scanLoading, setScanLoading] = useState(false);
   const [matrixNumber, setMatrixNumber] = useState(false);
-  const [comments, setComments] = useState('');
-  const [jobName, setJobName] = useState('');
-  const [orNumber, setOrNumber] = useState('');
-  const [irNumber, setIrNumber] = useState('');
-  const [batchNumber, setBatchNumber] = useState('');
-  const [generatorModel, setGeneratorModel] = useState('');
-  const [windForm, setWindForm] = useState('');
-  const [windTurbine, setWindTurbine] = useState('');
-  
+  const [comments, setComments] = useState("");
+  const [jobName, setJobName] = useState("");
+  const [orNumber, setOrNumber] = useState("");
+  const [irNumber, setIrNumber] = useState("");
+  const [batchNumber, setBatchNumber] = useState("");
+  const [generatorModel, setGeneratorModel] = useState("");
+  const [windForm, setWindForm] = useState("");
+  const [windTurbine, setWindTurbine] = useState("");
+
+  const addJobSchema = Yup.object().shape({
+    DataMatirx: Yup.string().required("Please Scan Data Matrix"),
+    Name: Yup.string().required("Enter Job Name"),
+    Brand: Yup.string().required("Please Select Brand"),
+    "OR Number": Yup.string().required("Enter OR Number"),
+    "IR Number": Yup.string().required("Enter IR Number"),
+    "Wind Farm": Yup.string().required("Enter Wind Farm"),
+    "Wind Turbine": Yup.string().required("Enter Wind Turbine"),
+    "Batch Number": Yup.string().required("Enter Batch Number"),
+    "Generator Model": Yup.string().required("Enter Generator Model"),
+    Comments: Yup.string().required("Enter Comments"),
+    'Reasons List': Yup.string().required("Please Select Reason"),
+    'Part Type List': Yup.string().required("Please Select Type"),
+  });
+
   const getBarCodeScannerPermissions = async () => {
     const { status } = await BarCodeScanner.requestPermissionsAsync();
     setHasPermission(status === "granted");
@@ -76,7 +74,7 @@ const AddJob = ({ navigation }) => {
     await getBarCodeScannerPermissions();
     setScan(true);
     setScanLoading(false);
-  }
+  };
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
@@ -111,225 +109,345 @@ const AddJob = ({ navigation }) => {
     setScan(true);
   };
 
-  const handleSubmitPress = () => {
-    setLoading(true);
-    let data = {
-      DataMatirx: result,
-      Date: startDate,
-      Name: jobName,
-      Brand: [selectedBrand],
-      Model: [selectedModel],
-      "Wind Farm": windForm,
-      "Wind Turbine": windTurbine,
-      "OR Number": orNumber,
-      "IR Number": irNumber,
-      "Batch Number": batchNumber,
-      "Generator Model": generatorModel,
-      Comments: comments,
-      "Reasons List": [selectedReasonForChange],
-      "Part Type List": [selectedBearingType],
-      "Exchange Type List": [selectedExchange],
-      "Brand List": [selectedBrand],
-      "Shaft Position List": [selectedShaftPositon],
-      CustomerId: userData?.CustomerId,
-      OperatorId: userData?.OperatorId
-    };
+  const handleSubmitPress = (values) => {
+    console.log("Job Submit============>",values)
+    //setLoading(true);
+    // let data = {
+    //   DataMatirx: result,
+    //   Date: startDate,
+    //   Name: values.Name,
+    //   Brand: [values.Brand],
+    //   Model: [selectedModel],
+    //   "Wind Farm": values['Wind Farm'],
+    //   "Wind Turbine": values['Wind Turbine'],
+    //   "OR Number": values['OR Number'],
+    //   "IR Number": values['IR Number'],
+    //   "Batch Number": values['Batch Number'],
+    //   "Generator Model": values['Generator Model'],
+    //   Comments: values.Comments,
+    //   "Reasons List": [selectedReasonForChange],
+    //   "Part Type List": [selectedBearingType],
+    //   "Exchange Type List": [selectedExchange],
+    //   "Brand List": [selectedBrand],
+    //   "Shaft Position List": [selectedShaftPositon],
+    //   CustomerId: userData?.CustomerId,
+    //   OperatorId: userData?.OperatorId,
+    // };
     dispatch(saveJob(data));
   };
 
   return (
     <ScrollView style={{ backgroundColor: theme.bgWhite }}>
-     {/* <View style={{padding: 18}}>{[1,2,3,4,5,6,7,8,9].map((idx)=>(
+      {/* <View style={{padding: 18}}>{[1,2,3,4,5,6,7,8,9].map((idx)=>(
        <FieldInitialLoader key={idx} />
      ))}</View> */}
       {scan ? (
         <View style={Styles.container}>
           <BarCodeScanner
-            style={[StyleSheet.absoluteFill, Styles.container, { flex: 1, width: Dimensions.get("window").width, height: (Dimensions.get("window").height - 140) }]}
-            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}>
-        <View style={Styles.layerTop} />
-        <View style={Styles.layerCenter}>
-          <View style={Styles.layerLeft} />
-          <View style={Styles.focused} />
-          <View style={Styles.layerRight} />
-        </View>
-        <View style={Styles.layerBottom}>
-            <Button
-              text="Close"
-              style={{margin: 40}}
-              onPress={() => {
-                setScan(false), setScanned(false);
-              }}
-            />
-          </View>
-        </BarCodeScanner>
-    
+            style={[
+              StyleSheet.absoluteFill,
+              Styles.container,
+              {
+                flex: 1,
+                width: Dimensions.get("window").width,
+                height: Dimensions.get("window").height - 140,
+              },
+            ]}
+            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+          >
+            <View style={Styles.layerTop} />
+            <View style={Styles.layerCenter}>
+              <View style={Styles.layerLeft} />
+              <View style={Styles.focused} />
+              <View style={Styles.layerRight} />
+            </View>
+            <View style={Styles.layerBottom}>
+              <Button
+                text="Close"
+                style={{ margin: 40 }}
+                onPress={() => {
+                  setScan(false), setScanned(false);
+                }}
+              />
+            </View>
+          </BarCodeScanner>
+
           {scanned && (
             <Button
               text="Tap to Scan Again"
               onPress={() => setScanned(false)}
             />
           )}
-         
         </View>
       ) : (
-        <View style={GBStyles.container}>
-          <Ripple
-            onPress={showScanner}
-            style={{ alignSelf: "center", marginBottom: 24, marginTop: 12 }}
-          >
-            <Icon
-              name="DataMatrix"
-              size={60}
-              color={theme.textBlue}
-              style={{ alignSelf: "center" }}
-            />
-            <Text style={{ alignSelf: "center", marginTop: 5 }}>
-              Scan Data Matrix
-            </Text>
-          </Ripple>
-          <View style={{ marginBottom: 20 }}>
-            <Input
-              labelName="Data Matrix Code"
-              placeholder="Enter Data Matrix Code"
-              value={result}
-              disabled = {true}
-            />
-          </View>
-          {matrixNumber && <><View style={{ marginBottom: 20 }}>
-            <Input
-              labelName="Batch Number"
-              placeholder="Enter Batch Number"
-              handleChangeText={setBatchNumber}
-            />
-          </View>
-          <View style={{ marginBottom: 20 }}>
-            <Input
-              labelName="IR Number"
-              placeholder="Enter IR Number"
-              handleChangeText={setIrNumber}
-            />
-          </View>
-          <View style={{ marginBottom: 20 }}>
-            <Input
-              labelName="OR Number"
-              placeholder="Enter OR Number"
-              handleChangeText={setOrNumber}
-            />
-          </View></>}
-          <View style={{ marginBottom: 20 }}>
-            <Input
-              labelName="Job Name"
-              placeholder="Enter Job Name"
-              handleChangeText={setJobName}
-            />
-          </View>
-          <View style={{ marginBottom: 20 }}>
-            <Input
-              labelName="Start Date"
-              placeholder="DD/MM/YYYY"
-              appendIconName="Calendar"
-              appendIconColor={theme.textBlue}
-              appendIconSize={16}
-              value={startDate.toLocaleDateString()}
-              handlePress={() => setShow(true)}
-            />
-            {show && (
-              <DateTimePicker
-                value={startDate}
-                mode='date'
-                onChange={onChange}
-                display= {Platform.OS === 'ios' ? "spinner" : 'calendar'}
-              />
-            )}
-          </View>
-          <View style={{ marginBottom: 20 }}>
-            <Select
-              selectedValue={masterData.exhangeTypes?.Name}
-              disabled={false}
-              handlePress={(item) =>
-                setSelectedExchange({ Id: item.Id, Name: item.Name })
-              }
-              placeholder="Select Exchange"
-              label="Exchange"
-              modalTitle="Select Exchange"
-              items={masterData.exhangeTypes}
-              modalObj={{ id: "Id", name: "Name" }}
-            />
-          </View>
-          <View style={{ marginBottom: 20 }}>
-            <Input labelName="Wind Farm" handleChangeText={setWindForm} placeholder="Enter Wind Farm" />
-          </View>
-          <View style={{ marginBottom: 20 }}>
-            <Input labelName="Wind Turbine" handleChangeText={setWindTurbine} placeholder="Enter Wind Turbine" />
-          </View>
-          <View style={{ marginBottom: 20 }}>
-            <Select
-              selectedValue={masterData.shaftPositions?.Name}
-              disabled={false}
-              handlePress={(item) =>
-                setSelectedShaftPositon({ Id: item.Id, Name: item.Name })
-              }
-              placeholder="Select Shaft Position"
-              label="Shaft Position"
-              modalTitle="Select Shaft Position"
-              items={masterData.shaftPositions}
-              modalObj={{ id: "Id", name: "Name" }}
-            />
-          </View>
-          <View style={{ marginBottom: 20 }}>
-            <Input
-              labelName="Generator Model"
-              placeholder="Enter Generator Model"
-              handleChangeText={setGeneratorModel}
-            />
-          </View>
-          <View style={{ marginBottom: 20 }}>
-            <Select
-              selectedValue={masterData.reasonOfChanges?.Name}
-              disabled={false}
-              handlePress={(item) =>
-                setSelectedReasonForChange({ Id: item.Id, Name: item.Name })
-              }
-              placeholder="Select Reason"
-              label="Reason for Change"
-              modalTitle="Select Reason"
-              items={masterData.reasonOfChanges}
-              modalObj={{ id: "Id", name: "Name" }}
-            />
-          </View>
-          <View style={{ marginBottom: 20 }}>
-            <Select
-              selectedValue={masterData.brands?.Name}
-              disabled={false}
-              handlePress={(item) =>
-                setSelectedBrand({ Id: item.Id, Name: item.Name })
-              }
-              placeholder="Select Bearing Brand"
-              label="Previous Bearing Brand"
-              modalTitle="Select Bearing Brand"
-              items={masterData.brands}
-              modalObj={{ id: "Id", name: "Name" }}
-            />
-          </View>
-          <View style={{ marginBottom: 20 }}>
-            <Select
-              selectedValue={masterData.bearingTypes?.Name}
-              disabled={false}
-              handlePress={(item) =>
-                setSelectedBearingType({ Id: item.Id, Name: item.Name })
-              }
-              placeholder="Select Bearing Type"
-              label="Previous Bearing Type"
-              modalTitle="Select Bearing Type"
-              items={masterData.bearingTypes}
-              modalObj={{ id: "Id", name: "Name" }}
-            />
-          </View>
-          <View style={{ marginBottom: 20 }}>
-            <Input handleChangeText={setComments} labelName="Comments" placeholder="Enter Comments" multiline={true} />
-          </View>
-          {/* <Ripple
+        <Formik
+          initialValues={{
+            DataMatirx: "",
+            Date: "",
+            Name: "",
+            Brand: "",
+            Model: "",
+            "Wind Farm": "",
+            "Wind Turbine": "",
+            "OR Number": "",
+            "IR Number": "",
+            "Batch Number": "",
+            "Generator Model": "",
+            Comments: "",
+            "Reasons List": "",
+            "Part Type List": "",
+            "Exchange Type List": "",
+            "Brand List": "",
+            "Shaft Position List": "",
+          }}
+          onSubmit={(values) => {
+            console.log('Hi')
+            handleSubmitPress(values);
+          }}
+          validationSchema={addJobSchema}
+        >
+          {({ handleChange, errors, values, handleSubmit, touched }) => (
+            <View style={GBStyles.container}>
+               <View style={{ marginBottom: 20 }}>
+                <Input
+                  labelName="Job Name"
+                  placeholder="Enter Job Name"
+                  handleChangeText={handleChange("Name")}
+                  value={values.Name}
+                />
+                {errors.Name && touched.Name && (
+                  <Text style={Styles.validateError}>{errors.Name}</Text>
+                )}
+              </View>
+              <Ripple
+                onPress={showScanner}
+                style={{ alignSelf: "center", marginBottom: 24, marginTop: 12 }}
+              >
+                <Icon
+                  name="DataMatrix"
+                  size={60}
+                  color={theme.textBlue}
+                  style={{ alignSelf: "center" }}
+                />
+                <Text style={{ alignSelf: "center", marginTop: 5 }}>
+                  Scan Data Matrix
+                </Text>
+              </Ripple>
+              <View style={{ marginBottom: 20 }}>
+                <Input
+                  labelName="Data Matrix Code"
+                  placeholder="Enter Data Matrix Code"
+                  value={result}
+                  disabled={true}
+                />
+              </View>
+              {matrixNumber && (
+                <>
+                  <View style={{ marginBottom: 20 }}>
+                    <Input
+                      labelName="Batch Number"
+                      placeholder="Enter Batch Number"
+                      handleChangeText={handleChange("Batch Number")}
+                      value={values["Batch Number"]}
+                    />
+                    {errors["Batch Number"] && touched["Batch Number"] && (
+                      <Text style={Styles.validateError}>
+                        {errors["Batch Number"]}
+                      </Text>
+                    )}
+                  </View>
+                  <View style={{ marginBottom: 20 }}>
+                    <Input
+                      labelName="IR Number"
+                      placeholder="Enter IR Number"
+                      handleChangeText={handleChange("IR Number")}
+                      value={values["IR Number"]}
+                    />
+                    {errors["IR Number"] && touched["IR Number"] && (
+                      <Text style={Styles.validateError}>
+                        {errors["IR Number"]}
+                      </Text>
+                    )}
+                  </View>
+                  <View style={{ marginBottom: 20 }}>
+                    <Input
+                      labelName="OR Number"
+                      placeholder="Enter OR Number"
+                      handleChangeText={handleChange("OR Number")}
+                      value={values["OR Number"]}
+                    />
+                    {errors["OR Number"] && touched["OR Number"] && (
+                      <Text style={Styles.validateError}>
+                        {errors["OR Number"]}
+                      </Text>
+                    )}
+                  </View>
+                </>
+              )}
+             
+              <View style={{ marginBottom: 20 }}>
+                <Input
+                  labelName="Start Date"
+                  placeholder="DD/MM/YYYY"
+                  appendIconName="Calendar"
+                  appendIconColor={theme.textBlue}
+                  appendIconSize={16}
+                  value={startDate.toLocaleDateString()}
+                  handlePress={() => setShow(true)}
+                />
+                {show && (
+                  <DateTimePicker
+                    value={startDate}
+                    mode="date"
+                    onChange={onChange}
+                    display={Platform.OS === "ios" ? "spinner" : "calendar"}
+                  />
+                )}
+              </View>
+              <View style={{ marginBottom: 20 }}>
+                <Select
+                  selectedValue={masterData.exhangeTypes?.Name}
+                  disabled={false}
+                  handlePress={(item) =>
+                    setSelectedExchange({ Id: item.Id, Name: item.Name })
+                  }
+                  placeholder="Select Exchange"
+                  label="Exchange"
+                  modalTitle="Select Exchange"
+                  items={masterData.exhangeTypes}
+                  modalObj={{ id: "Id", name: "Name" }}
+                />
+              </View>
+              <View style={{ marginBottom: 20 }}>
+                <Select
+                  selectedValue={values["Reasons List"].Name}
+                  disabled={false}
+                  onChange={(item)=>{
+                    let obj = {Id: item.Id, Name: item.Name};
+                    handleChange('Reasons List')(obj.Name);
+                  }}
+                  placeholder="Select Reason"
+                  label="Reasons of Change"
+                  modalTitle="Select Reason"
+                  items={masterData.reasonOfChanges}
+                  modalObj={{ id: "Id", name: "Name" }}
+                />
+                {errors["Reasons List"] && touched["Reasons List"] && (
+                  <Text style={Styles.validateError}>
+                    {errors["Reasons List"]}
+                  </Text>
+                )}
+              </View>
+              <View style={{ marginBottom: 20 }}>
+                <Input
+                  labelName="Wind Farm"
+                  placeholder="Enter Wind Farm"
+                  handleChangeText={handleChange("Wind Farm")}
+                  value={values["Wind Farm"]}
+                />
+                {errors["Wind Farm"] && touched["Wind Farm"] && (
+                  <Text style={Styles.validateError}>
+                    {errors["Wind Farm"]}
+                  </Text>
+                )}
+              </View>
+              <View style={{ marginBottom: 20 }}>
+                <Input
+                  labelName="Wind Turbine"
+                  placeholder="Enter Wind Turbine"
+                  handleChangeText={handleChange("Wind Turbine")}
+                  value={values["Wind Turbine"]}
+                />
+                {errors["Wind Turbine"] && touched["Wind Turbine"] && (
+                  <Text style={Styles.validateError}>
+                    {errors["Wind Turbine"]}
+                  </Text>
+                )}
+              </View>
+              <View style={{ marginBottom: 20 }}>
+                <Select
+                  selectedValue={masterData.shaftPositions?.Name}
+                  disabled={false}
+                  handlePress={(item) =>
+                    setSelectedShaftPositon({ Id: item.Id, Name: item.Name })
+                  }
+                  placeholder="Select Shaft Position"
+                  label="Shaft Position"
+                  modalTitle="Select Shaft Position"
+                  items={masterData.shaftPositions}
+                  modalObj={{ id: "Id", name: "Name" }}
+                />
+              </View>
+              <View style={{ marginBottom: 20 }}>
+                <Input
+                  labelName="Generator Model"
+                  placeholder="Enter Generator Model"
+                  handleChangeText={handleChange("Generator Model")}
+                  value={values["Generator Model"]}
+                />
+                {errors["Generator Model"] && touched["Generator Model"] && (
+                  <Text style={Styles.validateError}>
+                    {errors["Generator Model"]}
+                  </Text>
+                )}
+              </View>
+
+              <View style={{ marginBottom: 20 }}>
+                <Select
+                  selectedValue={masterData.brands?.Name}
+                  disabled={false}
+                  onChange={(item) =>{
+                    let obj = {Id: item.Id, Name: item.Name};
+                    handleChange('Brand')(obj.Name);
+                  }}
+                  placeholder="Select Bearing Brand"
+                  label="New Bearing Brand"
+                  modalTitle="Select Bearing Brand"
+                  items={masterData.brands}
+                  modalObj={{ id: "Id", name: "Name" }}
+                />
+                {errors.Brand && touched.Brand && (
+                  <Text style={Styles.validateError}>
+                    {errors.Brand}
+                  </Text>
+                )}
+              </View>
+              <View style={{ marginBottom: 20 }}>
+                <Select
+                  selectedValue={masterData.bearingTypes?.Name}
+                  disabled={false}
+                  onChange={(item) => {
+                    let obj = {Id: item.Id, Name: item.Name};
+                    //handleChange('Part Type List')(obj.Name);
+                    setSelectedBearingType({ Id: item.Id, Name: item.Name })
+                  }}
+                  placeholder="Select Bearing Type"
+                  label="New Bearing Type"
+                  modalTitle="Select Bearing Type"
+                  items={masterData.bearingTypes}
+                  modalObj={{ id: "Id", name: "Name" }}
+                />
+                {/* {errors['Part Type List'] && touched['Part Type List'] && (
+                  <Text style={Styles.validateError}>
+                    {errors['Part Type List']}
+                  </Text>
+                )} */}
+              </View>
+              <View style={{ marginBottom: 20 }}>
+                <Input
+                  labelName="Comments"
+                  placeholder="Enter Comments"
+                  multiline={true}
+                  handleChangeText={handleChange("Comments")}
+                  value={values.Comments}
+                />
+                {errors.Comments && touched.Comments && (
+                  <Text style={Styles.validateError}>
+                    {errors.Comments}
+                  </Text>
+                )}
+              </View>
+              {/* <Ripple
             style={Styles.addReportBtn}
             onPress={() => navigation.navigate("AddReport")}
           >
@@ -340,26 +458,28 @@ const AddJob = ({ navigation }) => {
               </Text>
             </Row>
           </Ripple> */}
-          <Row>
-            <Button
-              text="Save"
-              style={{ flex: 1, marginRight: 8 }}
-              onPress={handleSubmitPress}
-            />
-            <Button
-              text="Close"
-              type="Secondary"
-              style={{ flex: 1, marginLeft: 8 }}
-              onPress={() => navigation.navigate("Jobs")}
-            />
-          </Row>
-        </View>
+              <Row>
+                <Button
+                  text="Save"
+                  style={{ flex: 1, marginRight: 8 }}
+                  onPress={() => handleSubmit()}
+                />
+                <Button
+                  text="Close"
+                  type="Secondary"
+                  style={{ flex: 1, marginLeft: 8 }}
+                  onPress={() => navigation.navigate("Jobs")}
+                />
+              </Row>
+            </View>
+          )}
+        </Formik>
       )}
     </ScrollView>
   );
 };
 
-const opacity = 'rgba(0, 0, 0, .6)';
+const opacity = "rgba(0, 0, 0, .6)";
 const Styles = StyleSheet.create({
   addReportBtnText: {
     color: theme.textBlue,
@@ -376,27 +496,32 @@ const Styles = StyleSheet.create({
   },
   layerTop: {
     flex: 1,
-    backgroundColor: opacity
+    backgroundColor: opacity,
   },
   layerCenter: {
     flex: 1,
-    flexDirection: 'row'
+    flexDirection: "row",
   },
   layerLeft: {
     flex: 1,
-    backgroundColor: opacity
+    backgroundColor: opacity,
   },
   focused: {
-    flex: 10
+    flex: 10,
   },
   layerRight: {
     flex: 1,
-    backgroundColor: opacity
+    backgroundColor: opacity,
   },
   layerBottom: {
     flex: 1,
-    backgroundColor: opacity
-  }
+    backgroundColor: opacity,
+  },
+  validateError: {
+    fontSize: 12,
+    color: theme.textRed,
+    marginTop: 4,
+  },
 });
 
 export default AddJob;

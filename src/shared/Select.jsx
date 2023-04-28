@@ -26,6 +26,7 @@ const Select = ({
   style,
   borderStyle,
   rippleStyle,
+  onChange
 }) => {
   const [modal, setModal] = useState(false);
   const [value, setValue] = useState(selectedValue);
@@ -36,7 +37,8 @@ const Select = ({
   }, [selectedValue]);
   const onSelectValue = item => {
     setValue(item[modalObj.name]);
-    handlePress(item);
+    //handlePress(item);
+    onChange(item);
     setModal(false);
   };
   return (
