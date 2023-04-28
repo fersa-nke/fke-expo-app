@@ -32,13 +32,13 @@ export default API = {
     return response.json(); // parses JSON response into native JavaScript objects
   },
 
-  DELETE: async function (url = '', token = '', data = {}) {
+  DELETE: async function (url = '', token = '', params = {}) {
     const Url = new URL(serverURL + '' + url);
     Object.keys(params).forEach(key => Url.searchParams.append(key, params[key]));
     console.log(Url);
     const myHeaders = new Headers({
       'x-access-token': `${token}`,
-      'Content-Type': 'application/json',
+      'Content-Type': 'text/plain',
     });
     const request = new Request(Url, {
       method: 'DELETE',
@@ -46,7 +46,7 @@ export default API = {
     });
     
     const response = await fetch(request);
-    return response.json(); 
+    return response;
   },
 
   GET: async function (url = '', token = '', params = {}) {

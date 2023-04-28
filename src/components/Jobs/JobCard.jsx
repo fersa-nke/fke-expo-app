@@ -7,13 +7,33 @@ import Row from '../../shared/Row';
 import Ripple from 'react-native-material-ripple';
 import BarCode from '../../assets/images/qr.png';
 import { useNavigation } from '@react-navigation/native';
-function JobCard({list, onHandlePress}) {
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+import IconComp from '../../shared/IconComp';
+
+
+function JobCard({list, onHandlePress, JobEdit, JobDelete}) {
   const jobs = list;
   const navigation = useNavigation();
+
+  const renderLeftActions = (Id) => {
+    return (
+      <Row style={{height: 95, justifyContent: 'center', alignItems: 'center', backgroundColor: "#f2f2f2"}}>
+        <Ripple style={{width: 70, height: 95,justifyContent: 'center', alignItems: 'center', backgroundColor: theme.bgBlue}} onPress={()=>JobEdit(Id)} >
+        <IconComp name="Edit" size={24} color={theme.textWhite} />
+      </Ripple>
+      <Ripple style={{width: 70, height: 95,justifyContent: 'center', alignItems: 'center', backgroundColor: 'red'}}  onPress={()=>JobDelete(Id)}>
+        <IconComp name="Delete" size={24} color={theme.textWhite} />
+      </Ripple>
+      </Row>
+    )
+  }
+
   return (
-    <>
-      {jobs?.map(job => (
+      <>
+      
+        {jobs?.map(job => (
         <TouchableOpacity onPress={() => onHandlePress(job.Id)} key={job.Id}>
+          <Swipeable renderRightActions={()=>renderLeftActions(job.Id)}>
           <Row style={[Styles.card]}>
             {job.offline && <Text style={Styles.offline}>Offline</Text> }
             <Image
@@ -44,8 +64,9 @@ function JobCard({list, onHandlePress}) {
               </Row>
             </View>
           </Row>
+          </Swipeable>
         </TouchableOpacity>
-      ))}
+      ))}      
     </>
   );
 }

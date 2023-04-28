@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   StyleSheet,
@@ -23,12 +23,14 @@ import { FieldInitialLoader } from "../../shared/InitialLoaders";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
-const AddJob = ({ navigation }) => {
+const AddJob = ({ navigation, route }) => {
+  const { Id } = route.params;
   const [scan, setScan] = useState(false);
   const [result, setResult] = useState("");
   const dispatch = useDispatch();
   const masterData = useSelector((state) => state.masterReducer);
   const userData = useSelector((state) => state.userReducer.user);
+  console.log('user data---->', userData);
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [selectedReasonForChange, setSelectedReasonForChange] = useState({});
@@ -49,7 +51,58 @@ const AddJob = ({ navigation }) => {
   const [generatorModel, setGeneratorModel] = useState("");
   const [windForm, setWindForm] = useState("");
   const [windTurbine, setWindTurbine] = useState("");
-
+  const selectedJobId = useSelector((state) => state.jobsReducer.selectedJobId);
+  const jobs = useSelector((state) => state.jobsReducer.jobs);
+  const initialFormValues = {
+    DataMatirx: "",
+    Date: "",
+    Brand: "",
+    Model: "",
+    "Wind Farm": "",
+    "Wind Turbine": "",
+    "OR Number": "",
+    "IR Number": "",
+    "Batch Number": "",
+    "Generator Model": "",
+    Comments: "",
+    "Reasons List": "",
+    "Part Type List": "",
+    "Exchange Type List": "",
+    "Brand List": "",
+    "ShaftPosition": "",
+    "Report Code":""
+  };
+  const [formData, setFormData] = useState(initialFormValues);
+  
+  
+    useEffect(() => {
+     if(Id && selectedJobId && jobs && jobs.length > 0) {
+      const filterJob = jobs.filter(j => j.Id === selectedJobId)[0];
+      console.log('fetched job details', selectedJobId , filterJob);
+      //setJob(filterJob);
+      let formValues = {
+        DataMatirx: filterJob?.DataMatirx,
+        Date: filterJob?.Date,
+        Brand: filterJob.NewBearingBrand?.Name,
+        "Wind Farm": filterJob?.WindFarm,
+        "Wind Turbine": filterJob?.WindTurbine,
+        "OR Number": filterJob?.ORNumber,
+        "IR Number": "",
+        "Batch Number": "",
+        "Generator Model": "",
+        Comments: filterJob?.Comments,
+        "Reasons List": filterJob?.Reasons,
+        "Part Type List": "",
+        "Exchange Type List": "",
+        "Brand List": "",
+        "ShaftPosition": filterJob?.ShaftPosition,
+        "Report Code":""
+      }
+      setFormData(formValues);
+     }
+     
+    }, []);
+  
   // const addJobSchema = Yup.object().shape({
   //   DataMatirx: Yup.string().required("Please Scan Data Matrix"),
   //   //Name: Yup.string().required("Enter Job Name"),
@@ -80,7 +133,7 @@ const AddJob = ({ navigation }) => {
     Brand: Yup.object(),
     'Reasons List': Yup.object(),
     'Part Type List': Yup.object(),
-    'Shaft Position List': Yup.object(),
+    'ShaftPosition': Yup.object(),
     'Exchange Type List': Yup.object(),
     "Comments": Yup.string(),
     "Report Code": Yup.string()
@@ -138,7 +191,6 @@ const AddJob = ({ navigation }) => {
       Date: startDate,
       Name: values.Name,
       Brand: [values.Brand],
-
       "Wind Farm": values['Wind Farm'],
       "Wind Turbine": values['Wind Turbine'],
       "OR Number": values['OR Number'],
@@ -150,7 +202,7 @@ const AddJob = ({ navigation }) => {
       "Part Type List": [values['Part Type List']],
       "Exchange Type List": [values['Exchange Type List']],
       "Brand List": [values['Brand List']],
-      "Shaft Position List": [values['Shaft Position List']],
+      "ShaftPosition": [values['ShaftPosition']],
       CustomerId: userData?.CustomerId,
       OperatorId: userData?.OperatorId,
     };
@@ -204,33 +256,13 @@ const AddJob = ({ navigation }) => {
         </View>
       ) : (
         <Formik
-          initialValues={{
-            DataMatirx: "",
-            Date: "",
-            //Name: "",
-            Brand: "",
-            Model: "",
-            "Wind Farm": "",
-            "Wind Turbine": "",
-            "OR Number": "",
-            "IR Number": "",
-            "Batch Number": "",
-            "Generator Model": "",
-            Comments: "",
-            "Reasons List": "",
-            "Part Type List": "",
-            "Exchange Type List": "",
-            "Brand List": "",
-            "Shaft Position List": "",
-            "Report Code":""
-          }}
+          initialValues={formData}
           onSubmit={(values) => {
-
             console.log('Job Save=========>', values)
-            alert("Hi")
             handleSubmitPress(values);
           }}
           validationSchema={addJobSchema}
+          enableReinitialize
         >
           {({ handleChange, errors, values, handleSubmit, touched, setFieldValue }) => (
             <View style={GBStyles.container}>
@@ -354,7 +386,7 @@ const AddJob = ({ navigation }) => {
               </View>
               <View style={{ marginBottom: 20 }}>
                 <Select
-                  selectedValue={values["Reasons List"].Name}
+                  selectedValue={values["Reasons List"]?.Name}
                   disabled={false}
                   onChange={(item)=>{
                     let obj = {Id: item.Id, Name: item.Name};
@@ -404,7 +436,7 @@ const AddJob = ({ navigation }) => {
                   disabled={false}
                   onChange={(item) =>{
                     let obj = {Id: item.Id, Name: item.Name};
-                    setFieldValue('Shaft Position List', obj);
+                    setFieldValue('ShaftPosition', obj);
                   }}
                   placeholder="Select Shaft Position"
                   label="Shaft Position"
@@ -412,9 +444,9 @@ const AddJob = ({ navigation }) => {
                   items={masterData.shaftPositions}
                   modalObj={{ id: "Id", name: "Name" }}
                 />
-                {errors["Shaft Position List"] && touched["Shaft Position List"] && (
+                {errors["ShaftPosition"] && touched["ShaftPosition"] && (
                   <Text style={Styles.validateError}>
-                    {errors["Shaft Position List"]}
+                    {errors["ShaftPosition"]}
                   </Text>
                 )}
               </View>

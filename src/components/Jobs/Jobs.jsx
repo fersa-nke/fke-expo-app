@@ -9,7 +9,6 @@ import {
   Button,
   ActivityIndicator
 } from "react-native";
-import { FloatingAction } from "react-native-floating-action";
 import GBStyles from "../../assets/globalstyles";
 import JobCard from "./JobCard";
 import theme from "../../assets/theme";
@@ -37,7 +36,7 @@ import nodata from "../../assets/images/nodata.png";
 function Jobs() {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const removeFromJobs = (job) => dispatch(removeJob(job));
+  const removeFromJobs = (id) => dispatch(removeJob(id));
   const jobs = useSelector((state) => state.jobsReducer.jobs);
   const pagerLoader = useSelector((state) => state.jobsReducer.pageLoader);
   const showLoadMore = useSelector((state) => state.jobsReducer.pageInfo.isLastPage);
@@ -61,6 +60,7 @@ function Jobs() {
   }, []);
 
   const loadMore = () => {
+    dispatch(getJobs());
     // if ((results.length) < totalCount) {
     //   setShowLoadMore(false);
     //   setPagerLoader(true);
@@ -72,13 +72,18 @@ function Jobs() {
     //   console.log("no loadmore button")
     // }
   };
-  const handleRemoveJob = (job) => {
-    removeFromJobs(job);
+  const handleRemoveJob = (Id) => {
+    removeFromJobs(Id);
   };
 
   const navigateToJobDetails = (Id) => {
     dispatch(setSelectedJobId(Id));
-    navigation.navigate('JobDetails',{id: Id});
+    navigation.navigate('JobDetails',{Id: Id});
+  }
+
+  const onEditClick = (Id) => {
+    dispatch(setSelectedJobId(Id));
+    navigation.navigate('AddJob',{Id: Id});
   }
 
   return (
@@ -88,19 +93,19 @@ function Jobs() {
         <View style={[GBStyles.container, {paddingBottom: 50}]}>
           <Text style={GBStyles.pageTitle}>Jobs</Text>
           {jobs.length > 0 ? (
-            <JobCard list={jobs} onHandlePress={navigateToJobDetails} />
+            <JobCard list={jobs} onHandlePress={navigateToJobDetails} JobEdit={onEditClick} JobDelete={handleRemoveJob} />
           ) : (
               <NoData title="No Jobs" image={nodata} description="Lorem Ipsum has been the industry's standard dummy text ever since the 1500s" />
           )}
         </View>
         <View style={Styles.loadMoreCont} >
             {pagerLoader && <ActivityIndicator size="large" />}
-            {showLoadMore === false && <Button title="Load more.." onPress={loadMore}></Button>}
+            {!showLoadMore && !pagerLoader  && <Button title="Load more.." onPress={loadMore}></Button>}
           </View>
       </ScrollView>
       <Ripple
         style={Styles.addJobBtn}
-        onPress={() => navigation.navigate("AddJob")}
+        onPress={() => navigation.navigate("AddJob", {Id: ''})}
       >
           <IconComp name="Add" size={20} color={theme.textWhite} />
       </Ripple>

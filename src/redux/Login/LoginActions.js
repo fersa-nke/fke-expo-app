@@ -28,7 +28,7 @@ export function logout() {
       type: USER_LOGOUT,
       payload: null
     });
-    Toast.success(getState().userReducer.message);
+    Toast.success('Logout Success!');
     dispatch({ 
 			type: PURGE,
 			key: "root",    // Whatever you chose for the "key" value when initialising redux-persist in the **persistCombineReducers** method - e.g. "root"

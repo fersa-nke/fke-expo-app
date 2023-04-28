@@ -26,11 +26,11 @@ export default function jobsReducer(state = initialJobState, action) {
       return {
         ...state,
         jobs: state.jobs.filter(
-          job => job.id !== action.payload.id,
+          job => job.Id !== action.payload,
         ),
       };
     case LOADING_jOBS:
-      return {...state, pageLoader: action.payload};
+      return {...state, pageLoader: action.payload };
     default:
       return state;
   }

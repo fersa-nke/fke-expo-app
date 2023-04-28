@@ -1,6 +1,6 @@
 
 import API from '../../services/Api';
-import { GET_JOBS, REMOVE_JOB_ITEM, SELECTED_JOB_ID, ADD_JOB_ITEM , LOADING_jOBS} from '../ReduxConsants';
+import { GET_JOBS, DELETE_jOB_ITEM, SELECTED_JOB_ID, ADD_JOB_ITEM , LOADING_jOBS} from '../ReduxConsants';
 // Define action types
 
 // Construct a BASE URL for API endpoint
@@ -102,18 +102,19 @@ export const updateJob = (jobData) => {
   };
 
 export const removeJob = (Id) => {
+    console.log(Id);
   return async (dispatch, getState) => {
     const token = getState().userReducer.token;
     API.DELETE(`${BASE_URL}/${Id}`, token)
         .then(res => {
             //Hide Loader
-            if (res) {
+            if (res && res.ok) {
                 dispatch({
-                  type: REMOVE_JOB_ITEM,
-                  payload: res,
+                  type: DELETE_jOB_ITEM,
+                  payload: Id
                 });
             } else {
-                console.log('Unable to DELETE job');
+                console.log('Unable to DELETE job', res);
             }
         })
         .catch((error) => {
