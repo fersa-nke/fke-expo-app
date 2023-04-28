@@ -5,7 +5,7 @@ const initialJobState = {
   pageInfo: {
     totalRows: 0,
     page: 0,
-    pageSize: 5,
+    pageSize: 1,
     isFirstPage: true,
     isLastPage: false
   },
@@ -17,7 +17,7 @@ const initialJobState = {
 export default function jobsReducer(state = initialJobState, action) {
   switch (action.type) {
     case GET_JOBS:
-      return {...state, jobs: action.payload.list, pageInfo: action.payload.pageInfo};
+      return {...state, jobs: action.payload.list};
     case SELECTED_JOB_ID:
       return {...state, selectedJobId: action.payload} 
     case ADD_JOB_ITEM:

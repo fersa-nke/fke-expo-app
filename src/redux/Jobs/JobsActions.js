@@ -8,13 +8,16 @@ const BASE_URL = `nocodb/data/NKE-Tracebility/Jobs`;
 
 
 export const getJobs = () => {
-    console.log('calling once jobs');
+
     return async (dispatch, getState) => {
     const token = getState().userReducer.token;
-    const pageNo = 0;
-    API.GET(`${BASE_URL}?offset=${pageNo}&limit=5`, token)
+    const pageNo = getState().jobsReducer.pageInfo.page || 0;
+    const pageSize = getState().jobsReducer.pageInfo.pageSize|| 1;
+    console.log(pageSize);
+    alert('calling once api jobs,'+pageNo+','+pageSize);
+    API.GET(`${BASE_URL}`, token, {offset : pageNo, limit: pageSize})
         .then(res => {
-            console.log(res.list.length);
+            console.log('job list lenght', res.list.length);
             //Hide Loader
             if (res && res.list && res.list.length > 0) {
                 dispatch({

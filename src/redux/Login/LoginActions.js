@@ -1,6 +1,6 @@
 import { GET_SIGNED_USER, ADD_SIGNED_USER_DATA, REMOVE_USER_DATA, LOGIN_FAILED, LOGIN_LOADING, USER_LOGOUT } from '../ReduxConsants';
 import Authservice from '../../services/AuthService';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PURGE } from 'redux-persist';
 const BASE_URL = `Auth/login`;
 
 
@@ -18,7 +18,12 @@ export function login(data) {
 
 export function logout() {
   return function logoutThunk(dispatch) {
-    AsyncStorage.clear();
+    dispatch({ 
+			type: PURGE,
+			key: "root",    // Whatever you chose for the "key" value when initialising redux-persist in the **persistCombineReducers** method - e.g. "root"
+		   result: () => null              // Func expected on the submitted action. 
+		});  
+
     dispatch({
       type: USER_LOGOUT,
       payload: null

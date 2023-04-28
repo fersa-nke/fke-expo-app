@@ -6,15 +6,13 @@ import {
   ScrollView,
   StatusBar,
   Dimensions,
+  Button,
   ActivityIndicator
 } from "react-native";
 import { FloatingAction } from "react-native-floating-action";
 import GBStyles from "../../assets/globalstyles";
 import JobCard from "./JobCard";
-import BarCode from "../../assets/images/qr.png";
-import Button from "../../shared/Button";
 import theme from "../../assets/theme";
-import Ribbon from "../../shared/Ribbon";
 import { useSelector, useDispatch } from "react-redux";
 import { getJobs, removeJob, setSelectedJobId } from "../../redux/Jobs/JobsActions";
 import {
@@ -43,7 +41,6 @@ function Jobs() {
   const fetchBearingTypes = () => dispatch(getBearingTypes());
 
   useEffect(() => {
-    alert('calling once');
    
     dispatch(getJobs())
     fetchExchangeTypes();
@@ -74,7 +71,6 @@ function Jobs() {
   };
 
   const navigateToJobDetails = (Id) => {
-    console.log(Id);
     dispatch(setSelectedJobId(Id));
     navigation.navigate('JobDetails',{id: Id});
   }

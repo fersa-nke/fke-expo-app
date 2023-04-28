@@ -32,7 +32,6 @@ function callAPI(URL, dispatchType) {
         const token = getState().userReducer.token;
         API.GET(`nocodb/data/NKE-Tracebility/${URL}`, token)
             .then(res => {
-                console.log(dispatchType, res);
                 //Hide Loader
                 if (res) {
                     dispatch({
