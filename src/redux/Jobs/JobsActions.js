@@ -52,11 +52,12 @@ export const setSelectedJobId = id => dispatch => {
           });
 }
 
-export const saveJob = jobData => dispatch => {
+export const saveJob = (jobData) => {
   return async (dispatch, getState) => {
     const token = getState().userReducer.token;
-    API.PATCH(`${BASE_URL}`, token, jobData)
+    API.POST(`${BASE_URL}`, token, jobData)
         .then(res => {
+            console.log('save job', res);
             //Hide Loader
             if (res) {
                 dispatch({
@@ -75,10 +76,35 @@ export const saveJob = jobData => dispatch => {
   
 };
 
-export const removeJob = job => dispatch => {
+
+export const updateJob = (jobData) => {
+    return async (dispatch, getState) => {
+      const token = getState().userReducer.token;
+      API.PATCH(`${BASE_URL}/${Id}`, token, jobData)
+          .then(res => {
+              console.log('save job', res);
+              //Hide Loader
+              if (res) {
+                  dispatch({
+                    type: ADD_JOB_ITEM,
+                    payload: res,
+                  });
+              } else {
+                  console.log('Unable to save job');
+              }
+          })
+          .catch((error) => {
+              console.log('error -------------->', error);
+              //Hide Loader
+      }); // JSON data parsed by `data.json()` call
+      }
+    
+  };
+
+export const removeJob = (Id) => {
   return async (dispatch, getState) => {
     const token = getState().userReducer.token;
-    API.DELETE(`${BASE_URL}/${job.Id}`, token)
+    API.DELETE(`${BASE_URL}/${Id}`, token)
         .then(res => {
             //Hide Loader
             if (res) {

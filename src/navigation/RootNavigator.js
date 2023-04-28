@@ -19,16 +19,19 @@ import AddReport from './../components/Reports/AddReport';
 import ReportView from './../components/Reports/ReportView';
 import { useSelector, connect } from 'react-redux';
 import { SafeAreaView, Text } from 'react-native';
+import Container from 'toastify-react-native';
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
 
 const Stack = createNativeStackNavigator();
 const RootNavigator = () => {
   const isLogin = useSelector((state)=> state.userReducer.isLogin);
+ 
   return (
     <><SafeAreaView style={{flex: 1}}>
       <Ribbon />
       <NavigationContainer>
+      <Container position="top" />
         <Stack.Navigator
           initialRouteName={ isLogin ? 'Jobs' : 'Login'}
           screenOptions={{ headerTitleAlign: 'center', headerTitleStyle: {textTransform: 'uppercase'} }}>

@@ -40,6 +40,7 @@ const AddJob = ({ navigation }) => {
   const [show, setShow] = useState(false);
   const [scanLoading, setScanLoading] = useState(false);
   const [matrixNumber, setMatrixNumber] = useState(false);
+  const [barcodeReaderFailed, setBarCodeReaderFailed] = useState(false);
   const [comments, setComments] = useState("");
   const [jobName, setJobName] = useState("");
   const [orNumber, setOrNumber] = useState("");
@@ -49,19 +50,40 @@ const AddJob = ({ navigation }) => {
   const [windForm, setWindForm] = useState("");
   const [windTurbine, setWindTurbine] = useState("");
 
+  // const addJobSchema = Yup.object().shape({
+  //   DataMatirx: Yup.string().required("Please Scan Data Matrix"),
+  //   //Name: Yup.string().required("Enter Job Name"),
+  //   Brand: Yup.string().required("Please Select Brand"),
+  //   "OR Number": Yup.string().required("Enter OR Number"),
+  //   "IR Number": Yup.string().required("Enter IR Number"),
+  //   "Wind Farm": Yup.string().required("Enter Wind Farm"),
+  //   "Wind Turbine": Yup.string().required("Enter Wind Turbine"),
+  //   "Batch Number": Yup.string().required("Enter Batch Number"),
+  //   "Generator Model": Yup.string().required("Enter Generator Model"),
+  //   'Reasons List': Yup.string().required("Please Select Reason"),
+  //   'Part Type List': Yup.string().required("Please Select Type"),
+  //   'Shaft Position List': Yup.string().required("Please Select Shaft Position"),
+  //   'Exchange Type List': Yup.string().required("Please Select Exchange Type"),
+  //   "Comments": Yup.string(),
+  //   "Report Code": Yup.string()
+  // });
+
+  
   const addJobSchema = Yup.object().shape({
-    DataMatirx: Yup.string().required("Please Scan Data Matrix"),
-    Name: Yup.string().required("Enter Job Name"),
-    Brand: Yup.string().required("Please Select Brand"),
-    "OR Number": Yup.string().required("Enter OR Number"),
-    "IR Number": Yup.string().required("Enter IR Number"),
+    DataMatirx: barcodeReaderFailed ?  Yup.string() : Yup.string(),
+    "OR Number": barcodeReaderFailed ? Yup.string().required("Enter OR Number") : Yup.string(),
+    "IR Number": barcodeReaderFailed ? Yup.string().required("Enter IR Number") : Yup.string(),
+    "Batch Number":  barcodeReaderFailed ? Yup.string().required("Enter Batch Number") : Yup.string(),
     "Wind Farm": Yup.string().required("Enter Wind Farm"),
-    "Wind Turbine": Yup.string().required("Enter Wind Turbine"),
-    "Batch Number": Yup.string().required("Enter Batch Number"),
-    "Generator Model": Yup.string().required("Enter Generator Model"),
-    Comments: Yup.string().required("Enter Comments"),
-    'Reasons List': Yup.string().required("Please Select Reason"),
-    'Part Type List': Yup.string().required("Please Select Type"),
+    "Wind Turbine": Yup.string(),
+    "Generator Model": Yup.string(),
+    Brand: Yup.object(),
+    'Reasons List': Yup.object(),
+    'Part Type List': Yup.object(),
+    'Shaft Position List': Yup.object(),
+    'Exchange Type List': Yup.object(),
+    "Comments": Yup.string(),
+    "Report Code": Yup.string()
   });
 
   const getBarCodeScannerPermissions = async () => {
@@ -110,29 +132,30 @@ const AddJob = ({ navigation }) => {
   };
 
   const handleSubmitPress = (values) => {
-    console.log("Job Submit============>",values)
     //setLoading(true);
-    // let data = {
-    //   DataMatirx: result,
-    //   Date: startDate,
-    //   Name: values.Name,
-    //   Brand: [values.Brand],
-    //   Model: [selectedModel],
-    //   "Wind Farm": values['Wind Farm'],
-    //   "Wind Turbine": values['Wind Turbine'],
-    //   "OR Number": values['OR Number'],
-    //   "IR Number": values['IR Number'],
-    //   "Batch Number": values['Batch Number'],
-    //   "Generator Model": values['Generator Model'],
-    //   Comments: values.Comments,
-    //   "Reasons List": [selectedReasonForChange],
-    //   "Part Type List": [selectedBearingType],
-    //   "Exchange Type List": [selectedExchange],
-    //   "Brand List": [selectedBrand],
-    //   "Shaft Position List": [selectedShaftPositon],
-    //   CustomerId: userData?.CustomerId,
-    //   OperatorId: userData?.OperatorId,
-    // };
+    let data = {
+      DataMatirx: result,
+      Date: startDate,
+      Name: values.Name,
+      Brand: [values.Brand],
+
+      "Wind Farm": values['Wind Farm'],
+      "Wind Turbine": values['Wind Turbine'],
+      "OR Number": values['OR Number'],
+      "IR Number": values['IR Number'],
+      "Batch Number": values['Batch Number'],
+      "Generator Model": values['Generator Model'],
+      Comments: values.Comments,
+      "Reasons List": [values['Reasons List']],
+      "Part Type List": [values['Part Type List']],
+      "Exchange Type List": [values['Exchange Type List']],
+      "Brand List": [values['Brand List']],
+      "Shaft Position List": [values['Shaft Position List']],
+      CustomerId: userData?.CustomerId,
+      OperatorId: userData?.OperatorId,
+    };
+    
+    console.log("Job Submit============>",data)
     dispatch(saveJob(data));
   };
 
@@ -184,7 +207,7 @@ const AddJob = ({ navigation }) => {
           initialValues={{
             DataMatirx: "",
             Date: "",
-            Name: "",
+            //Name: "",
             Brand: "",
             Model: "",
             "Wind Farm": "",
@@ -199,16 +222,19 @@ const AddJob = ({ navigation }) => {
             "Exchange Type List": "",
             "Brand List": "",
             "Shaft Position List": "",
+            "Report Code":""
           }}
           onSubmit={(values) => {
-            console.log('Hi')
+
+            console.log('Job Save=========>', values)
+            alert("Hi")
             handleSubmitPress(values);
           }}
           validationSchema={addJobSchema}
         >
-          {({ handleChange, errors, values, handleSubmit, touched }) => (
+          {({ handleChange, errors, values, handleSubmit, touched, setFieldValue }) => (
             <View style={GBStyles.container}>
-               <View style={{ marginBottom: 20 }}>
+               {/* <View style={{ marginBottom: 20 }}>
                 <Input
                   labelName="Job Name"
                   placeholder="Enter Job Name"
@@ -218,30 +244,9 @@ const AddJob = ({ navigation }) => {
                 {errors.Name && touched.Name && (
                   <Text style={Styles.validateError}>{errors.Name}</Text>
                 )}
-              </View>
-              <Ripple
-                onPress={showScanner}
-                style={{ alignSelf: "center", marginBottom: 24, marginTop: 12 }}
-              >
-                <Icon
-                  name="DataMatrix"
-                  size={60}
-                  color={theme.textBlue}
-                  style={{ alignSelf: "center" }}
-                />
-                <Text style={{ alignSelf: "center", marginTop: 5 }}>
-                  Scan Data Matrix
-                </Text>
-              </Ripple>
-              <View style={{ marginBottom: 20 }}>
-                <Input
-                  labelName="Data Matrix Code"
-                  placeholder="Enter Data Matrix Code"
-                  value={result}
-                  disabled={true}
-                />
-              </View>
-              {matrixNumber && (
+              </View> */}
+              
+              {barcodeReaderFailed ? (
                 <>
                   <View style={{ marginBottom: 20 }}>
                     <Input
@@ -283,7 +288,30 @@ const AddJob = ({ navigation }) => {
                     )}
                   </View>
                 </>
-              )}
+              ) : <>
+              <Ripple
+                onPress={showScanner}
+                style={{ alignSelf: "center", marginBottom: 24, marginTop: 12 }}
+              >
+                <Icon
+                  name="DataMatrix"
+                  size={60}
+                  color={theme.textBlue}
+                  style={{ alignSelf: "center" }}
+                />
+                <Text style={{ alignSelf: "center", marginTop: 5 }}>
+                  Scan Data Matrix
+                </Text>
+              </Ripple>
+              <View style={{ marginBottom: 20 }}>
+                <Input
+                  labelName="Data Matrix Code"
+                  placeholder="Enter Data Matrix Code"
+                  value={result}
+                  disabled={true}
+                />
+              </View>
+              </>}
              
               <View style={{ marginBottom: 20 }}>
                 <Input
@@ -308,15 +336,21 @@ const AddJob = ({ navigation }) => {
                 <Select
                   selectedValue={masterData.exhangeTypes?.Name}
                   disabled={false}
-                  handlePress={(item) =>
-                    setSelectedExchange({ Id: item.Id, Name: item.Name })
-                  }
+                  onChange={(item)=>{
+                    let obj = {Id: item.Id, Name: item.Name};
+                    setFieldValue('Exchange Type List', obj);
+                  }}
                   placeholder="Select Exchange"
                   label="Exchange"
                   modalTitle="Select Exchange"
                   items={masterData.exhangeTypes}
                   modalObj={{ id: "Id", name: "Name" }}
                 />
+                {errors["Exchange Type List"] && touched["Exchange Type List"] && (
+                  <Text style={Styles.validateError}>
+                    {errors["Exchange Type List"]}
+                  </Text>
+                )}
               </View>
               <View style={{ marginBottom: 20 }}>
                 <Select
@@ -324,7 +358,7 @@ const AddJob = ({ navigation }) => {
                   disabled={false}
                   onChange={(item)=>{
                     let obj = {Id: item.Id, Name: item.Name};
-                    handleChange('Reasons List')(obj.Name);
+                    setFieldValue('Reasons List', obj);
                   }}
                   placeholder="Select Reason"
                   label="Reasons of Change"
@@ -368,16 +402,63 @@ const AddJob = ({ navigation }) => {
                 <Select
                   selectedValue={masterData.shaftPositions?.Name}
                   disabled={false}
-                  handlePress={(item) =>
-                    setSelectedShaftPositon({ Id: item.Id, Name: item.Name })
-                  }
+                  onChange={(item) =>{
+                    let obj = {Id: item.Id, Name: item.Name};
+                    setFieldValue('Shaft Position List', obj);
+                  }}
                   placeholder="Select Shaft Position"
                   label="Shaft Position"
                   modalTitle="Select Shaft Position"
                   items={masterData.shaftPositions}
                   modalObj={{ id: "Id", name: "Name" }}
                 />
+                {errors["Shaft Position List"] && touched["Shaft Position List"] && (
+                  <Text style={Styles.validateError}>
+                    {errors["Shaft Position List"]}
+                  </Text>
+                )}
               </View>
+              <View style={{ marginBottom: 20 }}>
+                <Select
+                  selectedValue={masterData.brands?.Name}
+                  disabled={false}
+                  onChange={(item) =>{
+                    let obj = {Id: item.Id, Name: item.Name};
+                    setFieldValue('Brand', obj);
+                  }}
+                  placeholder="Select Removed Brearing Brand"
+                  label="Removed Brearing Brand"
+                  modalTitle="Select Removed Brearing Brand"
+                  items={masterData.brands}
+                  modalObj={{ id: "Id", name: "Name" }}
+                />
+                {errors.Brand && touched.Brand && (
+                  <Text style={Styles.validateError}>
+                    {errors.Brand}
+                  </Text>
+                )}
+              </View>
+              <View style={{ marginBottom: 20 }}>
+                <Select
+                  selectedValue={masterData.bearingTypes?.Name}
+                  disabled={false}
+                  onChange={(item) => {
+                    let obj = {Id: item.Id, Name: item.Name};
+                    setFieldValue('Part Type List', obj);
+                  }}
+                  placeholder="Select Removed Brearing Type"
+                  label="Removed Brearing Type"
+                  modalTitle="Select Removed Brearing Type"
+                  items={masterData.bearingTypes}
+                  modalObj={{ id: "Id", name: "Name" }}
+                />
+                {errors['Part Type List'] && touched['Part Type List'] && (
+                  <Text style={Styles.validateError}>
+                    {errors['Part Type List']}
+                  </Text>
+                )}
+              </View>
+             
               <View style={{ marginBottom: 20 }}>
                 <Input
                   labelName="Generator Model"
@@ -398,7 +479,7 @@ const AddJob = ({ navigation }) => {
                   disabled={false}
                   onChange={(item) =>{
                     let obj = {Id: item.Id, Name: item.Name};
-                    handleChange('Brand')(obj.Name);
+                    setFieldValue('Brand', obj);
                   }}
                   placeholder="Select Bearing Brand"
                   label="New Bearing Brand"
@@ -418,8 +499,7 @@ const AddJob = ({ navigation }) => {
                   disabled={false}
                   onChange={(item) => {
                     let obj = {Id: item.Id, Name: item.Name};
-                    //handleChange('Part Type List')(obj.Name);
-                    setSelectedBearingType({ Id: item.Id, Name: item.Name })
+                    setFieldValue('Part Type List', obj);
                   }}
                   placeholder="Select Bearing Type"
                   label="New Bearing Type"
@@ -427,11 +507,19 @@ const AddJob = ({ navigation }) => {
                   items={masterData.bearingTypes}
                   modalObj={{ id: "Id", name: "Name" }}
                 />
-                {/* {errors['Part Type List'] && touched['Part Type List'] && (
+                {errors['Part Type List'] && touched['Part Type List'] && (
                   <Text style={Styles.validateError}>
                     {errors['Part Type List']}
                   </Text>
-                )} */}
+                )}
+              </View>
+              <View style={{ marginBottom: 20 }}>
+                <Input
+                  labelName="Report Code"
+                  placeholder="Enter Report Code"
+                  handleChangeText={handleChange("Comments")}
+                  value={values['Report Code']}
+                />
               </View>
               <View style={{ marginBottom: 20 }}>
                 <Input
@@ -441,11 +529,6 @@ const AddJob = ({ navigation }) => {
                   handleChangeText={handleChange("Comments")}
                   value={values.Comments}
                 />
-                {errors.Comments && touched.Comments && (
-                  <Text style={Styles.validateError}>
-                    {errors.Comments}
-                  </Text>
-                )}
               </View>
               {/* <Ripple
             style={Styles.addReportBtn}

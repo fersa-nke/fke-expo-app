@@ -32,7 +32,6 @@ const HeaderRight = ({ showSeach = false }) => {
   const [searchText, setSearchText] = useState("");
 
   const handleLogoutPress = () => {
-    console.log("logout pressed");
     const callLogOut = logout();
     dispatch(callLogOut);
   };

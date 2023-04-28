@@ -41,14 +41,14 @@ const DetailsView = () => {
         <ListItem
           valueStyle={{fontWeight: '400'}}
           label="Reason for Change"
-          value={job['Reasons List'][0]?.Name}
+          value={job['Reasons List'] ? job['Reasons List'][0]?.Name : ''}
         />
         <ListItem label="Data Matrix Code" value={job.DataMatirx} />
-        <ListItem label="Brand" value={job['Brand List'][0]?.Name} />
-        <ListItem label="Model" value={job['Model List'][0]?.Name} />
+        <ListItem label="Brand" value={job['Brand List'] ? job['Brand List'][0]?.Name : ''} />
+        <ListItem label="Model" value={job['Model List'] ? job['Model List'][0]?.Name: ''} />
         <ListItem label="Wind Farm" value={job['Wind Farm']} />
-        <ListItem label="Shaft Position" value={job['Shaft Position List'][0]?.Name} />
-        <ListItem label="Part Type" value={job['Part Type List'][0]?.Name} />
+        <ListItem label="Shaft Position" value={job['Shaft Position List'] ? job['Shaft Position List'][0]?.Name: ''} />
+        <ListItem label="Part Type" value={job['Part Type List'] ? job['Part Type List'][0]?.Name: ''} />
       </View> }
     </ScrollView>
   );
