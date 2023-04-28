@@ -23,6 +23,9 @@ import Message from "../../shared/Message";
 const Login = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const isLogin = useSelector((state) => state.userReducer.isLogin);
+  const isLoginFailed = useSelector((state) => state.userReducer.failed);
+  const loginMessage = useSelector((state) => state.userReducer.message);
+  const loader = useSelector((state) => state.userReducer.loading);
   const [operatorLogin, setOperatorLogin] = useState(false);
   const [customerLogin, setCustomerLogin] = useState(true);
   const [showCustomerPswd, setShowCustomerPswd] = useState(true);
@@ -57,7 +60,6 @@ const Login = ({ navigation }) => {
   }, []);
 
   const handleSubmitPress = (values) => {
-    setLoading(true);
     let d = {
       username: values.username,
       password: values.password,
@@ -125,7 +127,7 @@ const Login = ({ navigation }) => {
               <Text style={Styles.tabText}>Operator</Text>
             </Ripple>
           </View>
-          <Message title="Warning!" description="Invalid username and password" />
+          {isLoginFailed && <Message title="Warning!" description={loginMessage} />}
           {customerLogin && (
             <Formik
               initialValues={{

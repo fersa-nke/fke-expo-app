@@ -1,12 +1,12 @@
-import { GET_SIGNED_USER, ADD_SIGNED_USER_DATA, REMOVE_USER_DATA, LOGIN_FAILED } from '../ReduxConsants';
+import { GET_SIGNED_USER, ADD_SIGNED_USER_DATA, REMOVE_USER_DATA, LOGIN_FAILED, LOGIN_LOADING } from '../ReduxConsants';
 import Authservice from '../../services/AuthService';
 const BASE_URL = `Auth/login`;
 
 
 export function login(data) {
   return async function loginThunk(dispatch) {
+    dispatch({ type: LOGIN_LOADING, payload: true });
     const response = await Authservice.postData(`${BASE_URL}`, { Email: data.username, Password: data.password });
-    console.log('login in response', response);
     if (response.success) {
       dispatch({ type: ADD_SIGNED_USER_DATA, payload: response });
     } else {
