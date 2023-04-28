@@ -4,11 +4,11 @@ import { GET_BEARING_TYPES, GET_BRANDS, GET_EXCHANGE_TYPES, GET_MODELS, GET_REAS
 // Define action types
 
 export const getExchangeTypes = () => {
-    return callAPI('ExchangeType', GET_EXCHANGE_TYPES);
+    return callAPI('Exchange Type', GET_EXCHANGE_TYPES);
 };
 
 export const getShaftPositions = () => {
-    return callAPI('ShaftPosition', GET_SHAFT_POSITIONS);
+    return callAPI('Shaft Position', GET_SHAFT_POSITIONS);
 };
 
 export const getReasonOfChanges = () => {
@@ -24,7 +24,7 @@ export const getModels = () => {
 };
 
 export const getBearingTypes = () => {
-    return callAPI('PartType', GET_BEARING_TYPES);
+    return callAPI('Part Type', GET_BEARING_TYPES);
 };
 
 function callAPI(URL, dispatchType) {
@@ -32,6 +32,7 @@ function callAPI(URL, dispatchType) {
         const token = getState().userReducer.token;
         API.GET(`nocodb/data/NKE-Tracebility/${URL}`, token)
             .then(res => {
+                console.log(dispatchType, res);
                 //Hide Loader
                 if (res) {
                     dispatch({

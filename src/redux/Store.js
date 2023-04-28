@@ -15,23 +15,29 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 const composedEnhancer = composeWithDevTools(applyMiddleware(thunk))
 
 const persistConfig = {
-	key: 'JobsPersist',
-	storage: AsyncStorage
+	key: 'root',
+	storage: AsyncStorage,
+	whitelist: ['userReducer', 'jobsReducer', 'masterReducer']
 }
 
 
-const appReducer  = combineReducers({
-    userReducer : persistReducer(persistConfig, userReducer),
-    jobsReducer : persistReducer(persistConfig, jobsReducer),
-	reportsReducer : persistReducer(persistConfig, reportsReducer),
-	attachmentsReducer : persistReducer(persistConfig, attachmentsReducer),
-	masterReducer: persistReducer(persistConfig, masterReducer)
+// const appReducer  = combineReducers({
+//     userReducer : persistReducer(persistConfig, userReducer),
+//     jobsReducer : persistReducer(persistConfig, jobsReducer),
+// 	reportsReducer : persistReducer(persistConfig, reportsReducer),
+// 	attachmentsReducer : persistReducer(persistConfig, attachmentsReducer),
+// 	masterReducer: persistReducer(persistConfig, masterReducer)
+// });
+
+const appReducer = combineReducers({
+    userReducer,
+    jobsReducer,
+	reportsReducer,
+	attachmentsReducer,
+	masterReducer
 });
 
-// const rootReducer = combineReducers({
-//     userReducer,
-//     jobsReducer
-// })
+
 
 // export const store = configureStore({
 //     reducer: rootReducer,
@@ -39,13 +45,15 @@ const appReducer  = combineReducers({
 //     }
 // );
 
+
 const rootReducer = (state, action) => {
 	if (action.type === 'USER_LOGOUT') {
-	  return appReducer(undefined, action)
+	   return appReducer(undefined, action)
+	  //return persistReducer(persistConfig, appReducer);
 	}
-	return appReducer(state, action)
+	return appReducer(state, action);
   }
 
-export const store = createStore(rootReducer, composedEnhancer);
+export const store = createStore(persistReducer(persistConfig, rootReducer), composedEnhancer);
 
 // export const persistor = persistStore(store);

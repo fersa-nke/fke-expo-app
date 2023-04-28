@@ -43,8 +43,8 @@ function Jobs() {
   const fetchBearingTypes = () => dispatch(getBearingTypes());
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('state', () => {
-      
+    alert('calling once');
+   
     dispatch(getJobs())
     fetchExchangeTypes();
     fetchShaftPositions();
@@ -52,11 +52,8 @@ function Jobs() {
     fetchBrands();
     fetchModels();
     fetchBearingTypes();
-
-    });
-    return unsubscribe;
-    
-  }, [dispatch, navigation]);
+ 
+  }, []);
 
   const loadMore = () => {
     
@@ -104,6 +101,7 @@ function Jobs() {
           </View>
       </ScrollView>
       <FloatingAction
+        animated={false}
         onPressMain={() => navigation.navigate("AddJob")}
         showBackground={false}
         color={theme.bgBlue}
