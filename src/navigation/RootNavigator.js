@@ -20,15 +20,24 @@ import ReportView from './../components/Reports/ReportView';
 import { useSelector, connect } from 'react-redux';
 import { SafeAreaView, Text } from 'react-native';
 import Container from 'toastify-react-native';
+import CustomSplashScreen from './../shared/SplashScreen';
+import { useState } from 'react';
+import { useEffect } from 'react';
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
 
 const Stack = createNativeStackNavigator();
 const RootNavigator = () => {
   const isLogin = useSelector((state)=> state.userReducer.isLogin);
- 
+  const [appLoaded, setAppLoaded] = useState(true);
+  useEffect(() => {
+    setTimeout(()=>{
+     setAppLoaded(false);
+    },4000);
+  }, []);
   return (
     <><SafeAreaView style={{flex: 1}}>
+     {appLoaded && <CustomSplashScreen /> }
       <Ribbon />
       <NavigationContainer>
       <Container position="top" />

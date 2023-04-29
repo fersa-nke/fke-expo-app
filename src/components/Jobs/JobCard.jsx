@@ -5,7 +5,8 @@ import Icon from '../../shared/IconComp';
 import GBStyles from '../../assets/globalstyles';
 import Row from '../../shared/Row';
 import Ripple from 'react-native-material-ripple';
-import BarCode from '../../assets/images/qr.png';
+import defaultIcon from '../../assets/images/default.png';
+import BarCode from '../../assets/images/barcode.png';
 import { useNavigation } from '@react-navigation/native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import IconComp from '../../shared/IconComp';
@@ -17,11 +18,11 @@ function JobCard({list, onHandlePress, JobEdit, JobDelete}) {
 
   const renderLeftActions = (Id) => {
     return (
-      <Row style={{height: 95, justifyContent: 'center', alignItems: 'center', backgroundColor: "#f2f2f2"}}>
-        <Ripple style={{width: 70, height: 95,justifyContent: 'center', alignItems: 'center', backgroundColor: theme.bgBlue}} onPress={()=>JobEdit(Id)} >
+      <Row style={{height: 100, justifyContent: 'center', alignItems: 'center', backgroundColor: "#f2f2f2"}}>
+        <Ripple style={{width: 70, height: 120,justifyContent: 'center', alignItems: 'center', backgroundColor: theme.bgBlue}} onPress={()=>JobEdit(Id)} >
         <IconComp name="Edit" size={24} color={theme.textWhite} />
       </Ripple>
-      <Ripple style={{width: 70, height: 95,justifyContent: 'center', alignItems: 'center', backgroundColor: 'red'}}  onPress={()=>JobDelete(Id)}>
+      <Ripple style={{width: 70, height: 120,justifyContent: 'center', alignItems: 'center', backgroundColor: 'red'}}  onPress={()=>JobDelete(Id)}>
         <IconComp name="Delete" size={24} color={theme.textWhite} />
       </Ripple>
       </Row>
@@ -37,19 +38,19 @@ function JobCard({list, onHandlePress, JobEdit, JobDelete}) {
           <Row style={[Styles.card]}>
             {job.offline && <Text style={Styles.offline}>Offline</Text> }
             <Image
-              source={BarCode}
-              width={100}
-              height={100}
-              style={{marginRight: 14}}
+              source={job?.DataMatirx ? BarCode : defaultIcon}
+              width={40}
+              height={40}
+              style={{marginTop: 5 , marginLeft: 3, marginBottom: 5, marginRight: 14 }}
               resizeMethod="auto"
               resizeMode="cover"
             />
             <View style={{flex: 1}}>
               <Text style={Styles.cardTitle} numberOfLines={1}>
-                {job['Wind Farm']}
+                {job['Title']}
               </Text>
               <Text style={Styles.cardDescription} numberOfLines={2}>
-                {job.date} | {job['Wind Turbine']}
+                {job['Date']} | {job['WindTurbine']}
               </Text>
               <Row style={Styles.cardFooter} justifyContent="space-between">
                 <Row>

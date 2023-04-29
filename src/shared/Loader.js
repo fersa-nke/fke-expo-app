@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Modal, ActivityIndicator} from 'react-native';
 
 const Loader = (props) => {
-  const {loading, ...attributes} = props;
+  const {loading = false, ...attributes} = props;
 
   return (
     <Modal

@@ -1,4 +1,6 @@
 export const userRoles = {
-    customer: 'customeruser',
-    operator: 'operatoruser'
+    customer: 'Customer',
+    operator: 'Operator',
+    admin: 'Admin',
+    superAdmin: 'SuperAdmin'
 };

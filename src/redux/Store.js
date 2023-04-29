@@ -17,7 +17,7 @@ const composedEnhancer = composeWithDevTools(applyMiddleware(thunk))
 const persistConfig = {
 	key: 'root',
 	storage: AsyncStorage,
-	whitelist: ['userReducer', 'jobsReducer', 'masterReducer']
+	whitelist: ['userReducer', 'masterReducer']
 }
 
 
@@ -54,5 +54,6 @@ const rootReducer = (state, action) => {
   }
 
 export const store = createStore(persistReducer(persistConfig, rootReducer), composedEnhancer);
+// export const store = createStore(rootReducer, composedEnhancer);
 
 // export const persistor = persistStore(store);

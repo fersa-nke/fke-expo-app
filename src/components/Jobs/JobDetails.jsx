@@ -15,7 +15,8 @@ import Ripple from 'react-native-material-ripple';
 import Row from '../../shared/Row';
 import Icon from '../../shared/IconComp';
 import ListItem from '../../shared/ListItem';
-import qrCode from '../../assets/images/barcode.png';
+import defaultIcon from '../../assets/images/default.png';
+import BarCode from '../../assets/images/barcode.png';
 import Document from '../../shared/Document';
 import Report from '../Reports/Report';
 import {useNavigation} from '@react-navigation/native';
@@ -38,17 +39,21 @@ const DetailsView = () => {
   return (
     <ScrollView style={{backgroundColor: theme.bgWhite}}>
       {job && <View style={[GBStyles.container, {flex: 1}]}>
-        <ListItem
-          valueStyle={{fontWeight: '400'}}
-          label="Reason for Change"
-          value={job['Reasons List'] ? job['Reasons List'][0]?.Name : ''}
-        />
-        <ListItem label="Data Matrix Code" value={job.DataMatirx} />
-        <ListItem label="Brand" value={job['Brand List'] ? job['Brand List'][0]?.Name : ''} />
-        <ListItem label="Model" value={job['Model List'] ? job['Model List'][0]?.Name: ''} />
-        <ListItem label="Wind Farm" value={job['Wind Farm']} />
-        <ListItem label="Shaft Position" value={job['Shaft Position List'] ? job['Shaft Position List'][0]?.Name: ''} />
-        <ListItem label="Part Type" value={job['Part Type List'] ? job['Part Type List'][0]?.Name: ''} />
+        <ListItem label="Data Matrix Code" value={job?.DataMatirx} />
+        <ListItem label="Batch Number" value={job?.BatchNumber} />
+        <ListItem label="IR Number" value={job?.IRNumber} />
+        <ListItem label="OR Number" value={job?.ORNumber} />
+        <ListItem label="Exchange Type" value={job['ExchangeType'] ? job['ExchangeType'][0]?.Name : ''} />
+        <ListItem label="Reasons of Chnage" value={job['Reasons'] ? job['Reasons'][0]?.Name : ''} />
+        <ListItem label="Wind Farm" value={job['WindFarm']} />
+        <ListItem label="Wind Turbine" value={job['WindTurbine']} />
+        <ListItem label="Shaft Position" value={job['ShaftPosition'] ? job['ShaftPosition'][0]?.Name: ''} />
+        <ListItem label="Removed Bearing Brand" value={job['RemovedBearingBrand'] ? job['RemovedBearingBrand'][0]?.Name: ''} />
+        <ListItem label="Removed Bearing Type" value={job['RemovedBearingType'] ? job['RemovedBearingType'][0]?.Name: ''} />
+        <ListItem label="General Model" value={job['GeneralModel']} />
+        <ListItem label="New Bearing Type" value={job['NewBearingType'] ? job['NewBearingType'][0]?.Name: ''} />
+        <ListItem label="New Bearing Type" value={job['NewBearingType'] ? job['NewBearingType'][0]?.Name: ''} />
+        <ListItem label="Comments" value={job['Comments']} />
       </View> }
     </ScrollView>
   );
@@ -97,6 +102,16 @@ const renderTabs = SceneMap({
 const JobDetails = ({route}) => {
   const { id, viewType } = route.params;
   const layout = useWindowDimensions();
+  const selectedJobId = useSelector((state) => state.jobsReducer.selectedJobId);
+  const jobs = useSelector((state) => state.jobsReducer.jobs);
+  const [job, setJob] = useState();
+  
+    useEffect(() => {
+     if(selectedJobId && jobs && jobs.length > 0) {
+      const filterJob = jobs.filter(j => j.Id === selectedJobId)[0];
+      setJob(filterJob);
+     }
+    }, []);
 
   console.log('viewType ________________>', viewType);
   const [index, setIndex] = useState(viewType == 'reports' ? 1 : 0);
@@ -108,16 +123,16 @@ const JobDetails = ({route}) => {
   return (
     <>
       <ImageBackground
-        source={qrCode}
+        source={job?.DataMatirx ? BarCode : defaultIcon}
         style={{width: '100%', height: 190, position: 'relative'}}
         resizeMethod="auto"
         resizeMode="contain">
         <View style={Styles.overlay}>
-          <Text style={Styles.detailTitle}>Salesforce Developer</Text>
+          <Text style={Styles.detailTitle}>{job?.Title}</Text>
           <Row justifyContent="flex-start">
-            <Text style={Styles.detailDesc}>02-04-2023 | </Text>
+            <Text style={Styles.detailDesc}>{job?.Date} | </Text>
             <Icon name="Operator" size={14} color={theme.textWhite} />
-            <Text style={Styles.detailDesc}> John Doe</Text>
+            <Text style={Styles.detailDesc}> {job?.WindTurbine}</Text>
           </Row>
         </View>
       </ImageBackground>

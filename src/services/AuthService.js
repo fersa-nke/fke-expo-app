@@ -1,5 +1,5 @@
 import { serverURL } from './ServerURL';
-
+import { userRoles } from './UserConfig';
 let role = null;
 export default AuthService = {
     postData: async function (url = '', data = {}) {
@@ -22,11 +22,13 @@ export default AuthService = {
     login: async function(data) {
         return this.postData('auth/login', {useremail: data.useremail, password: data.password});
     },
-
+    setRole: function (data) {
+        role = data
+    },
     isCustomer: function (){
         return role === userRoles.customer;
     },
-    isOperatoruser: function() {
+    isOperator: function() {
         return role === userRoles.operator;
     }
 }

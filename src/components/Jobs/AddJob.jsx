@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Authservice from '../../services/AuthService';
 import {
   Text,
   StyleSheet,
@@ -16,12 +17,14 @@ import Icon from "../../shared/IconComp";
 import Ripple from "react-native-material-ripple";
 import Select from "../../shared/Select";
 import { useSelector, useDispatch } from "react-redux";
-import { saveJob } from "../../redux/Jobs/JobsActions";
+import { saveJob, updateJob } from "../../redux/Jobs/JobsActions";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { FieldInitialLoader } from "../../shared/InitialLoaders";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import Loader from '../../shared/Loader';
+import AuthService from "../../services/AuthService";
 
 const AddJob = ({ navigation, route }) => {
   const { Id } = route.params;
@@ -30,47 +33,38 @@ const AddJob = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const masterData = useSelector((state) => state.masterReducer);
   const userData = useSelector((state) => state.userReducer.user);
-  console.log('user data---->', userData);
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-  const [selectedReasonForChange, setSelectedReasonForChange] = useState({});
-  const [selectedBrand, setSelectedBrand] = useState({});
-  const [selectedShaftPositon, setSelectedShaftPositon] = useState({});
-  const [selectedExchange, setSelectedExchange] = useState({});
-  const [selectedBearingType, setSelectedBearingType] = useState({});
   const [startDate, setStartDate] = useState(new Date());
   const [show, setShow] = useState(false);
   const [scanLoading, setScanLoading] = useState(false);
   const [matrixNumber, setMatrixNumber] = useState(false);
   const [barcodeReaderFailed, setBarCodeReaderFailed] = useState(false);
-  const [comments, setComments] = useState("");
-  const [jobName, setJobName] = useState("");
-  const [orNumber, setOrNumber] = useState("");
-  const [irNumber, setIrNumber] = useState("");
-  const [batchNumber, setBatchNumber] = useState("");
-  const [generatorModel, setGeneratorModel] = useState("");
-  const [windForm, setWindForm] = useState("");
-  const [windTurbine, setWindTurbine] = useState("");
   const selectedJobId = useSelector((state) => state.jobsReducer.selectedJobId);
   const jobs = useSelector((state) => state.jobsReducer.jobs);
+  const loading = useSelector((state) => state.jobsReducer.pageLoader);
+  let customerId = AuthService.isOperator() ? userData?.CustomerId : userData?.UserId;
+  let operatorId = AuthService.isOperator() ? userData?.UserId : null;
+
   const initialFormValues = {
-    DataMatirx: "",
-    Date: "",
-    Brand: "",
-    Model: "",
-    "Wind Farm": "",
-    "Wind Turbine": "",
-    "OR Number": "",
-    "IR Number": "",
-    "Batch Number": "",
-    "Generator Model": "",
-    Comments: "",
-    "Reasons List": "",
-    "Part Type List": "",
-    "Exchange Type List": "",
-    "Brand List": "",
-    "ShaftPosition": "",
-    "Report Code":""
+    DataMatirx: '',
+    Date: '',
+    Brand: '',
+    WindFarm: '',
+    WindTurbine: '',
+    ORNumber: '',
+    IRNumber: '',
+    BatchNumber: '',
+    GeneratorModel: '',
+    Comments: '',
+    Reasons: '',
+    ExchangeType: '',
+    ShaftPosition: '',
+    NewBearingBrand: '',
+    NewBearingType: '',
+    RemoveBearingBrand: '',
+    RemoveBearingType: '',
+    ReportCode: ''
   };
   const [formData, setFormData] = useState(initialFormValues);
   
@@ -78,29 +72,32 @@ const AddJob = ({ navigation, route }) => {
     useEffect(() => {
      if(Id && selectedJobId && jobs && jobs.length > 0) {
       const filterJob = jobs.filter(j => j.Id === selectedJobId)[0];
-      console.log('fetched job details', selectedJobId , filterJob);
+      console.log('fetched job details', customerId, operatorId, selectedJobId , filterJob);
       //setJob(filterJob);
       let formValues = {
         DataMatirx: filterJob?.DataMatirx,
         Date: filterJob?.Date,
-        Brand: filterJob.NewBearingBrand?.Name,
-        "Wind Farm": filterJob?.WindFarm,
-        "Wind Turbine": filterJob?.WindTurbine,
-        "OR Number": filterJob?.ORNumber,
-        "IR Number": "",
-        "Batch Number": "",
-        "Generator Model": "",
+        WindFarm: filterJob?.WindFarm,
+        WindTurbine: filterJob?.WindTurbine,
+        ORNumber: filterJob?.ORNumber || '',
+        IRNumber: filterJob?.IRNumber || '',
+        BatchNumber: filterJob?.BatchNumber || '',
+        GeneratorModel: filterJob?.GeneratorModel,
         Comments: filterJob?.Comments,
-        "Reasons List": filterJob?.Reasons,
-        "Part Type List": "",
-        "Exchange Type List": "",
-        "Brand List": "",
-        "ShaftPosition": filterJob?.ShaftPosition,
-        "Report Code":""
+        Reasons: filterJob?.Reasons[0],
+        ExchangeType: filterJob?.ExchangeType[0],
+        ShaftPosition: filterJob?.ShaftPosition[0],
+        NewBearingBrand: filterJob?.NewBearingBrand[0],
+        NewBearingType: filterJob?.NewBearingType[0],
+        RemoveBearingBrand: filterJob?.RemoveBearingBrand[0],
+        RemoveBearingType: filterJob?.RemoveBearingType[0],
+        ReportCode:""
       }
       setFormData(formValues);
+      setResult(filterJob?.DataMatirx);
+      setStartDate(new Date(filterJob?.Date));
      }
-     
+
     }, []);
   
   // const addJobSchema = Yup.object().shape({
@@ -124,19 +121,21 @@ const AddJob = ({ navigation, route }) => {
   
   const addJobSchema = Yup.object().shape({
     DataMatirx: barcodeReaderFailed ?  Yup.string() : Yup.string(),
-    "OR Number": barcodeReaderFailed ? Yup.string().required("Enter OR Number") : Yup.string(),
-    "IR Number": barcodeReaderFailed ? Yup.string().required("Enter IR Number") : Yup.string(),
-    "Batch Number":  barcodeReaderFailed ? Yup.string().required("Enter Batch Number") : Yup.string(),
-    "Wind Farm": Yup.string().required("Enter Wind Farm"),
-    "Wind Turbine": Yup.string(),
-    "Generator Model": Yup.string(),
-    Brand: Yup.object(),
-    'Reasons List': Yup.object(),
-    'Part Type List': Yup.object(),
-    'ShaftPosition': Yup.object(),
-    'Exchange Type List': Yup.object(),
-    "Comments": Yup.string(),
-    "Report Code": Yup.string()
+    ORNumber: barcodeReaderFailed ? Yup.string().required("Enter OR Number") : Yup.string(),
+    IRNumber: barcodeReaderFailed ? Yup.string().required("Enter IR Number") : Yup.string(),
+    BatchNumber:  barcodeReaderFailed ? Yup.string().required("Enter Batch Number") : Yup.string(),
+    WindFarm: Yup.string().required("Enter Wind Farm"),
+    WindTurbine: Yup.string(),
+    GeneratorModel: Yup.string(),
+    Reasons: Yup.object(),
+    NewBearingType: Yup.object(),
+    NewBearingBrand: Yup.object(),
+    RemoveBearingBrand: Yup.object(),
+    RemoveBearingType: Yup.object(),
+    ShaftPosition: Yup.object(),
+    ExchangeType: Yup.object(),
+    Comments: Yup.string(),
+    ReportCode: Yup.string()
   });
 
   const getBarCodeScannerPermissions = async () => {
@@ -184,31 +183,36 @@ const AddJob = ({ navigation, route }) => {
     setScan(true);
   };
 
+  const callBack = () => {
+    navigation.navigate('Jobs');
+  }
+
   const handleSubmitPress = (values) => {
-    //setLoading(true);
+   
     let data = {
       DataMatirx: result,
-      Date: startDate,
-      Name: values.Name,
-      Brand: [values.Brand],
-      "Wind Farm": values['Wind Farm'],
-      "Wind Turbine": values['Wind Turbine'],
-      "OR Number": values['OR Number'],
-      "IR Number": values['IR Number'],
-      "Batch Number": values['Batch Number'],
-      "Generator Model": values['Generator Model'],
-      Comments: values.Comments,
-      "Reasons List": [values['Reasons List']],
-      "Part Type List": [values['Part Type List']],
-      "Exchange Type List": [values['Exchange Type List']],
-      "Brand List": [values['Brand List']],
-      "ShaftPosition": [values['ShaftPosition']],
-      CustomerId: userData?.CustomerId,
-      OperatorId: userData?.OperatorId,
+      Date: startDate ? startDate.toISOString().split("T")[0]: '',
+      Reasons: [values['Reasons']],
+      ExchangeType: [values['ExchangeType']],
+      ShaftPosition: [values['ShaftPosition']],
+      NewBearingType: [values['NewBearingType']],
+      NewBearingBrand: [values['NewBearingBrand']],
+      RemoveBearingBrand: [values['RemoveBearingBrand']],
+      RemoveBearingType: [values['RemoveBearingType']],
+      GeneratorModel: values['GeneratorModel'],
+      WindFarm: values['WindFarm'],
+      WindTurbine: values['WindTurbine'],
+      CustomerId: customerId,
+      OperatorId: operatorId,
+      Comments: values['Comments'],
+      ReportCode: values['ReportCode']
     };
-    
-    console.log("Job Submit============>",data)
-    dispatch(saveJob(data));
+    console.log('submitting data job ------------->',data);
+    if(Id) {
+      dispatch(updateJob(data, Id, callBack));
+    } else {
+      dispatch(saveJob(data, callBack));
+    }
   };
 
   return (
@@ -216,6 +220,8 @@ const AddJob = ({ navigation, route }) => {
       {/* <View style={{padding: 18}}>{[1,2,3,4,5,6,7,8,9].map((idx)=>(
        <FieldInitialLoader key={idx} />
      ))}</View> */}
+     <Loader loading={loading} />
+
       {scan ? (
         <View style={Styles.container}>
           <BarCodeScanner
@@ -258,7 +264,7 @@ const AddJob = ({ navigation, route }) => {
         <Formik
           initialValues={formData}
           onSubmit={(values) => {
-            console.log('Job Save=========>', values)
+            console.log('Job Save=========>', values);
             handleSubmitPress(values);
           }}
           validationSchema={addJobSchema}
@@ -284,12 +290,12 @@ const AddJob = ({ navigation, route }) => {
                     <Input
                       labelName="Batch Number"
                       placeholder="Enter Batch Number"
-                      handleChangeText={handleChange("Batch Number")}
-                      value={values["Batch Number"]}
+                      handleChangeText={handleChange("BatchNumber")}
+                      value={values["BatchNumber"]}
                     />
-                    {errors["Batch Number"] && touched["Batch Number"] && (
+                    {errors["BatchNumber"] && touched["BatchNumber"] && (
                       <Text style={Styles.validateError}>
-                        {errors["Batch Number"]}
+                        {errors["BatchNumber"]}
                       </Text>
                     )}
                   </View>
@@ -297,12 +303,12 @@ const AddJob = ({ navigation, route }) => {
                     <Input
                       labelName="IR Number"
                       placeholder="Enter IR Number"
-                      handleChangeText={handleChange("IR Number")}
-                      value={values["IR Number"]}
+                      handleChangeText={handleChange("IRNumber")}
+                      value={values["IRNumber"]}
                     />
-                    {errors["IR Number"] && touched["IR Number"] && (
+                    {errors["IRNumber"] && touched["IRNumber"] && (
                       <Text style={Styles.validateError}>
-                        {errors["IR Number"]}
+                        {errors["IRNumber"]}
                       </Text>
                     )}
                   </View>
@@ -310,12 +316,12 @@ const AddJob = ({ navigation, route }) => {
                     <Input
                       labelName="OR Number"
                       placeholder="Enter OR Number"
-                      handleChangeText={handleChange("OR Number")}
-                      value={values["OR Number"]}
+                      handleChangeText={handleChange("ORNumber")}
+                      value={values["ORNumber"]}
                     />
-                    {errors["OR Number"] && touched["OR Number"] && (
+                    {errors["ORNumber"] && touched["ORNumber"] && (
                       <Text style={Styles.validateError}>
-                        {errors["OR Number"]}
+                        {errors["ORNumber"]}
                       </Text>
                     )}
                   </View>
@@ -366,11 +372,11 @@ const AddJob = ({ navigation, route }) => {
               </View>
               <View style={{ marginBottom: 20 }}>
                 <Select
-                  selectedValue={masterData.exhangeTypes?.Name}
+                  selectedValue={values["ExchangeType"]?.Name}
                   disabled={false}
                   onChange={(item)=>{
                     let obj = {Id: item.Id, Name: item.Name};
-                    setFieldValue('Exchange Type List', obj);
+                    setFieldValue('ExchangeType', obj);
                   }}
                   placeholder="Select Exchange"
                   label="Exchange"
@@ -378,19 +384,19 @@ const AddJob = ({ navigation, route }) => {
                   items={masterData.exhangeTypes}
                   modalObj={{ id: "Id", name: "Name" }}
                 />
-                {errors["Exchange Type List"] && touched["Exchange Type List"] && (
+                {errors["ExchangeType"] && touched["ExchangeType"] && (
                   <Text style={Styles.validateError}>
-                    {errors["Exchange Type List"]}
+                    {errors["ExchangeType"]}
                   </Text>
                 )}
               </View>
               <View style={{ marginBottom: 20 }}>
                 <Select
-                  selectedValue={values["Reasons List"]?.Name}
+                  selectedValue={values["Reasons"]?.Name}
                   disabled={false}
                   onChange={(item)=>{
                     let obj = {Id: item.Id, Name: item.Name};
-                    setFieldValue('Reasons List', obj);
+                    setFieldValue('Reasons', obj);
                   }}
                   placeholder="Select Reason"
                   label="Reasons of Change"
@@ -398,9 +404,9 @@ const AddJob = ({ navigation, route }) => {
                   items={masterData.reasonOfChanges}
                   modalObj={{ id: "Id", name: "Name" }}
                 />
-                {errors["Reasons List"] && touched["Reasons List"] && (
+                {errors["Reasons"] && touched["Reasons"] && (
                   <Text style={Styles.validateError}>
-                    {errors["Reasons List"]}
+                    {errors["Reasons"]}
                   </Text>
                 )}
               </View>
@@ -408,12 +414,12 @@ const AddJob = ({ navigation, route }) => {
                 <Input
                   labelName="Wind Farm"
                   placeholder="Enter Wind Farm"
-                  handleChangeText={handleChange("Wind Farm")}
-                  value={values["Wind Farm"]}
+                  handleChangeText={handleChange("WindFarm")}
+                  value={values["WindFarm"]}
                 />
-                {errors["Wind Farm"] && touched["Wind Farm"] && (
+                {errors["WindFarm"] && touched["WindFarm"] && (
                   <Text style={Styles.validateError}>
-                    {errors["Wind Farm"]}
+                    {errors["WindFarm"]}
                   </Text>
                 )}
               </View>
@@ -421,18 +427,18 @@ const AddJob = ({ navigation, route }) => {
                 <Input
                   labelName="Wind Turbine"
                   placeholder="Enter Wind Turbine"
-                  handleChangeText={handleChange("Wind Turbine")}
-                  value={values["Wind Turbine"]}
+                  handleChangeText={handleChange("WindTurbine")}
+                  value={values["WindTurbine"]}
                 />
-                {errors["Wind Turbine"] && touched["Wind Turbine"] && (
+                {errors["WindTurbine"] && touched["WindTurbine"] && (
                   <Text style={Styles.validateError}>
-                    {errors["Wind Turbine"]}
+                    {errors["WindTurbine"]}
                   </Text>
                 )}
               </View>
               <View style={{ marginBottom: 20 }}>
                 <Select
-                  selectedValue={masterData.shaftPositions?.Name}
+                  selectedValue={values["ShaftPosition"]?.Name}
                   disabled={false}
                   onChange={(item) =>{
                     let obj = {Id: item.Id, Name: item.Name};
@@ -452,11 +458,11 @@ const AddJob = ({ navigation, route }) => {
               </View>
               <View style={{ marginBottom: 20 }}>
                 <Select
-                  selectedValue={masterData.brands?.Name}
+                  selectedValue={values["RemoveBearingBrand"]?.Name}
                   disabled={false}
                   onChange={(item) =>{
                     let obj = {Id: item.Id, Name: item.Name};
-                    setFieldValue('Brand', obj);
+                    setFieldValue('RemoveBearingBrand', obj);
                   }}
                   placeholder="Select Removed Brearing Brand"
                   label="Removed Brearing Brand"
@@ -464,19 +470,19 @@ const AddJob = ({ navigation, route }) => {
                   items={masterData.brands}
                   modalObj={{ id: "Id", name: "Name" }}
                 />
-                {errors.Brand && touched.Brand && (
+                {errors['RemoveBearingBrand'] && touched['RemoveBearingBrand'] && (
                   <Text style={Styles.validateError}>
-                    {errors.Brand}
+                    {errors['RemoveBearingBrand']}
                   </Text>
                 )}
               </View>
               <View style={{ marginBottom: 20 }}>
                 <Select
-                  selectedValue={masterData.bearingTypes?.Name}
+                  selectedValue={values["RemoveBearingType"]?.Name}
                   disabled={false}
                   onChange={(item) => {
                     let obj = {Id: item.Id, Name: item.Name};
-                    setFieldValue('Part Type List', obj);
+                    setFieldValue('RemoveBearingType', obj);
                   }}
                   placeholder="Select Removed Brearing Type"
                   label="Removed Brearing Type"
@@ -484,9 +490,9 @@ const AddJob = ({ navigation, route }) => {
                   items={masterData.bearingTypes}
                   modalObj={{ id: "Id", name: "Name" }}
                 />
-                {errors['Part Type List'] && touched['Part Type List'] && (
+                {errors['RemoveBearingType'] && touched['RemoveBearingType'] && (
                   <Text style={Styles.validateError}>
-                    {errors['Part Type List']}
+                    {errors['RemoveBearingType']}
                   </Text>
                 )}
               </View>
@@ -495,23 +501,23 @@ const AddJob = ({ navigation, route }) => {
                 <Input
                   labelName="Generator Model"
                   placeholder="Enter Generator Model"
-                  handleChangeText={handleChange("Generator Model")}
-                  value={values["Generator Model"]}
+                  handleChangeText={handleChange("GeneratorModel")}
+                  value={values["GeneratorModel"]}
                 />
-                {errors["Generator Model"] && touched["Generator Model"] && (
+                {errors["GeneratorModel"] && touched["GeneratorModel"] && (
                   <Text style={Styles.validateError}>
-                    {errors["Generator Model"]}
+                    {errors["GeneratorModel"]}
                   </Text>
                 )}
               </View>
 
               <View style={{ marginBottom: 20 }}>
                 <Select
-                  selectedValue={masterData.brands?.Name}
+                  selectedValue={values["NewBearingBrand"]?.Name}
                   disabled={false}
                   onChange={(item) =>{
                     let obj = {Id: item.Id, Name: item.Name};
-                    setFieldValue('Brand', obj);
+                    setFieldValue('NewBearingBrand', obj);
                   }}
                   placeholder="Select Bearing Brand"
                   label="New Bearing Brand"
@@ -519,19 +525,19 @@ const AddJob = ({ navigation, route }) => {
                   items={masterData.brands}
                   modalObj={{ id: "Id", name: "Name" }}
                 />
-                {errors.Brand && touched.Brand && (
+                {errors['NewBearingBrand'] && touched['NewBearingBrand'] && (
                   <Text style={Styles.validateError}>
-                    {errors.Brand}
+                    {errors['NewBearingBrand']}
                   </Text>
                 )}
               </View>
               <View style={{ marginBottom: 20 }}>
                 <Select
-                  selectedValue={masterData.bearingTypes?.Name}
+                  selectedValue={values["NewBearingType"]?.Name}
                   disabled={false}
                   onChange={(item) => {
                     let obj = {Id: item.Id, Name: item.Name};
-                    setFieldValue('Part Type List', obj);
+                    setFieldValue('NewBearingType', obj);
                   }}
                   placeholder="Select Bearing Type"
                   label="New Bearing Type"
@@ -539,9 +545,9 @@ const AddJob = ({ navigation, route }) => {
                   items={masterData.bearingTypes}
                   modalObj={{ id: "Id", name: "Name" }}
                 />
-                {errors['Part Type List'] && touched['Part Type List'] && (
+                {errors['NewBearingType'] && touched['NewBearingType'] && (
                   <Text style={Styles.validateError}>
-                    {errors['Part Type List']}
+                    {errors['NewBearingType']}
                   </Text>
                 )}
               </View>
@@ -549,8 +555,8 @@ const AddJob = ({ navigation, route }) => {
                 <Input
                   labelName="Report Code"
                   placeholder="Enter Report Code"
-                  handleChangeText={handleChange("Comments")}
-                  value={values['Report Code']}
+                  handleChangeText={handleChange("ReportCode")}
+                  value={values['ReportCode']}
                 />
               </View>
               <View style={{ marginBottom: 20 }}>

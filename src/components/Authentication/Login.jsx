@@ -21,7 +21,7 @@ import * as Yup from "yup";
 import Message from "../../shared/Message";
 
 const Login = ({ navigation }) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const isLogin = useSelector((state) => state.userReducer.isLogin);
   const isLoginFailed = useSelector((state) => state.userReducer.failed);
   const loginMessage = useSelector((state) => state.userReducer.message);

@@ -1,14 +1,15 @@
 {
   "expo": {
-    "name": "fke-app",
-    "slug": "fke-app",
+    "name": "MRO Tracker by Fersa Group",
+    "slug": "MRO_Tracker",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
+    "icon": "./src/assets/images/app-icon.png",
     "splash": {
-      "image": "./src/assets/images/splashscreen.png",
+      "image": "./src/assets/images/splash-screen.png",
       "resizeMode": "cover",
-      "backgroundColor": "#003155"
+      "backgroundColor": "#384E63"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -18,9 +19,9 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#384E63"
       },
-      "package": "com.fke_nke.app"
+      "package": "com.mro_tracker.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"

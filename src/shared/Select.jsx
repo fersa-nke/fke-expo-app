@@ -32,7 +32,7 @@ const Select = ({
   const [value, setValue] = useState(selectedValue);
 
   useEffect(() => {
-    // console.log('defaultvalue ', value, selectedValue);
+    console.log('defaultvalue ', value, selectedValue);
     setValue(selectedValue);
   }, [selectedValue]);
   const onSelectValue = item => {

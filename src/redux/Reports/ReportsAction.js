@@ -18,7 +18,7 @@ export const getReports = () => {
                   payload: res.list,
                 });
             } else {
-                console.log('Unable to fetch JOB');
+                console.log('Unable to fetch Reports');
             }
         })
         .catch((error) => {
@@ -40,7 +40,7 @@ export const saveJobReport = reportData => dispatch => {
                   payload: res,
                 });
             } else {
-                console.log('Unable to save job');
+                console.log('Unable to save job Report');
             }
         })
         .catch((error) => {

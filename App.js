@@ -5,12 +5,25 @@ import { store } from './src/redux/Store';
 import RootNavigator from './src/navigation/RootNavigator';
 import { PersistGate } from 'redux-persist/integration/react';
 import persistStore from 'redux-persist/es/persistStore';
+import CustomSplashScreen from './src/shared/SplashScreen';
+import * as SplashScreen from 'expo-splash-screen';
+
+import React, { useEffect, useState } from "react";
+
 let persistor = persistStore(store);
 export default function App() {
+  const [appLoaded, setAppLoaded] = useState(false);
+  SplashScreen.hideAsync();
+  useEffect(() => {
+    setTimeout(()=>{
+     setAppLoaded(false);
+    },5000);
+  }, []);
+
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <RootNavigator />
+      {appLoaded ? <CustomSplashScreen/> : <RootNavigator />}
       </PersistGate>
     </Provider>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -32,8 +32,10 @@ import IconComp from "../../shared/IconComp";
 import Ripple from "react-native-material-ripple";
 import NoData from "../../shared/NoData";
 import nodata from "../../assets/images/nodata.png";
+import Loader from '../../shared/Loader';
 
 function Jobs() {
+  const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const removeFromJobs = (id) => dispatch(removeJob(id));
@@ -56,8 +58,13 @@ function Jobs() {
     fetchBrands();
     fetchModels();
     fetchBearingTypes();
- 
+    setTimeout(() => {
+      setLoading(false);
+    }, 200);
+
   }, []);
+
+  
 
   const loadMore = () => {
     dispatch(getJobs());
@@ -90,16 +97,20 @@ function Jobs() {
     <>
       <StatusBar barStyle="dark-content" backgroundColor={theme.bgWhite} />
       <ScrollView style={Styles.jobs}>
+
         <View style={[GBStyles.container, {paddingBottom: 50}]}>
           <Text style={GBStyles.pageTitle}>Jobs</Text>
-          {jobs.length > 0 ? (
-            <JobCard list={jobs} onHandlePress={navigateToJobDetails} JobEdit={onEditClick} JobDelete={handleRemoveJob} />
+          {loading && <View style={{padding: 18}}>{[1,2,3,4,5].map((idx)=>(
+       <JobsInitialLoader key={idx} />
+     ))}</View>}
+          {!pagerLoader && jobs.length === 0 ? (
+            <NoData title="No Jobs" image={nodata} description="Lorem Ipsum has been the industry's standard dummy text ever since the 1500s" />
           ) : (
-              <NoData title="No Jobs" image={nodata} description="Lorem Ipsum has been the industry's standard dummy text ever since the 1500s" />
+            <JobCard list={jobs} onHandlePress={navigateToJobDetails} JobEdit={onEditClick} JobDelete={handleRemoveJob} />
           )}
         </View>
         <View style={Styles.loadMoreCont} >
-            {pagerLoader && <ActivityIndicator size="large" />}
+            {pagerLoader == true ? <ActivityIndicator size="large" /> : <></>}
             {!showLoadMore && !pagerLoader  && <Button title="Load more.." onPress={loadMore}></Button>}
           </View>
       </ScrollView>

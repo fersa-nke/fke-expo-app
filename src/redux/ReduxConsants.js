@@ -10,6 +10,7 @@ export const GET_JOBS = 'GET_JOBS';
 export const DELETE_jOB_ITEM = 'DELETE_jOB_ITEM';
 export const ADD_JOB_ITEM = 'ADD_JOB_ITEM';
 export const SELECTED_JOB_ID = 'SELECTED_JOB_ID';
+export const UPDATE_JOB_ITEM = 'UPDATE_JOB_ITEM';
 export const LOADING_jOBS = 'LOADING_jOBS';
 
 export const GET_REPORTS = 'GET_REPORTS';
