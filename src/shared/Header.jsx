@@ -7,10 +7,13 @@ import theme from "../assets/theme";
 import GBStyles from "../assets/globalstyles";
 import Ripple from "react-native-material-ripple";
 import { useSelector, useDispatch, connect } from "react-redux";
+import { SHOW_BARCODE_BUTTON } from '../redux/ReduxConsants';
 import { logout } from "../redux/Login/LoginActions";
 import Input from "./Input";
 import Row from "./Row";
 import Ribbon from "./Ribbon";
+import { useEffect } from "react";
+
 
 const HeaderLeft = () => {
   return (
@@ -25,11 +28,12 @@ const HeaderLeft = () => {
   );
 };
 
-const HeaderRight = ({ showSeach = false }) => {
+const HeaderRight = ({ showSeach = false, isAddPage = false }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [searchModal, setSearchModal] = useState(false);
   const [searchText, setSearchText] = useState("");
+  const [showBarCode, setShoBarCode] = useState(true);
 
   const handleLogoutPress = () => {
     const callLogOut = logout();
@@ -42,8 +46,29 @@ const HeaderRight = ({ showSeach = false }) => {
   const handleSubmitPress = () => {
     setSearchModal(false);
   };
+
+  const handleIconPress = () => {
+      setShoBarCode(!showBarCode);
+  };
+
+  useEffect(() => {
+    dispatch({
+      type: SHOW_BARCODE_BUTTON,
+      payload: showBarCode,
+    });
+  }, [showBarCode]);
+
   if (!isLogin) {
     navigation.navigate("Login");
+  }
+  if(isAddPage) {
+    return (
+      <>
+        <Ripple style={GBStyles.rippleBtn} onPress={handleIconPress}>
+          <Icon name="DataMatrix" size={22} color={showBarCode ? theme.textBlue : theme.textGray} />
+        </Ripple>
+      </>
+    )
   }
   return (
     <>

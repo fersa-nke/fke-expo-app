@@ -3,6 +3,7 @@ import API from '../../services/Api';
 import { GET_JOBS, DELETE_jOB_ITEM, SELECTED_JOB_ID, ADD_JOB_ITEM , UPDATE_JOB_ITEM, LOADING_jOBS} from '../ReduxConsants';
 // Define action types
 import { Toast } from 'toastify-react-native';
+import { KEYMapper as JobMapper } from '../../services/UserConfig';
 
 // Construct a BASE URL for API endpoint
 const BASE_URL = `nocodb/data/NKE-Tracebility/Jobs`;
@@ -21,7 +22,7 @@ export const getJobs = () => {
         payload: true,
       });
    // alert('calling once api jobs,'+pageNo+','+pageSize);
-    API.GET(`${BASE_URL}`, token, {offset : offSet, limit: pageSize})
+    API.GET(`${BASE_URL}`, token, {offset : offSet, limit: pageSize, sort: `-${JobMapper.JOBDATE},-${JobMapper.ID}`})
         .then(res => {
             console.log('job list lenght', res.list.length, res.pageInfo.isLastPage);
             dispatch({
@@ -60,14 +61,14 @@ export const setSelectedJobId = id => dispatch => {
           });
 }
 
-export const saveJob = (jobData, callBack) => {
+export const saveJob = (formData, jobData, callBack) => {
   return async (dispatch, getState) => {
     dispatch({
         type: LOADING_jOBS,
         payload: true,
     });
     const token = getState().userReducer.token;
-    API.POST(`${BASE_URL}`, token, jobData)
+    API.POST(`${BASE_URL}`, token, formData)
         .then(res => {
             console.log('save job', res);
             //Hide Loader
@@ -102,14 +103,14 @@ export const saveJob = (jobData, callBack) => {
 };
 
 
-export const updateJob = (jobData, Id, navigation) => {
+export const updateJob = (formData, jobData, Id, navigation) => {
     return async (dispatch, getState) => {
       const token = getState().userReducer.token;
         dispatch({
             type: LOADING_jOBS,
             payload: true,
         });
-      API.PATCH(`${BASE_URL}/${Id}`, token, jobData)
+      API.PATCH(`${BASE_URL}/${Id}`, token, formData)
           .then(res => {
             console.log('update job', res);
             //Hide Loader

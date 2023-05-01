@@ -1,35 +1,47 @@
 
 import API from '../../services/Api';
-import { GET_BEARING_TYPES, GET_BRANDS, GET_EXCHANGE_TYPES, GET_MODELS, GET_REASON_OF_CHANGES, GET_SHAFT_POSITIONS } from '../ReduxConsants';
+import { LOGIN_SUCCESS, GET_API_Mapper, ADD_SIGNED_USER_DATA, GET_KEY_Mapper, GET_BEARING_TYPES, GET_BRANDS, GET_EXCHANGE_TYPES, GET_MODELS, GET_REASON_OF_CHANGES, GET_SHAFT_POSITIONS } from '../ReduxConsants';
 // Define action types
+import { APIConfig, KEYMapper } from '../../services/UserConfig';
+import { Toast } from 'toastify-react-native';
+import AuthService from '../../services/AuthService';
+
+export const getAPIMapper = (token = '') => {
+    return callAPI('APIMapper', GET_API_Mapper, token);
+};
+
+export const getKEYMapper = (token = '') => {
+    return callAPI('KEYMapper', GET_KEY_Mapper, token);
+};
 
 export const getExchangeTypes = () => {
-    return callAPI('Exchange Type', GET_EXCHANGE_TYPES);
+    return callAPI(APIConfig.EXCHANGE, GET_EXCHANGE_TYPES);
 };
 
 export const getShaftPositions = () => {
-    return callAPI('Shaft Position', GET_SHAFT_POSITIONS);
+    return callAPI(APIConfig.POSITION, GET_SHAFT_POSITIONS);
 };
 
 export const getReasonOfChanges = () => {
-    return callAPI('Reasons', GET_REASON_OF_CHANGES);
+    return callAPI(APIConfig.REASONS, GET_REASON_OF_CHANGES);
 };
 
 export const getBrands = () => {
-    return callAPI('Brand', GET_BRANDS);
+    return callAPI(APIConfig.BRAND, GET_BRANDS);
 };
 
 export const getModels = () => {
-    return callAPI('Model', GET_MODELS);
+    return callAPI(APIConfig.MODEL, GET_MODELS);
 };
 
 export const getBearingTypes = () => {
-    return callAPI('Part Type', GET_BEARING_TYPES);
+    return callAPI(APIConfig.PART, GET_BEARING_TYPES);
 };
 
-function callAPI(URL, dispatchType) {
+export function callAPI(URL, dispatchType, token = '') {
     return async (dispatch, getState) => {
-        const token = getState().userReducer.token;
+        token = token ? token : getState().userReducer.token;
+        console.log(URL, 'api config urls');
         API.GET(`nocodb/data/NKE-Tracebility/${URL}`, token)
             .then(res => {
                 //Hide Loader
@@ -38,6 +50,20 @@ function callAPI(URL, dispatchType) {
                         type: dispatchType,
                         payload: res.list,
                     });
+                    if(dispatchType === GET_API_Mapper) {
+                        updateAPIMapper(res.list);
+                        let role = getState().userReducer.user.Role;
+                        if(role){
+                            AuthService.setRole(role);
+                        }
+                        if(token && getState().userReducer.isLogin === false) {
+                            Toast.success(getState().userReducer.message);
+                            dispatch({ type: LOGIN_SUCCESS, payload: true });
+                        }
+                    }
+                    if(dispatchType === GET_KEY_Mapper) {
+                        updateKEYMapper(res.list);
+                    }
                 } else {
                     console.log('Unable to fetch');
                 }
@@ -48,3 +74,20 @@ function callAPI(URL, dispatchType) {
             }); // JSON data parsed by `data.json()` call
     }
 };
+
+
+
+function updateAPIMapper(list) {
+   list.forEach(element => {
+    APIConfig[element.Title] = element['API Name'];
+   });
+   console.log('updated apiconfig', APIConfig);
+}
+
+function updateKEYMapper(list) {
+    list.forEach(element => {
+        KEYMapper[element.Title] = element['TAG Name'];
+    });
+    console.log('updated KEYMapper', KEYMapper);
+}
+

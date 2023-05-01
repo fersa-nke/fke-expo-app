@@ -11,6 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import IconComp from '../../shared/IconComp';
 
+import { KEYMapper as JOBKEYMapper } from './../../services/UserConfig';
 
 function JobCard({list, onHandlePress, JobEdit, JobDelete}) {
   const jobs = list;
@@ -18,11 +19,11 @@ function JobCard({list, onHandlePress, JobEdit, JobDelete}) {
 
   const renderLeftActions = (Id) => {
     return (
-      <Row style={{height: 100, justifyContent: 'center', alignItems: 'center', backgroundColor: "#f2f2f2"}}>
-        <Ripple style={{width: 70, height: 120,justifyContent: 'center', alignItems: 'center', backgroundColor: theme.bgBlue}} onPress={()=>JobEdit(Id)} >
+      <Row style={{height: 80, marginTop: "3%", justifyContent: 'center', alignItems: 'center', backgroundColor: "#f2f2f2"}}>
+        <Ripple style={{width: 70, height: 80,justifyContent: 'center', alignItems: 'center', backgroundColor: theme.bgBlue}} onPress={()=>JobEdit(Id)} >
         <IconComp name="Edit" size={24} color={theme.textWhite} />
       </Ripple>
-      <Ripple style={{width: 70, height: 120,justifyContent: 'center', alignItems: 'center', backgroundColor: 'red'}}  onPress={()=>JobDelete(Id)}>
+      <Ripple style={{width: 70, height: 80,justifyContent: 'center', alignItems: 'center', backgroundColor: 'red'}}  onPress={()=>JobDelete(Id)}>
         <IconComp name="Delete" size={24} color={theme.textWhite} />
       </Ripple>
       </Row>
@@ -38,24 +39,27 @@ function JobCard({list, onHandlePress, JobEdit, JobDelete}) {
           <Row style={[Styles.card]}>
             {job.offline && <Text style={Styles.offline}>Offline</Text> }
             <Image
-              source={job?.DataMatirx ? BarCode : defaultIcon}
+              source={job[JOBKEYMapper.DATAMATRIX] ? BarCode : defaultIcon}
               width={40}
               height={40}
-              style={{marginTop: 5 , marginLeft: 3, marginBottom: 5, marginRight: 14 }}
+              style={{marginTop: 0 , marginLeft: 3, marginBottom: 5, marginRight: 14 }}
               resizeMethod="auto"
               resizeMode="cover"
             />
             <View style={{flex: 1}}>
               <Text style={Styles.cardTitle} numberOfLines={1}>
-                {job['Title']}
+                {job[JOBKEYMapper.JOBID]}
+              </Text>
+              <Text style={Styles.cardTitle} numberOfLines={1}>
+                {job[JOBKEYMapper.WINDFARM]}
               </Text>
               <Text style={Styles.cardDescription} numberOfLines={2}>
-                {job['Date']} | {job['WindTurbine']}
+                {job[JOBKEYMapper.JOBDATE]}
               </Text>
               <Row style={Styles.cardFooter} justifyContent="space-between">
                 <Row>
                   <Icon name="Operator" size={14} color={theme.textBlue} />
-                  <Text style={Styles.operatorName}>{job['Operator Name']}</Text>
+                  <Text style={Styles.operatorName}>{job[JOBKEYMapper.OPERATORNAME]}</Text>
                 </Row>
                 <Ripple
                   style={Styles.circleBtn}
@@ -85,11 +89,12 @@ const Styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
     color: theme.textBlack,
-    marginBottom: 2,
-    marginTop: 6,
+    marginBottom: 0,
+    marginTop: 2,
   },
   cardDescription: {
     fontSize: 12,
+    marginTop: 2,
     color: theme.textGray,
     fontWeight: '500',
   },
@@ -98,7 +103,7 @@ const Styles = StyleSheet.create({
     borderColor: theme.border,
     borderStyle: 'solid',
     paddingTop: 4,
-    marginTop: 8,
+    marginTop: 0,
   },
   operatorName: {
     fontSize: 12,

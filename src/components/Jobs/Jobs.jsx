@@ -50,7 +50,6 @@ function Jobs() {
   const fetchBearingTypes = () => dispatch(getBearingTypes());
 
   useEffect(() => {
-   
     dispatch(getJobs());
     fetchExchangeTypes();
     fetchShaftPositions();
@@ -90,7 +89,7 @@ function Jobs() {
 
   const onEditClick = (Id) => {
     dispatch(setSelectedJobId(Id));
-    navigation.navigate('AddJob',{Id: Id});
+    navigation.navigate('EditJob',{Id: Id});
   }
 
   return (

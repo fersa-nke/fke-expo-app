@@ -1,4 +1,4 @@
-import { GET_EXCHANGE_TYPES, GET_MODELS, GET_REASON_OF_CHANGES, GET_SHAFT_POSITIONS, GET_BEARING_TYPES, GET_BRANDS } from '../ReduxConsants';
+import {GET_API_Mapper, GET_KEY_Mapper, GET_EXCHANGE_TYPES, GET_MODELS, GET_REASON_OF_CHANGES, GET_SHAFT_POSITIONS, GET_BEARING_TYPES, GET_BRANDS } from '../ReduxConsants';
 
 const initialState = {
     exhangeTypes: [],
@@ -6,11 +6,23 @@ const initialState = {
     reasonOfChanges: [],
     shaftPositions: [],
     bearingTypes: [],
-    brands: []
+    brands: [],
+    apiMapperConfig: [],
+    keyMapperConfig: []
 }
 
 const masterReducer = (state = initialState, action) => {
     switch (action.type) {
+        case GET_API_Mapper:
+            return {
+                ...state,
+                apiMapperConfig: action.payload
+            }
+        case GET_KEY_Mapper:
+            return {
+                ...state,
+                keyMapperConfig: action.payload
+            }    
         case GET_EXCHANGE_TYPES:
             return {
                 ...state,

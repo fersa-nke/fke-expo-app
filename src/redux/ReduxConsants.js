@@ -5,6 +5,7 @@ export const LOGIN_FAILED = 'LOGIN_FAILED';
 export const LOGIN_LOADING = 'LOGIN_LOADING';
 export const USER_LOGOUT = 'USER_LOGOUT';
 export const LOGOUT = 'LOGOUT';
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 
 export const GET_JOBS = 'GET_JOBS';
 export const DELETE_jOB_ITEM = 'DELETE_jOB_ITEM';
@@ -12,6 +13,7 @@ export const ADD_JOB_ITEM = 'ADD_JOB_ITEM';
 export const SELECTED_JOB_ID = 'SELECTED_JOB_ID';
 export const UPDATE_JOB_ITEM = 'UPDATE_JOB_ITEM';
 export const LOADING_jOBS = 'LOADING_jOBS';
+export const SHOW_BARCODE_BUTTON = 'SHOW_BARCODE_BUTTON';
 
 export const GET_REPORTS = 'GET_REPORTS';
 export const DELETE_REPORT_ITEM = 'DELETE_REPORT_ITEM';
@@ -28,3 +30,8 @@ export const GET_REASON_OF_CHANGES = 'GET_REASON_OF_CHANGES';
 export const GET_BRANDS = 'GET_BRANDS';
 export const GET_MODELS = 'GET_MODELS';
 export const GET_BEARING_TYPES = 'GET_BEARING_TYPES';
+
+
+export const GET_API_Mapper = 'GET_API_Mapper';
+
+export const GET_KEY_Mapper = 'GET_KEY_Mapper';

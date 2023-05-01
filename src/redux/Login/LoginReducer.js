@@ -1,4 +1,4 @@
-import { ADD_SIGNED_USER_DATA, LOGIN_FAILED, REMOVE_USER_DATA, LOGIN_LOADING , LOGOUT} from '../ReduxConsants';
+import { LOGIN_SUCCESS, ADD_SIGNED_USER_DATA, LOGIN_FAILED, REMOVE_USER_DATA, LOGIN_LOADING , LOGOUT} from '../ReduxConsants';
 
 const initialState = {
     user: null,
@@ -17,9 +17,8 @@ export default function userReducer(state = initialState, action) {
                 user: action.payload,
                 message: 'Login Success!',
                 token: action.payload.token,
-                isLogin: true,
-                failed: false,
-                loading: false
+                isLogin: false,
+                failed: false
             }
         case LOGIN_FAILED:
             return {
@@ -31,6 +30,12 @@ export default function userReducer(state = initialState, action) {
                 isLogin: false,
                 loading: false
             }
+        case LOGIN_SUCCESS:
+                return {
+                    ...state,
+                    isLogin: true,
+                    loading: false
+        }    
         case LOGIN_LOADING:
             return {
                 ...state,

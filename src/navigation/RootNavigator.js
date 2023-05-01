@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './../components/Authentication/Login';
@@ -17,28 +17,46 @@ import { HeaderLeft, HeaderRight } from '../shared/Header';
 import JobDetails from './../components/Jobs/JobDetails';
 import AddReport from './../components/Reports/AddReport';
 import ReportView from './../components/Reports/ReportView';
-import { useSelector, connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { SafeAreaView, Text } from 'react-native';
 import Container from 'toastify-react-native';
 import CustomSplashScreen from './../shared/SplashScreen';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import  { getAPIMapper ,getKEYMapper} from "./../redux/Master/MasterActions";
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
 
 const Stack = createNativeStackNavigator();
 const RootNavigator = () => {
+  const dispatch = useDispatch();
   const isLogin = useSelector((state)=> state.userReducer.isLogin);
-  const [appLoaded, setAppLoaded] = useState(true);
+  const [appLoaded, setAppLoaded] = useState(false);
+  const fetchAPIMapper = () => dispatch(getAPIMapper());
+  const fetchKEYMapper = () => dispatch(getKEYMapper());
+  const keyMapper = useSelector((state)=> state.masterReducer.keyMapperConfig);
+  const apiMapper = useSelector((state)=> state.masterReducer.apiMapperConfig);
+
+
   useEffect(() => {
-    setTimeout(()=>{
-     setAppLoaded(false);
-    },4000);
+    if(isLogin) {
+      console.log('apiMapper loaded------------->', apiMapper.length);
+      fetchAPIMapper().then(() => {
+        setTimeout(()=>{
+          setAppLoaded(false);
+        },1000);
+      });
+      fetchKEYMapper();
+    }
+    else {
+      setTimeout(()=>{
+        setAppLoaded(false);
+      },4000);
+    }
+    
   }, []);
   return (
     <><SafeAreaView style={{flex: 1}}>
-     {appLoaded && <CustomSplashScreen /> }
-      <Ribbon />
+     {appLoaded ? <CustomSplashScreen /> : <>
+     <Ribbon />
       <NavigationContainer>
       <Container position="top" />
         <Stack.Navigator
@@ -59,6 +77,19 @@ const RootNavigator = () => {
               component={AddJob}
               options={{
                 title: 'Add Job',
+                headerRight: () => <HeaderRight isAddPage={true} />,
+                headerTitleStyle: {
+                  fontSize: 16,
+                  fontWeight: '700',
+                },
+              }}
+            />
+            <Stack.Screen
+              name="EditJob"
+              component={AddJob}
+              options={{
+                title: 'Edit Job',
+                headerRight: () => <HeaderRight isAddPage={true} />,
                 headerTitleStyle: {
                   fontSize: 16,
                   fontWeight: '700',
@@ -102,6 +133,8 @@ const RootNavigator = () => {
           
         </Stack.Navigator>
       </NavigationContainer>
+     </>}
+     
       </SafeAreaView>
     </>
   );

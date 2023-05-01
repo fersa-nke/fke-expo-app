@@ -90,7 +90,7 @@ const Login = ({ navigation }) => {
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor={theme.bgWhite} />
-      <Loader loading={loading} />
+      <Loader loading={loader} />
       <ScrollView style={{ backgroundColor: theme.bgWhite }}>
         <View
           style={{

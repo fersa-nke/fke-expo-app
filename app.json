@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "MRO Tracker by Fersa Group",
-    "slug": "MRO_Tracker",
+    "slug": "mro-tracker-by-fersa-group",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -23,12 +23,9 @@
       },
       "package": "com.mro_tracker.app"
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
     "extra": {
       "eas": {
-        "projectId": "89c0326d-5708-4e7a-85eb-b8e988a91635"
+        "projectId": "84ea0753-0268-47ea-9a01-e5b2de792b67"
       }
     }
   }

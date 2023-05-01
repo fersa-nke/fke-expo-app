@@ -9,7 +9,7 @@ const CustomSplashScreen = (props) => {
   useEffect(() => {
   }, []);
   return (
-      <Animated.View 
+      <View 
       style={[
         styles.modalBackground,
       ]}>
@@ -29,7 +29,7 @@ const CustomSplashScreen = (props) => {
               resizeMethod="auto"
               resizeMode="cover"
       />
-      </Animated.View>
+      </View>
   );
 };
 

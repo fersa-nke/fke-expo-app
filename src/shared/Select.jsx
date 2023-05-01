@@ -55,6 +55,7 @@ const Select = ({
           value={value}
           style={Styles.searchInput}
           editable={false}
+          onPress={() => setModal(true)}
         />
         <Ripple
           disabled={disabled}
