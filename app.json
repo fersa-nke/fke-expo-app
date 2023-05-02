@@ -11,6 +11,14 @@
       "resizeMode": "cover",
       "backgroundColor": "#384E63"
     },
+    "plugins": [
+      [
+        "expo-barcode-scanner",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
+        }
+      ]
+    ],
     "assetBundlePatterns": [
       "**/*"
     ],

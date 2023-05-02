@@ -1,6 +1,6 @@
 import React, {useRef, useEffect} from 'react';
 import {Animated, StyleSheet, View, Dimensions, Image} from 'react-native';
-import splashImage from '../assets/images/splash-screen.gif';
+import splashImage from '../assets/images/animate-splash-screen.gif';
 import splashImagePNG from '../assets/images/splash-screen.png';
 
 const CustomSplashScreen = (props) => {
