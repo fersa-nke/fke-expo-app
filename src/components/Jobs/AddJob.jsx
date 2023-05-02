@@ -26,6 +26,7 @@ import Loader from '../../shared/Loader';
 import AuthService from "../../services/AuthService";
 import { KEYMapper as JOBKEYMapper } from './../../services/UserConfig';
 import { Toast } from 'toastify-react-native';
+import {SHOW_BARCODE_BUTTON} from '../../redux/ReduxConsants';
 
 const AddJob = ({ navigation, route }) => {
   const { Id } = route.params;
@@ -104,10 +105,16 @@ const AddJob = ({ navigation, route }) => {
       setFormData(formValues);
       setResult(filterJob[DATAMATRIX]);
       setStartDate(new Date(filterJob[JOBDATE]));
-      let j = `${userData.Name} / ${filterJob[JOBDATE]} / ${filterJob[JOBID]} `;
+      dispatch({
+          type: SHOW_BARCODE_BUTTON,
+          payload: filterJob[DATAMATRIX] ? true : false,
+      });
+      let j = `${filterJob[JOBID]}`;
       setJobTitle(j);
      } else {
-        let j = `${userData.Name} / ${new Date().toISOString().split('T')[0]} / ${new Date().getTime()} `;
+        let date = new Date();
+        let dateFormate = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours() ).slice(-2) + ("0" + date.getMinutes()).slice(-2) + ("0" + date.getSeconds()).slice(-2);
+        let j = `${userData.UserPrefix} - ${dateFormate} - JB `;
         setJobTitle(j);
      }
 
@@ -132,10 +139,10 @@ const AddJob = ({ navigation, route }) => {
   // });
 
   const addJobSchema = Yup.object().shape({
-    [DATAMATRIX]: barcodeReaderFailed ?  Yup.string() : Yup.string(),
-    [ORNUMBER]: barcodeReaderFailed ? Yup.string().required("Enter OR Number") : Yup.string(),
-    [IRNUMBER]: barcodeReaderFailed ? Yup.string().required("Enter IR Number") : Yup.string(),
-    [BATCHNUMBER]:  barcodeReaderFailed ? Yup.string().required("Enter Batch Number") : Yup.string(),
+    [DATAMATRIX]: showBarCodeScanButton ?  Yup.string() : Yup.string(),
+    [ORNUMBER]: showBarCodeScanButton ? Yup.string() : Yup.string().required("Enter OR Number"),
+    [IRNUMBER]: showBarCodeScanButton ? Yup.string() : Yup.string().required("Enter IR Number"),
+    [BATCHNUMBER]:  showBarCodeScanButton ? Yup.string() : Yup.string().required("Enter Batch Number"),
     [WINDFARM]: Yup.string().required("Enter Wind Farm"),
     [WINDTURBINE]: Yup.string(),
     [GENERATEMODEL]: Yup.string(),
@@ -146,8 +153,8 @@ const AddJob = ({ navigation, route }) => {
     [REMOVEDBEARINGTYPE]: Yup.array(Yup.object()),
     [POSITION]: Yup.array(Yup.object()),
     [EXCHANGETYPE]: Yup.array(Yup.object()),
-    [COMMENTS]: Yup.string(Yup.object()),
-    [REPORTCODE]: Yup.string(Yup.object())
+    [COMMENTS]: Yup.string(Yup.string()),
+    [REPORTCODE]: Yup.string(Yup.string())
   });
 
   const getBarCodeScannerPermissions = async () => {
@@ -225,6 +232,7 @@ const AddJob = ({ navigation, route }) => {
       ...values,
       [DATAMATRIX]: result,
       [JOBDATE]: startDate ? startDate.toISOString().split("T")[0]: '',
+      [JOBID]: jobTitle,
       [CUSTOMERID]: AuthService.isOperator() ? userData?.CustomerId : userData?.UserId,
       [OPERATORID]: AuthService.isOperator() ? userData?.UserId : null,
       [OPERATORNAME]: userData?.Name
@@ -232,7 +240,7 @@ const AddJob = ({ navigation, route }) => {
     let updateValues = {
       [EXCHANGETYPE]: values[EXCHANGETYPE][0] ? values[EXCHANGETYPE][0].Id : null,
       [REASONS]: values[REASONS][0] ? values[REASONS][0].Id :  null,
-      [POSITION]: values[REASONS][0] ? values[POSITION][0].Id : null,
+      [POSITION]: values[POSITION][0] ? values[POSITION][0].Id : null,
       [NEWBEARINGBRAND]: values[NEWBEARINGBRAND][0] ?  values[NEWBEARINGBRAND][0].Id : null,
       [NEWBEARINGTYPE]: values[NEWBEARINGTYPE][0] ? values[NEWBEARINGTYPE][0].Id : null,
       [REMOVEDBEARINGBRAND]: values[REMOVEDBEARINGBRAND][0] ? values[REMOVEDBEARINGBRAND][0].Id : null,

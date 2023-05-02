@@ -10,6 +10,7 @@ export function login(data) {
     dispatch({ type: LOGIN_LOADING, payload: true });
     const response = await Authservice.postData(`${BASE_URL}`, { Email: data.username, Password: data.password });
     if (response.success) {
+      response.UserPrefix = 'VZ'; // this will update by payload
       dispatch({ type: ADD_SIGNED_USER_DATA, payload: response });
       Authservice.setRole(response.Role);
       getUserInitConfig(dispatch);

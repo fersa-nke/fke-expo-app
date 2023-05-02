@@ -33,7 +33,7 @@ const HeaderRight = ({ showSeach = false, isAddPage = false }) => {
   const navigation = useNavigation();
   const [searchModal, setSearchModal] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [showBarCode, setShoBarCode] = useState(true);
+  const showBarCode = useSelector((state) => state.jobReducer.showBarCodeScanButton);
 
   const handleLogoutPress = () => {
     const callLogOut = logout();
@@ -48,15 +48,11 @@ const HeaderRight = ({ showSeach = false, isAddPage = false }) => {
   };
 
   const handleIconPress = () => {
-      setShoBarCode(!showBarCode);
-  };
-
-  useEffect(() => {
     dispatch({
       type: SHOW_BARCODE_BUTTON,
-      payload: showBarCode,
+      payload: showBarCode ? false : true,
     });
-  }, [showBarCode]);
+  };
 
   if (!isLogin) {
     navigation.navigate("Login");
