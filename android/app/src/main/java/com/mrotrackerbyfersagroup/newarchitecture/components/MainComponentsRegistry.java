@@ -1,4 +1,4 @@
-package com.mro_tracker.app.newarchitecture.components;
+package com.mrotrackerbyfersagroup.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

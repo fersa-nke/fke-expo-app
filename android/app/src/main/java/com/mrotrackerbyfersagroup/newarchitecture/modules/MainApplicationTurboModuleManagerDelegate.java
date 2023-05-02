@@ -1,4 +1,4 @@
-package com.mro_tracker.app.newarchitecture.modules;
+package com.mrotrackerbyfersagroup.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

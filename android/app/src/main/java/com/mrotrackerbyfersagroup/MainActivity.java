@@ -1,4 +1,4 @@
-package com.mro_tracker.app;
+package com.mrotrackerbyfersagroup;
 
 import android.os.Build;
 import android.os.Bundle;

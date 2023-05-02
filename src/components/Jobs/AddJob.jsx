@@ -264,7 +264,6 @@ const AddJob = ({ navigation, route }) => {
         <View style={Styles.container}>
           <BarCodeScanner
             style={[
-              StyleSheet.absoluteFill,
               Styles.container,
               {
                 flex: 1,

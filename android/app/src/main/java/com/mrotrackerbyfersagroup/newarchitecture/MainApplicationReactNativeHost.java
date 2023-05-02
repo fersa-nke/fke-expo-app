@@ -1,4 +1,4 @@
-package com.mro_tracker.app.newarchitecture;
+package com.mrotrackerbyfersagroup.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -20,9 +20,9 @@ import com.facebook.react.fabric.EmptyReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.mro_tracker.app.BuildConfig;
-import com.mro_tracker.app.newarchitecture.components.MainComponentsRegistry;
-import com.mro_tracker.app.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.mrotrackerbyfersagroup.BuildConfig;
+import com.mrotrackerbyfersagroup.newarchitecture.components.MainComponentsRegistry;
+import com.mrotrackerbyfersagroup.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

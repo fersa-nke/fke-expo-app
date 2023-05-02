@@ -8,7 +8,7 @@ import Ripple from 'react-native-material-ripple';
 import defaultIcon from '../../assets/images/default.png';
 import BarCode from '../../assets/images/barcode.png';
 import { useNavigation } from '@react-navigation/native';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
+import {Swipeable, GestureHandlerRootView} from 'react-native-gesture-handler';
 import IconComp from '../../shared/IconComp';
 
 import { KEYMapper as JOBKEYMapper } from './../../services/UserConfig';
@@ -34,8 +34,9 @@ function JobCard({list, onHandlePress, JobEdit, JobDelete}) {
       <>
       
         {jobs?.map(job => (
-        <TouchableOpacity onPress={() => onHandlePress(job.Id)} key={job.Id}>
+          <GestureHandlerRootView  key={job.Id}>
           <Swipeable renderRightActions={()=>renderLeftActions(job.Id)}>
+          <TouchableOpacity onPress={() => onHandlePress(job.Id)}>
           <Row style={[Styles.card]}>
             {job.offline && <Text style={Styles.offline}>Offline</Text> }
             <Image
@@ -69,8 +70,10 @@ function JobCard({list, onHandlePress, JobEdit, JobDelete}) {
               </Row>
             </View>
           </Row>
+         </TouchableOpacity>
           </Swipeable>
-        </TouchableOpacity>
+          </GestureHandlerRootView>
+
       ))}      
     </>
   );
