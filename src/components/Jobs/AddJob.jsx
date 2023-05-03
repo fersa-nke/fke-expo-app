@@ -117,6 +117,10 @@ const AddJob = ({ navigation, route }) => {
         let dateFormate = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours() ).slice(-2) + ("0" + date.getMinutes()).slice(-2) + ("0" + date.getSeconds()).slice(-2);
         let j = `${userData.UserPrefix} - ${dateFormate} - JB `;
         setJobTitle(j);
+        dispatch({
+          type: SHOW_BARCODE_BUTTON,
+          payload:  true
+      });
      }
 
     }, []);
@@ -375,7 +379,7 @@ const AddJob = ({ navigation, route }) => {
                   placeholder="Select Bearing Model"
                   label="Bearing Model"
                   modalTitle="Select Bearing Model"
-                  items={masterData.model}
+                  items={masterData.models}
                   modalObj={{ id: "Id", name: "Name" }}
                 />
                 {errors[BEARINGMODEL] && touched[BEARINGMODEL] && (
