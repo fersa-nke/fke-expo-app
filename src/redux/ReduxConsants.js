@@ -30,7 +30,7 @@ export const GET_REASON_OF_CHANGES = 'GET_REASON_OF_CHANGES';
 export const GET_BRANDS = 'GET_BRANDS';
 export const GET_MODELS = 'GET_MODELS';
 export const GET_BEARING_TYPES = 'GET_BEARING_TYPES';
-
+export const GET_GENERATOR_MODELS = 'GET_GENERATOR_MODELS';
 
 export const GET_API_Mapper = 'GET_API_Mapper';
 

@@ -6,22 +6,23 @@ export const userRoles = {
 };
 
 export const APIConfig = {
-    EXCHANGE: 'Exchange Type',
-    BRAND: 'Brand',
-    MODEL: 'Model',
-    REASONS: 'Reasons',
-    POSITION: 'Shaft Position',
-    PART: 'Part Type'
+    EXCHANGETYPE: 'ExchangeType',
+    BEARINGBRAND: 'BearingBrand',
+    BEARINGMODEL: 'BearingModel',
+    REASONTYPE: 'ReasonType',
+    POSITIONTYPE: 'ShaftPosition',
+    BEARINGTYPE: 'BearingType',
+    GENERATORMODEL: 'GeneratorModel'
 }
 
 export const KEYMapper = {
-    ID: 'Id',
+   ID: 'Id',
    REMOVEDBEARINGBRAND: 'RemovedBearingBrand',
    REMOVEDBEARINGTYPE : 'RemovedBearingType',
    NEWBEARINGBRAND: 'NewBearingBrand',
    NEWBEARINGTYPE: 'NewBearingType',
    POSITION: 'ShaftPosition',
-   REASONS: 'Reasons',
+   REASONS: 'ReasonType',
    EXCHANGETYPE: 'ExchangeType',
    OPERATORID: 'OperatorId',
    CUSTOMERID: 'CustomerId',
@@ -33,10 +34,10 @@ export const KEYMapper = {
    COMMENTS: 'Comments',
    WINDFARM: 'WindFarm',
    JOBID: 'JobId',
-   TITLE: 'Title',
    JOBDATE: 'JobDate',
-   OPERATORNAME: 'Operator Name',
-   GENERATEMODEL: 'GeneralModel',
+   OPERATORNAME: 'OperatorName',
+   CUSTOMERNAME: 'CustomerName',
+   GENERATORMODEL: 'GeneratorModel',
    COMMENTS: 'Comments',
-   REPORTCODE: 'ReportCode'
+   BEARINGMODEL: 'BearingModel'
 };

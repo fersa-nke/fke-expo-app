@@ -25,6 +25,7 @@ import {
   getModels,
   getReasonOfChanges,
   getShaftPositions,
+  getGeneratorModels
 } from "../../redux/Master/MasterActions";
 import { useNavigation } from "@react-navigation/native";
 import { JobsInitialLoader } from "../../shared/InitialLoaders";
@@ -48,6 +49,7 @@ function Jobs() {
   const fetchBrands = () => dispatch(getBrands());
   const fetchModels = () => dispatch(getModels());
   const fetchBearingTypes = () => dispatch(getBearingTypes());
+  const fetchGeneratorModels = () => dispatch(getGeneratorModels());
 
   useEffect(() => {
     dispatch(getJobs());
@@ -57,6 +59,7 @@ function Jobs() {
     fetchBrands();
     fetchModels();
     fetchBearingTypes();
+    fetchGeneratorModels();
     setTimeout(() => {
       setLoading(false);
     }, 200);

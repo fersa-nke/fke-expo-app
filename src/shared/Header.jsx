@@ -33,7 +33,7 @@ const HeaderRight = ({ showSeach = false, isAddPage = false }) => {
   const navigation = useNavigation();
   const [searchModal, setSearchModal] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const showBarCode = useSelector((state) => state.jobReducer.showBarCodeScanButton);
+  const showBarCode = useSelector((state) => state.jobsReducer.showBarCodeScanButton);
 
   const handleLogoutPress = () => {
     const callLogOut = logout();

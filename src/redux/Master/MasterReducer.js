@@ -1,4 +1,4 @@
-import {GET_API_Mapper, GET_KEY_Mapper, GET_EXCHANGE_TYPES, GET_MODELS, GET_REASON_OF_CHANGES, GET_SHAFT_POSITIONS, GET_BEARING_TYPES, GET_BRANDS } from '../ReduxConsants';
+import {GET_API_Mapper, GET_KEY_Mapper, GET_EXCHANGE_TYPES, GET_MODELS, GET_REASON_OF_CHANGES, GET_SHAFT_POSITIONS, GET_BEARING_TYPES, GET_BRANDS, GET_GENERATOR_MODELS } from '../ReduxConsants';
 
 const initialState = {
     exhangeTypes: [],
@@ -7,6 +7,7 @@ const initialState = {
     shaftPositions: [],
     bearingTypes: [],
     brands: [],
+    generatorModels: [],
     apiMapperConfig: [],
     keyMapperConfig: []
 }
@@ -53,6 +54,11 @@ const masterReducer = (state = initialState, action) => {
                 ...state,
                 brands: action.payload
             }
+        case GET_GENERATOR_MODELS:
+                return {
+                    ...state,
+                    generatorModels: action.payload
+        }    
         default:
             return state
     }

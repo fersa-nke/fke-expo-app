@@ -60,7 +60,7 @@ const AddJob = ({ navigation, route }) => {
     JOBID,
     WINDFARM, 
     WINDTURBINE,
-    GENERATEMODEL,
+    GENERATORMODEL,
     REASONS,
     EXCHANGETYPE,
     POSITION,
@@ -72,7 +72,8 @@ const AddJob = ({ navigation, route }) => {
     OPERATORID,
     CUSTOMERID,
     REPORTCODE,
-    OPERATORNAME
+    OPERATORNAME,
+    BEARINGMODEL
     } = JOBKEYMapper;
 
   const initialFormValues = {
@@ -83,7 +84,7 @@ const AddJob = ({ navigation, route }) => {
     [ORNUMBER]: '',
     [IRNUMBER]: '',
     [BATCHNUMBER]: '',
-    [GENERATEMODEL]: '',
+    [GENERATORMODEL]: '',
     [COMMENTS]: '',
     [REASONS]: '',
     [EXCHANGETYPE]: '',
@@ -92,7 +93,7 @@ const AddJob = ({ navigation, route }) => {
     [NEWBEARINGTYPE]: '',
     [REMOVEDBEARINGBRAND]: '',
     [REMOVEDBEARINGTYPE]: '',
-    [REPORTCODE]: ''
+    [BEARINGMODEL]: ''
   };
 
   const [formData, setFormData] = useState(initialFormValues);
@@ -143,9 +144,10 @@ const AddJob = ({ navigation, route }) => {
     [ORNUMBER]: showBarCodeScanButton ? Yup.string() : Yup.string().required("Enter OR Number"),
     [IRNUMBER]: showBarCodeScanButton ? Yup.string() : Yup.string().required("Enter IR Number"),
     [BATCHNUMBER]:  showBarCodeScanButton ? Yup.string() : Yup.string().required("Enter Batch Number"),
+    [BEARINGMODEL]:  showBarCodeScanButton ? Yup.array(Yup.object()) : Yup.array(Yup.object()).required("Select Bearing Model"),
     [WINDFARM]: Yup.string().required("Enter Wind Farm"),
     [WINDTURBINE]: Yup.string(),
-    [GENERATEMODEL]: Yup.string(),
+    [GENERATORMODEL]: Yup.array(Yup.object()),
     [REASONS]: Yup.array(Yup.object()),
     [NEWBEARINGBRAND]: Yup.array(Yup.object()),
     [NEWBEARINGTYPE]: Yup.array(Yup.object()),
@@ -154,7 +156,6 @@ const AddJob = ({ navigation, route }) => {
     [POSITION]: Yup.array(Yup.object()),
     [EXCHANGETYPE]: Yup.array(Yup.object()),
     [COMMENTS]: Yup.string(Yup.string()),
-    [REPORTCODE]: Yup.string(Yup.string())
   });
 
   const getBarCodeScannerPermissions = async () => {
@@ -204,7 +205,7 @@ const AddJob = ({ navigation, route }) => {
   };
 
   const callBack = () => {
-    navigation.navigate('Jobs');
+     navigation.navigate('Jobs');
   }
 
   const handleSubmitPress = (values) => {
@@ -238,6 +239,8 @@ const AddJob = ({ navigation, route }) => {
       [OPERATORNAME]: userData?.Name
     };
     let updateValues = {
+      [GENERATORMODEL]: values[GENERATORMODEL][0] ? values[GENERATORMODEL][0].Id : null,
+      [BEARINGMODEL]: values[BEARINGMODEL][0] ? values[BEARINGMODEL][0].Id : null,
       [EXCHANGETYPE]: values[EXCHANGETYPE][0] ? values[EXCHANGETYPE][0].Id : null,
       [REASONS]: values[REASONS][0] ? values[REASONS][0].Id :  null,
       [POSITION]: values[POSITION][0] ? values[POSITION][0].Id : null,
@@ -254,7 +257,7 @@ const AddJob = ({ navigation, route }) => {
     console.log('submitting data job ------------->',originalData, data);
     
     if(Id) {
-      dispatch(updateJob(data, originalData, Id, callBack));
+      dispatch(updateJob(data, originalData, Id));
     } else {
       dispatch(saveJob(data, originalData, callBack));
     }
@@ -361,6 +364,27 @@ const AddJob = ({ navigation, route }) => {
                       </Text>
                     )}
                   </View>
+                  <View style={{ marginBottom: 20 }}>
+                <Select
+                  selectedValue={values[BEARINGMODEL][0]?.Name}
+                  disabled={false}
+                  onChange={(item) =>{
+                    let obj = {Id: item.Id, Name: item.Name};
+                    setFieldValue(BEARINGMODEL, [obj]);
+                  }}
+                  placeholder="Select Bearing Model"
+                  label="Bearing Model"
+                  modalTitle="Select Bearing Model"
+                  items={masterData.model}
+                  modalObj={{ id: "Id", name: "Name" }}
+                />
+                {errors[BEARINGMODEL] && touched[BEARINGMODEL] && (
+                  <Text style={Styles.validateError}>
+                    {errors[BEARINGMODEL]}
+                  </Text>
+                )}
+              </View>
+
                 </>
               ) : <>
               <Ripple
@@ -473,15 +497,22 @@ const AddJob = ({ navigation, route }) => {
                 )}
               </View>
               <View style={{ marginBottom: 20 }}>
-                <Input
-                  labelName="Generator Model"
-                  placeholder="Enter Generator Model"
-                  handleChangeText={handleChange(GENERATEMODEL)}
-                  value={values[GENERATEMODEL]}
+                <Select
+                  selectedValue={values[GENERATORMODEL][0]?.Name}
+                  disabled={false}
+                  onChange={(item) =>{
+                    let obj = {Id: item.Id, Name: item.Name};
+                    setFieldValue(GENERATORMODEL, [obj]);
+                  }}
+                  placeholder="Select Generator Model"
+                  label="Generator Model"
+                  modalTitle="Select Generator Model"
+                  items={masterData.generatorModels}
+                  modalObj={{ id: "Id", name: "Name" }}
                 />
-                {errors[GENERATEMODEL] && touched[GENERATEMODEL] && (
+                {errors[GENERATORMODEL] && touched[GENERATORMODEL] && (
                   <Text style={Styles.validateError}>
-                    {errors[GENERATEMODEL]}
+                    {errors[GENERATORMODEL]}
                   </Text>
                 )}
               </View>
@@ -587,14 +618,6 @@ const AddJob = ({ navigation, route }) => {
                     {errors[NEWBEARINGTYPE]}
                   </Text>
                 )}
-              </View>
-              <View style={{ marginBottom: 20 }}>
-                <Input
-                  labelName="Report Code"
-                  placeholder="Enter Report Code"
-                  handleChangeText={handleChange(REPORTCODE)}
-                  value={values[REPORTCODE]}
-                />
               </View>
               <View style={{ marginBottom: 20 }}>
                 <Input

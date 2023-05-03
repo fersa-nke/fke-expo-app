@@ -29,7 +29,7 @@ export default API = {
       },
       body: JSON.stringify(data),
     });
-    return response.json(); // parses JSON response into native JavaScript objects
+    return response; // parses JSON response into native JavaScript objects
   },
 
   DELETE: async function (url = '', token = '', params = {}) {

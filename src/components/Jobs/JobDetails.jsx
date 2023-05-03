@@ -46,6 +46,7 @@ const DetailsView = () => {
         <ListItem label="Batch Number" value={job[JOBKEYMapper.BATCHNUMBER]} />
         <ListItem label="IR Number" value={job[JOBKEYMapper.IRNUMBER]} />
         <ListItem label="OR Number" value={job[JOBKEYMapper.ORNUMBER]} />
+        <ListItem label="Bearing Model" value={job[JOBKEYMapper.BEARINGMODEL]} />
     </>
     }
         <ListItem label="Exchange Type" value={job[JOBKEYMapper.EXCHANGETYPE] ? job[JOBKEYMapper.EXCHANGETYPE][0]?.Name : ''} />
@@ -57,7 +58,7 @@ const DetailsView = () => {
         <ListItem label="Removed Bearing Brand" value={job[JOBKEYMapper.REMOVEDBEARINGBRAND] ? job[JOBKEYMapper.REMOVEDBEARINGBRAND][0]?.Name: ''} />
         <ListItem label="Removed Bearing Type" value={job[JOBKEYMapper.REMOVEDBEARINGTYPE] ? job[JOBKEYMapper.REMOVEDBEARINGTYPE][0]?.Name: ''} />
         <ListItem label="New Bearing Brand" value={job[JOBKEYMapper.NEWBEARINGBRAND] ? job[JOBKEYMapper.NEWBEARINGBRAND][0]?.Name: ''} />
-        <ListItem label="New Bearing Type" value={job[JOBKEYMapper.NEWBEARINGTYPE] ? job[JOBKEYMapper.NEWBEARINGBRAND][0]?.Name: ''} />
+        <ListItem label="New Bearing Type" value={job[JOBKEYMapper.NEWBEARINGTYPE] ? job[JOBKEYMapper.NEWBEARINGTYPE][0]?.Name: ''} />
         <ListItem label="Comments" value={job[JOBKEYMapper.COMMENTS]} />
       </View> }
     </ScrollView>

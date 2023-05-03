@@ -1,6 +1,6 @@
 
 import API from '../../services/Api';
-import { LOGIN_SUCCESS, GET_API_Mapper, ADD_SIGNED_USER_DATA, GET_KEY_Mapper, GET_BEARING_TYPES, GET_BRANDS, GET_EXCHANGE_TYPES, GET_MODELS, GET_REASON_OF_CHANGES, GET_SHAFT_POSITIONS } from '../ReduxConsants';
+import { LOGIN_SUCCESS, GET_API_Mapper, GET_GENERATOR_MODELS, ADD_SIGNED_USER_DATA, GET_KEY_Mapper, GET_BEARING_TYPES, GET_BRANDS, GET_EXCHANGE_TYPES, GET_MODELS, GET_REASON_OF_CHANGES, GET_SHAFT_POSITIONS } from '../ReduxConsants';
 // Define action types
 import { APIConfig, KEYMapper } from '../../services/UserConfig';
 import { Toast } from 'toastify-react-native';
@@ -15,34 +15,38 @@ export const getKEYMapper = (token = '') => {
 };
 
 export const getExchangeTypes = () => {
-    return callAPI(APIConfig.EXCHANGE, GET_EXCHANGE_TYPES);
+    return callAPI(APIConfig.EXCHANGETYPE, GET_EXCHANGE_TYPES);
 };
 
 export const getShaftPositions = () => {
-    return callAPI(APIConfig.POSITION, GET_SHAFT_POSITIONS);
+    return callAPI(APIConfig.POSITIONTYPE, GET_SHAFT_POSITIONS);
 };
 
 export const getReasonOfChanges = () => {
-    return callAPI(APIConfig.REASONS, GET_REASON_OF_CHANGES);
+    return callAPI(APIConfig.REASONTYPE, GET_REASON_OF_CHANGES);
 };
 
 export const getBrands = () => {
-    return callAPI(APIConfig.BRAND, GET_BRANDS);
+    return callAPI(APIConfig.BEARINGBRAND, GET_BRANDS);
 };
 
 export const getModels = () => {
-    return callAPI(APIConfig.MODEL, GET_MODELS);
+    return callAPI(APIConfig.BEARINGMODEL, GET_MODELS);
 };
 
 export const getBearingTypes = () => {
-    return callAPI(APIConfig.PART, GET_BEARING_TYPES);
+    return callAPI(APIConfig.BEARINGTYPE, GET_BEARING_TYPES);
+};
+
+export const getGeneratorModels = () => {
+    return callAPI(APIConfig.GENERATORMODEL, GET_GENERATOR_MODELS);
 };
 
 export function callAPI(URL, dispatchType, token = '') {
     return async (dispatch, getState) => {
         token = token ? token : getState().userReducer.token;
         console.log(URL, 'api config urls');
-        API.GET(`nocodb/data/NKE-Tracebility/${URL}`, token)
+        API.GET(`nocodb/data/FG-MRO-Tracker/${URL}`, token)
             .then(res => {
                 //Hide Loader
                 if (res) {

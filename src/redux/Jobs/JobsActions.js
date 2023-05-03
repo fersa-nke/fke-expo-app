@@ -6,7 +6,7 @@ import { Toast } from 'toastify-react-native';
 import { KEYMapper as JobMapper } from '../../services/UserConfig';
 
 // Construct a BASE URL for API endpoint
-const BASE_URL = `nocodb/data/NKE-Tracebility/Jobs`;
+const BASE_URL = `nocodb/data/FG-MRO-Tracker/TrackerJobs`;
 export const getJobs = () => {
     return async (dispatch, getState) => {
     const token = getState().userReducer.token;
@@ -22,7 +22,7 @@ export const getJobs = () => {
         payload: true,
       });
    // alert('calling once api jobs,'+pageNo+','+pageSize);
-    API.GET(`${BASE_URL}`, token, {offset : offSet, limit: pageSize, sort: `-${JobMapper.JOBDATE},-${JobMapper.ID}`})
+    API.GET(`${BASE_URL}`, token, {sort: `-${JobMapper.JOBDATE},-${JobMapper.ID}`})
         .then(res => {
             console.log('job list lenght', res.list.length, res.pageInfo.isLastPage);
             dispatch({
@@ -84,7 +84,7 @@ export const saveJob = (formData, jobData, callBack) => {
                   type: ADD_JOB_ITEM,
                   payload: obj,
                 });
-                callBack();
+                callBack(obj.Id);
             } else {
                 Toast.error('Unable to save job');
             }
@@ -103,7 +103,7 @@ export const saveJob = (formData, jobData, callBack) => {
 };
 
 
-export const updateJob = (formData, jobData, Id, navigation) => {
+export const updateJob = (formData, jobData, Id) => {
     return async (dispatch, getState) => {
       const token = getState().userReducer.token;
         dispatch({
@@ -112,23 +112,21 @@ export const updateJob = (formData, jobData, Id, navigation) => {
         });
       API.PATCH(`${BASE_URL}/${Id}`, token, formData)
           .then(res => {
-            console.log('update job', res);
             //Hide Loader
             dispatch({
                 type: LOADING_jOBS,
                 payload: false,
             });
-            if (res) {
+            if (res && res.ok) {
                 let jobs = getState().jobsReducer.jobs;
                 let jobIndex = jobs.findIndex(x => x.Id === Id);
                 jobs[jobIndex] = jobData;
-                console.log('updated jobs',jobIndex,  jobs);
                 Toast.success('Job Updated!');
                 dispatch({
                   type: UPDATE_JOB_ITEM,
                   payload: jobs
                 });
-                navigation();
+                // navigation();
             } else {
                 Toast.error('Unable to save job');
             }
