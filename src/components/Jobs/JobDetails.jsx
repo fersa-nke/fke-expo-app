@@ -33,6 +33,7 @@ const DetailsView = () => {
     useEffect(() => {
      if(selectedJobId && jobs && jobs.length > 0) {
       const filterJob = jobs.filter(j => j.Id === selectedJobId)[0];
+      console.log(filterJob);
       setJob(filterJob);
      }
     }, []);
@@ -46,7 +47,7 @@ const DetailsView = () => {
         <ListItem label="Batch Number" value={job[JOBKEYMapper.BATCHNUMBER]} />
         <ListItem label="IR Number" value={job[JOBKEYMapper.IRNUMBER]} />
         <ListItem label="OR Number" value={job[JOBKEYMapper.ORNUMBER]} />
-        <ListItem label="Bearing Model" value={job[JOBKEYMapper.BEARINGMODEL]} />
+        <ListItem label="Bearing Model" value={job[JOBKEYMapper.BEARINGMODEL] ?  job[JOBKEYMapper.BEARINGMODEL][0]?.Name : ''} />
     </>
     }
         <ListItem label="Exchange Type" value={job[JOBKEYMapper.EXCHANGETYPE] ? job[JOBKEYMapper.EXCHANGETYPE][0]?.Name : ''} />

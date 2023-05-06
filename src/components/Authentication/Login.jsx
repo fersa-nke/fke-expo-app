@@ -19,6 +19,7 @@ import { login } from "../../redux/Login/LoginActions";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import Message from "../../shared/Message";
+import { LOGIN_LOADING } from "../../redux/ReduxConsants";
 
 const Login = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
@@ -26,6 +27,7 @@ const Login = ({ navigation }) => {
   const isLoginFailed = useSelector((state) => state.userReducer.failed);
   const loginMessage = useSelector((state) => state.userReducer.message);
   const loader = useSelector((state) => state.userReducer.loading);
+  const loginEmail = useSelector((state) => state.userReducer?.user?.Email);
   const [operatorLogin, setOperatorLogin] = useState(false);
   const [customerLogin, setCustomerLogin] = useState(true);
   const [showCustomerPswd, setShowCustomerPswd] = useState(true);
@@ -35,17 +37,27 @@ const Login = ({ navigation }) => {
   console.log(isLogin, "user loggin details");
   const dispatch = useDispatch();
 
-  const customerLoginSchema = Yup.object().shape({
-    username: Yup.string()
-      .email("Enter Customer Id")
-      .required("Enter Customer Id"),
-    password: Yup.string().required("Enter Password."),
-    //.min(8, "Password is too short - should be 8 chars minimum.")
-    //.matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
-  });
+  // const customerLoginSchema = Yup.object().shape({
+  //   username: Yup.string()
+  //     .email("Enter Customer Id")
+  //     .required("Enter Customer Id"),
+  //   password: Yup.string().required("Enter Password."),
+  //   //.min(8, "Password is too short - should be 8 chars minimum.")
+  //   //.matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
+  // });
 
-  const operatorLoginSchema = Yup.object().shape({
-    username: Yup.string()
+  // const operatorLoginSchema = Yup.object().shape({
+  //   username: Yup.string()
+  //     .email("Enter Operator Id")
+  //     .required("Enter Operator Id"),
+  //   password: Yup.string().required("Enter Password."),
+  //   //.min(8, "Password is too short - should be 8 chars minimum.")
+  //   //.matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
+  // });
+
+  
+  const loginSchema = Yup.object().shape({
+    email: Yup.string()
       .email("Enter Operator Id")
       .required("Enter Operator Id"),
     password: Yup.string().required("Enter Password."),
@@ -54,14 +66,16 @@ const Login = ({ navigation }) => {
   });
 
   useEffect(() => {
+
     setTimeout(() => {
-      setLoading(false);
+      dispatch({ type: LOGIN_LOADING, payload: false });
     }, 100);
+
   }, []);
 
   const handleSubmitPress = (values) => {
     let d = {
-      username: values.username,
+      email: values.email,
       password: values.password,
       check_textInputChange: false,
       isValidUser: true,
@@ -107,7 +121,7 @@ const Login = ({ navigation }) => {
           />
         </View>
         <View style={{ padding: 16 }}>
-          <View style={Styles.tabRow}>
+          {/* <View style={Styles.tabRow}>
             <Ripple
               style={[
                 Styles.tab,
@@ -126,32 +140,31 @@ const Login = ({ navigation }) => {
             >
               <Text style={Styles.tabText}>Operator</Text>
             </Ripple>
-          </View>
+          </View> */}
           {isLoginFailed && <Message title="Warning!" description={loginMessage} />}
-          {customerLogin && (
             <Formik
               initialValues={{
-                username: "",
+                email: loginEmail ? loginEmail : '',
                 password: "",
               }}
               onSubmit={(values) => {
                 handleSubmitPress(values);
               }}
-              validationSchema={customerLoginSchema}
+              validationSchema={loginSchema}
             >
               {({ handleChange, errors, values, handleSubmit, touched }) => (
                 <>
                   <View style={{ marginBottom: 20 }}>
                     <Input
-                      labelName="Customer ID"
-                      placeholder="Enter Customer ID"
+                      labelName="Email ID"
+                      placeholder="Enter Email ID"
                       mand={true}
-                      handleChangeText={handleChange("username")}
-                      value={values.username}
+                      handleChangeText={handleChange("email")}
+                      value={values.email}
                     />
-                    {errors.username && touched.username && (
+                    {errors.email && touched.email && (
                       <Text style={Styles.validateError}>
-                        {errors.username}
+                        {errors.email}
                       </Text>
                     )}
                   </View>
@@ -180,60 +193,6 @@ const Login = ({ navigation }) => {
                 </>
               )}
             </Formik>
-          )}
-          {operatorLogin && (
-            <Formik
-              initialValues={{
-                username: "",
-                password: "",
-              }}
-              onSubmit={(values) => {
-                handleSubmitPress(values);
-              }}
-              validationSchema={operatorLoginSchema}
-            >
-              {({ handleChange, errors, values, handleSubmit, touched }) => (
-                <>
-                  <View style={{ marginBottom: 20 }}>
-                    <Input
-                      labelName="Operator ID"
-                      placeholder="Enter Operator ID"
-                      mand={true}
-                      handleChangeText={handleChange("username")}
-                      value={values.username}
-                    />
-                    {errors.username && touched.username && (
-                      <Text style={Styles.validateError}>
-                        {errors.username}
-                      </Text>
-                    )}
-                  </View>
-                  <View style={{ marginBottom: 24 }}>
-                    <Input
-                      labelName="Password"
-                      placeholder="Enter Password"
-                      mand={true}
-                      handleChangeText={handleChange("password")}
-                      value={values.password}
-                      secureTextEntry={showOperatorPswd}
-                      appendIconName={
-                        showOperatorPswd === true ? "Eye" : "Eyeoff"
-                      }
-                      appendIconSize={showOperatorPswd === true ? 24 : 22}
-                      appendIconColor={theme.textBlue}
-                      handlePress={() => setShowOperatorPswd(!showOperatorPswd)}
-                    />
-                    {errors.password && touched.password && (
-                      <Text style={Styles.validateError}>
-                        {errors.password}
-                      </Text>
-                    )}
-                  </View>
-                  <Button text="login" onPress={() => handleSubmit()} />
-                </>
-              )}
-            </Formik>
-          )}
           <Image
             source={fersa_logo}
             style={{ marginVertical: 24, alignSelf: "center" }}

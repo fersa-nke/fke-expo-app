@@ -17,7 +17,9 @@ import Ripple from "react-native-material-ripple";
 import Select from "../../shared/Select";
 import { useSelector, useDispatch } from "react-redux";
 import { saveJob, updateJob } from "../../redux/Jobs/JobsActions";
-import { BarCodeScanner } from "expo-barcode-scanner";
+// import { BarCodeScanner } from "expo-barcode-scanner";
+import { Camera, CameraType } from 'expo-camera';
+import BarcodeMask from 'react-native-barcode-mask';
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { FieldInitialLoader } from "../../shared/InitialLoaders";
 import { Formik } from "formik";
@@ -26,7 +28,7 @@ import Loader from '../../shared/Loader';
 import AuthService from "../../services/AuthService";
 import { KEYMapper as JOBKEYMapper } from './../../services/UserConfig';
 import { Toast } from 'toastify-react-native';
-import {SHOW_BARCODE_BUTTON} from '../../redux/ReduxConsants';
+import {SET_JOB_TITLE, SHOW_BARCODE_BUTTON} from '../../redux/ReduxConsants';
 
 const AddJob = ({ navigation, route }) => {
   const { Id } = route.params;
@@ -49,9 +51,11 @@ const AddJob = ({ navigation, route }) => {
   let customerId = AuthService.isOperator() ? userData?.CustomerId : userData?.UserId;
   let operatorId = AuthService.isOperator() ? userData?.UserId : null;
   const [jobTitle, setJobTitle] = useState('');
-
+  const [torch, setTorch] = useState(false);
+  const [permission, requestPermission] = Camera.useCameraPermissions();
   const {
     TITLE,
+    CUSTOMER,
     DATAMATRIX, 
     ORNUMBER,
     IRNUMBER,
@@ -99,10 +103,11 @@ const AddJob = ({ navigation, route }) => {
   const [formData, setFormData] = useState(initialFormValues);
   
     useEffect(() => {
-     if(Id && selectedJobId && jobs && jobs.length > 0) {
+     let j = '';
+      if(Id && selectedJobId && jobs && jobs.length > 0) {
       const filterJob = jobs.filter(j => j.Id === selectedJobId)[0];
       console.log('fetched job details', customerId, operatorId, selectedJobId , filterJob);
-       let formValues = {...filterJob};
+      let formValues = {...filterJob};
       setFormData(formValues);
       setResult(filterJob[DATAMATRIX]);
       setStartDate(new Date(filterJob[JOBDATE]));
@@ -110,18 +115,23 @@ const AddJob = ({ navigation, route }) => {
           type: SHOW_BARCODE_BUTTON,
           payload: filterJob[DATAMATRIX] ? true : false,
       });
-      let j = `${filterJob[JOBID]}`;
-      setJobTitle(j);
+       j = `${filterJob[JOBID]}`;
      } else {
         let date = new Date();
         let dateFormate = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours() ).slice(-2) + ("0" + date.getMinutes()).slice(-2) + ("0" + date.getSeconds()).slice(-2);
-        let j = `${userData.UserPrefix} - ${dateFormate} - JB `;
-        setJobTitle(j);
+        j = `${userData.UserPrefix} - ${dateFormate} - JB `;
         dispatch({
           type: SHOW_BARCODE_BUTTON,
           payload:  true
       });
      }
+     setJobTitle(j);
+     dispatch(
+      {
+        type: SET_JOB_TITLE,
+        payload: j
+      }
+     )
 
     }, []);
   
@@ -163,13 +173,15 @@ const AddJob = ({ navigation, route }) => {
   });
 
   const getBarCodeScannerPermissions = async () => {
-    const { status } = await BarCodeScanner.requestPermissionsAsync();
+    const { status } = await Camera.useCameraPermissions();
     setHasPermission(status === "granted");
   };
 
+
+
   const showScanner = async () => {
     setScanLoading(true);
-    await getBarCodeScannerPermissions();
+    // await getBarCodeScannerPermissions();
     setScan(true);
     setScanLoading(false);
   };
@@ -187,20 +199,37 @@ const AddJob = ({ navigation, route }) => {
     // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
   };
 
-  if (scanLoading && hasPermission === null) {
+  // if (scanLoading && hasPermission === null) {
+  //   return <Loader loading={'true'} />;
+  // }
+  // if (scan && hasPermission === false) {
+  //   Toast.error('No access to camera');
+  //   return <Text>No access to camera</Text>;
+  // }
+
+  if (!permission) {
+    // Camera permissions are still loading
     return <Loader loading={'true'} />;
   }
-  if (scan && hasPermission === false) {
-    Toast.error('No access to camera');
-    return <Text>No access to camera</Text>;
+
+  if (!permission.granted) {
+    // Camera permissions are not granted yet
+    return (
+      <View style={styles.container}>
+        <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
+        <Button onPress={requestPermission} title="grant permission" />
+      </View>
+    );
   }
 
   const onSuccess = (type, data) => {
     if (type && data != null) {
       setResult(data);
       setScan(false);
+      setScanned(false);
     } else {
       setScan(true);
+      setScanned(false);
     }
   };
 
@@ -213,7 +242,7 @@ const AddJob = ({ navigation, route }) => {
   }
 
   const handleSubmitPress = (values) => {
-    console.log(values, AuthService.isOperator());
+    console.log(values);
     // let data = {
     //   DataMatirx: result,
     //   Date: startDate ? startDate.toISOString().split("T")[0]: '',
@@ -239,6 +268,7 @@ const AddJob = ({ navigation, route }) => {
       [JOBDATE]: startDate ? startDate.toISOString().split("T")[0]: '',
       [JOBID]: jobTitle,
       [CUSTOMERID]: AuthService.isOperator() ? userData?.CustomerId : userData?.UserId,
+      [CUSTOMER]: AuthService.isOperator() ? userData?.CustomerId : userData?.UserId,
       [OPERATORID]: AuthService.isOperator() ? userData?.UserId : null,
       [OPERATORNAME]: userData?.Name
     };
@@ -253,6 +283,7 @@ const AddJob = ({ navigation, route }) => {
       [REMOVEDBEARINGBRAND]: values[REMOVEDBEARINGBRAND][0] ? values[REMOVEDBEARINGBRAND][0].Id : null,
       [REMOVEDBEARINGTYPE]: values[REMOVEDBEARINGTYPE][0] ? values[REMOVEDBEARINGTYPE][0].Id : null,
     };
+
     let data = {
       ...originalData,
       ...updateValues
@@ -277,34 +308,52 @@ const AddJob = ({ navigation, route }) => {
 
       {scan ? (
         <View style={Styles.container}>
-          <BarCodeScanner
+          <Camera
             style={[
-              Styles.container,
               {
                 flex: 1,
                 width: Dimensions.get("window").width,
                 height: Dimensions.get("window").height - 140,
               },
             ]}
+            flashMode={torch ? Camera.Constants.FlashMode.torch : Camera.Constants.FlashMode.off}
             onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
           >
-            <View style={Styles.layerTop} />
-            <View style={Styles.layerCenter}>
-              <View style={Styles.layerLeft} />
-              <View style={Styles.focused} />
-              <View style={Styles.layerRight} />
-            </View>
-            <View style={Styles.layerBottom}>
-              <Button
+         
+       <BarcodeMask width={300} height={300} edgeBorderWidth={1} outerMaskOpacity={0.8} />
+           <View
+           style={
+            [StyleSheet.absoluteFill,
+            {
+              bottom: 0,
+              top:'73%',
+            }
+            ]
+           }>
+              <Ripple
+                onPress={()=>{setTorch(!torch)}}
+                style={{ alignSelf: "center", marginBottom: 24, marginTop: 10 }}
+              >
+                <Icon
+                  name="DataMatrix"
+                  size={60}
+                  color={torch ? theme.textWhite : theme.textGray}
+                  style={{ alignSelf: "center" }}
+                />
+              </Ripple>
+           <Button
                 text="Close"
                 style={{ margin: 40 }}
+                type={'secondary'}
                 onPress={() => {
                   setScan(false), setScanned(false);
                 }}
               />
-            </View>
-          </BarCodeScanner>
 
+            </View> 
+
+          </Camera>
+      
           {scanned && (
             <Button
               text="Tap to Scan Again"
@@ -323,10 +372,10 @@ const AddJob = ({ navigation, route }) => {
         >
           {({ handleChange, errors, values, handleSubmit, touched, setFieldValue }) => (
             <View style={GBStyles.container}>
-               <View style={{ marginBottom: 20 }}>
+               {/* <View style={{ marginBottom: 20 }}>
                <Text>{jobTitle}</Text>
               </View>
-              
+               */}
               {(!showBarCodeScanButton || barcodeReaderFailed) ? (
                 <>
                   <View style={{ marginBottom: 20 }}>

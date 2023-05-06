@@ -35,7 +35,7 @@ import NoData from "../../shared/NoData";
 import nodata from "../../assets/images/nodata.png";
 import Loader from '../../shared/Loader';
 
-function Jobs() {
+function Jobs({route}) {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -50,9 +50,10 @@ function Jobs() {
   const fetchModels = () => dispatch(getModels());
   const fetchBearingTypes = () => dispatch(getBearingTypes());
   const fetchGeneratorModels = () => dispatch(getGeneratorModels());
+  const fetchJobs = () => dispatch(getJobs());
 
   useEffect(() => {
-    dispatch(getJobs());
+    fetchJobs();
     fetchExchangeTypes();
     fetchShaftPositions();
     fetchReasonOfChanges();
@@ -63,7 +64,6 @@ function Jobs() {
     setTimeout(() => {
       setLoading(false);
     }, 200);
-
   }, []);
 
   

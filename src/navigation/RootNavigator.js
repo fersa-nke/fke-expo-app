@@ -34,6 +34,7 @@ const RootNavigator = () => {
   const fetchKEYMapper = () => dispatch(getKEYMapper());
   const keyMapper = useSelector((state)=> state.masterReducer.keyMapperConfig);
   const apiMapper = useSelector((state)=> state.masterReducer.apiMapperConfig);
+  const jobTitle = useSelector((state)=> state.jobsReducer.jobTitle);
 
 
   useEffect(() => {
@@ -76,7 +77,7 @@ const RootNavigator = () => {
               name="AddJob"
               component={AddJob}
               options={{
-                title: 'Add Job',
+                title: `${jobTitle}`,
                 headerRight: () => <HeaderRight isAddPage={true} />,
                 headerTitleStyle: {
                   fontSize: 16,
@@ -88,7 +89,7 @@ const RootNavigator = () => {
               name="EditJob"
               component={AddJob}
               options={{
-                title: 'Edit Job',
+                title: `${jobTitle}`,
                 headerRight: () => <HeaderRight isAddPage={true} />,
                 headerTitleStyle: {
                   fontSize: 16,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
 import theme from '../../assets/theme';
 import Icon from '../../shared/IconComp';
@@ -16,6 +16,26 @@ import { KEYMapper as JOBKEYMapper } from './../../services/UserConfig';
 function JobCard({list, onHandlePress, JobEdit, JobDelete}) {
   const jobs = list;
   const navigation = useNavigation();
+  const [currentlyOpenSwipeable, setCurrentlyOpenSwipeable] = useState(null);
+  
+  useState(() => {
+    if (currentlyOpenSwipeable) {
+      currentlyOpenSwipeable.recenter();
+    }
+  }, []);
+
+  const onOpen = (event, gestureState, swipeable) => {
+    console.log(event, gestureState, swipeable);
+    if (currentlyOpenSwipeable && currentlyOpenSwipeable !== swipeable) {
+      currentlyOpenSwipeable.recenter();
+    }
+    setCurrentlyOpenSwipeable(swipeable);
+  };
+
+  const onClose = () => {
+    console.log('hi');
+    setCurrentlyOpenSwipeable(null);
+  };
 
   const renderLeftActions = (Id) => {
     return (
@@ -35,7 +55,8 @@ function JobCard({list, onHandlePress, JobEdit, JobDelete}) {
       
         {jobs?.map(job => (
           <GestureHandlerRootView  key={job.Id}>
-          <Swipeable renderRightActions={()=>renderLeftActions(job.Id)}>
+          <Swipeable renderRightActions={()=>renderLeftActions(job.Id)} onRightButtonsOpenRelease={onOpen}
+          onRightButtonsCloseRelease={onClose}>
           <TouchableOpacity onPress={() => onHandlePress(job.Id)}>
           <Row style={[Styles.card]}>
             {job.offline && <Text style={Styles.offline}>Offline</Text> }
@@ -43,7 +64,7 @@ function JobCard({list, onHandlePress, JobEdit, JobDelete}) {
               source={job[JOBKEYMapper.DATAMATRIX] ? BarCode : defaultIcon}
               width={40}
               height={40}
-              style={{marginTop: 0 , marginLeft: 3, marginBottom: 5, marginRight: 14 }}
+              style={{marginTop: 0 , marginLeft: 3, marginBottom: 5, marginRight: 14, width:80 }}
               resizeMethod="auto"
               resizeMode="cover"
             />

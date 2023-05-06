@@ -39,7 +39,8 @@ export default function userReducer(state = initialState, action) {
         case LOGIN_LOADING:
             return {
                 ...state,
-                loading: true
+                loading: action.payload,
+                message: ''
             }
         case LOGOUT: 
             return {

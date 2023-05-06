@@ -132,13 +132,12 @@ export const updateJob = (formData, jobData, Id) => {
             }
         })
         .catch((error) => {
-            
+            console.log('error-------------->', error);
             dispatch({
                 type: LOADING_jOBS,
                 payload: false,
             });
-            console.log('error-------------->', error);
-            Toast.error('error -------------->'+error);
+          //  Toast.error('error -------------->'+error);
             //Hide Loader
       }); // JSON data parsed by `data.json()` call
       }

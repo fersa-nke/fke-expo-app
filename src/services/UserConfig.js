@@ -26,6 +26,7 @@ export const KEYMapper = {
    EXCHANGETYPE: 'ExchangeType',
    OPERATORID: 'OperatorId',
    CUSTOMERID: 'CustomerId',
+   CUSTOMER: 'Customer',
    WINDTURBINE: 'WindTurbine',
    DATAMATRIX: 'DataMatrix',
    BATCHNUMBER: 'BatchNumber',

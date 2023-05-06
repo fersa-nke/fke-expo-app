@@ -8,13 +8,14 @@ import  { callAPI, getAPIMapper ,getKEYMapper} from "../Master/MasterActions";
 export function login(data) {
   return async function loginThunk(dispatch, getState) {
     dispatch({ type: LOGIN_LOADING, payload: true });
-    const response = await Authservice.postData(`${BASE_URL}`, { Email: data.username, Password: data.password });
+    const response = await Authservice.postData(`${BASE_URL}`, { Email: data.email, Password: data.password });
     if (response.success) {
       response.UserPrefix = 'VZ'; // this will update by payload
       dispatch({ type: ADD_SIGNED_USER_DATA, payload: response });
       Authservice.setRole(response.Role);
       getUserInitConfig(dispatch);
     } else {
+      console.log(response);
       dispatch({ type: LOGIN_FAILED, payload: response });
     }
   }
@@ -38,11 +39,11 @@ export function logout() {
       payload: null
     });
     Toast.success('Logout Success!');
-    dispatch({ 
-			type: PURGE,
-			key: "root",    // Whatever you chose for the "key" value when initialising redux-persist in the **persistCombineReducers** method - e.g. "root"
-		   result: () => null              // Func expected on the submitted action. 
-		});  
+    // dispatch({ 
+		// 	type: PURGE,
+		// 	key: "root",    // Whatever you chose for the "key" value when initialising redux-persist in the **persistCombineReducers** method - e.g. "root"
+		//    result: () => null              // Func expected on the submitted action. 
+		// });  
 
   }
 };
