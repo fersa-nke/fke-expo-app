@@ -215,7 +215,7 @@ const AddJob = ({ navigation, route }) => {
   if (!permission.granted) {
     // Camera permissions are not granted yet
     return (
-      <View style={styles.container}>
+      <View style={GBStyles.container}>
         <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
         <Button onPress={requestPermission} title="grant permission" />
       </View>
@@ -307,7 +307,7 @@ const AddJob = ({ navigation, route }) => {
      <Loader loading={loading} />
 
       {scan ? (
-        <View style={Styles.container}>
+        <View>
           <Camera
             style={[
               {
@@ -332,18 +332,18 @@ const AddJob = ({ navigation, route }) => {
            }>
               <Ripple
                 onPress={()=>{setTorch(!torch)}}
-                style={{ alignSelf: "center", marginBottom: 24, marginTop: 10 }}
+                style={[Styles.torchBtn, {backgroundColor: torch ? 'rgba(255,255,255,1)': 'rgba(255,255,255,0.2)'}]}
               >
                 <Icon
-                  name="DataMatrix"
-                  size={60}
-                  color={torch ? theme.textWhite : theme.textGray}
+                  name="TorchOn"
+                  size={24}
+                  color={torch ? theme.textBlue : theme.textWhite}
                   style={{ alignSelf: "center" }}
                 />
               </Ripple>
            <Button
                 text="Close"
-                style={{ margin: 40 }}
+                style={{ margin: 24 }}
                 type={'secondary'}
                 onPress={() => {
                   setScan(false), setScanned(false);
@@ -756,6 +756,10 @@ const Styles = StyleSheet.create({
     color: theme.textRed,
     marginTop: 4,
   },
+  torchBtn: {
+    width: 64, height: 64, borderRadius: 16, padding: 12,
+    alignSelf: 'center', marginTop: 16, justifyContent: 'center'
+  }
 });
 
 export default AddJob;
