@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef, createRef} from 'react';
 import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
 import theme from '../../assets/theme';
 import Icon from '../../shared/IconComp';
@@ -17,33 +17,37 @@ function JobCard({list, onHandlePress, JobEdit, JobDelete}) {
   const jobs = list;
   const navigation = useNavigation();
   const [currentlyOpenSwipeable, setCurrentlyOpenSwipeable] = useState(null);
-  
-  useState(() => {
-    if (currentlyOpenSwipeable) {
-      currentlyOpenSwipeable.recenter();
-    }
-  }, []);
+  const jobRow = useRef([]);
 
-  const onOpen = (event, gestureState, swipeable) => {
-    console.log(event, gestureState, swipeable);
-    if (currentlyOpenSwipeable && currentlyOpenSwipeable !== swipeable) {
-      currentlyOpenSwipeable.recenter();
+  const onOpen = (index) => {
+    console.log(index);
+    let currswipeable = jobRow[index];
+    if (currentlyOpenSwipeable && currentlyOpenSwipeable !== currswipeable) {
+        currentlyOpenSwipeable.close();
     }
-    setCurrentlyOpenSwipeable(swipeable);
+    setCurrentlyOpenSwipeable(currswipeable);
   };
 
   const onClose = () => {
-    console.log('hi');
-    setCurrentlyOpenSwipeable(null);
+    // setCurrentlyOpenSwipeable(null);
   };
+
+  const closeSwipe = () => {
+    console.log('close opened swipe');
+    if (currentlyOpenSwipeable) {
+      currentlyOpenSwipeable.close();
+    }
+  };
+
+
 
   const renderLeftActions = (Id) => {
     return (
       <Row style={{height: 80, marginTop: "3%", justifyContent: 'center', alignItems: 'center', backgroundColor: "#f2f2f2"}}>
-        <Ripple style={{width: 70, height: 80,justifyContent: 'center', alignItems: 'center', backgroundColor: theme.bgBlue}} onPress={()=>JobEdit(Id)} >
+        <Ripple style={{width: 70, height: 80,justifyContent: 'center', alignItems: 'center', backgroundColor: theme.bgBlue}} onPress={()=> {closeSwipe();JobEdit(Id)}} >
         <IconComp name="Edit" size={24} color={theme.textWhite} />
       </Ripple>
-      <Ripple style={{width: 70, height: 80,justifyContent: 'center', alignItems: 'center', backgroundColor: 'red'}}  onPress={()=>JobDelete(Id)}>
+      <Ripple style={{width: 70, height: 80,justifyContent: 'center', alignItems: 'center', backgroundColor: 'red'}}  onPress={()=>{closeSwipe();JobDelete(Id)}}>
         <IconComp name="Delete" size={24} color={theme.textWhite} />
       </Ripple>
       </Row>
@@ -53,10 +57,10 @@ function JobCard({list, onHandlePress, JobEdit, JobDelete}) {
   return (
       <>
       
-        {jobs?.map(job => (
+        {jobs?.map((job, index) => (
           <GestureHandlerRootView  key={job.Id}>
-          <Swipeable renderRightActions={()=>renderLeftActions(job.Id)} onRightButtonsOpenRelease={onOpen}
-          onRightButtonsCloseRelease={onClose}>
+          <Swipeable ref={ref => jobRow[index] = ref} renderRightActions={()=>renderLeftActions(job.Id)} onSwipeableOpen={() => onOpen(index)}
+          onSwipeableClose={() => onClose(index)}>
           <TouchableOpacity onPress={() => onHandlePress(job.Id)}>
           <Row style={[Styles.card]}>
             {job.offline && <Text style={Styles.offline}>Offline</Text> }
