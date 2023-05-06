@@ -148,8 +148,17 @@ export const removeJob = (Id) => {
     console.log(Id);
   return async (dispatch, getState) => {
     const token = getState().userReducer.token;
+    dispatch({
+        type: LOADING_jOBS,
+        payload: true,
+    });
     API.DELETE(`${BASE_URL}/${Id}`, token)
         .then(res => {
+            dispatch({
+                type: LOADING_jOBS,
+                payload: false,
+            });
+       
             //Hide Loader
             if (res && res.ok) {
                 dispatch({
@@ -163,8 +172,11 @@ export const removeJob = (Id) => {
             }
         })
         .catch((error) => {
-            Toast.error('error -------------->'+error);
-            console.log('error -------------->', error);
+            Toast.error('something went wrong in delete actiion');
+            dispatch({
+                type: LOADING_jOBS,
+                payload: false,
+            });
             //Hide Loader
     }); // JSON data parsed by `data.json()` call
     }

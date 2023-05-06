@@ -63,7 +63,7 @@ function Jobs({route}) {
     fetchGeneratorModels();
     setTimeout(() => {
       setLoading(false);
-    }, 200);
+    }, 500);
   }, []);
 
   
@@ -99,7 +99,7 @@ function Jobs({route}) {
     <>
       <StatusBar barStyle="dark-content" backgroundColor={theme.bgWhite} />
       <ScrollView style={Styles.jobs}>
-
+      <Loader loading={pagerLoader} />
         <View style={[GBStyles.container, {paddingBottom: 50}]}>
           <Text style={GBStyles.pageTitle}>Jobs</Text>
           {loading && <View style={{padding: 18}}>{[1,2,3,4,5].map((idx)=>(
