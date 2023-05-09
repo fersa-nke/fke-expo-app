@@ -29,6 +29,7 @@ import AuthService from "../../services/AuthService";
 import { KEYMapper as JOBKEYMapper } from './../../services/UserConfig';
 import { Toast } from 'toastify-react-native';
 import {SET_JOB_TITLE, SHOW_BARCODE_BUTTON} from '../../redux/ReduxConsants';
+import { BarCodeScanner } from 'expo-barcode-scanner';
 
 const AddJob = ({ navigation, route }) => {
   const { Id } = route.params;
