@@ -318,6 +318,10 @@ const AddJob = ({ navigation, route }) => {
             ]}
             flashMode={torch ? Camera.Constants.FlashMode.torch : Camera.Constants.FlashMode.off}
             onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+            useCamera2Api={true}
+            barCodeScannerSettings={{
+              barCodeTypes: [BarCodeScanner.Constants.BarCodeType.datamatrix]
+            }}
           >
          
        <BarcodeMask width={300} height={300} edgeBorderWidth={1} outerMaskOpacity={0.8} />
