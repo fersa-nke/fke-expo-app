@@ -108,7 +108,19 @@ const AddJob = ({ navigation, route }) => {
       if(Id && selectedJobId && jobs && jobs.length > 0) {
       const filterJob = jobs.filter(j => j.Id === selectedJobId)[0];
       console.log('fetched job details', customerId, operatorId, selectedJobId , filterJob);
+      // let updateValues = {
+      //   [GENERATORMODEL]: filterJob[GENERATORMODEL] ? getFieldId(GENERATORMODEL, filterJob[GENERATORMODEL]) : null,
+      //   [BEARINGMODEL]: filterJob[BEARINGMODEL] ? getFieldId(BEARINGMODEL, filterJob[BEARINGMODEL]) : null,
+      //   [EXCHANGETYPE]: filterJob[EXCHANGETYPE] ? getFieldId(EXCHANGETYPE, filterJob[EXCHANGETYPE]) : null,
+      //   [REASONS]: filterJob[REASONS] ? getFieldId(REASONS, filterJob[REASONS]) :  null,
+      //   [POSITION]: filterJob[POSITION] ? getFieldId(POSITION, filterJob[POSITION]) : null,
+      //   [NEWBEARINGBRAND]: filterJob[NEWBEARINGBRAND] ? getFieldId(NEWBEARINGBRAND, filterJob[NEWBEARINGBRAND]) : null,
+      //   [NEWBEARINGTYPE]: filterJob[NEWBEARINGTYPE] ? getFieldId(NEWBEARINGTYPE, filterJob[NEWBEARINGTYPE]) : null,
+      //   [REMOVEDBEARINGBRAND]: filterJob[REMOVEDBEARINGBRAND] ? getFieldId(REMOVEDBEARINGBRAND, filterJob[REMOVEDBEARINGBRAND]) : null,
+      //   [REMOVEDBEARINGTYPE]: filterJob[REMOVEDBEARINGTYPE] ? getFieldId(REMOVEDBEARINGTYPE, filterJob[REMOVEDBEARINGTYPE]) : null,
+      // };
       let formValues = {...filterJob};
+      
       setFormData(formValues);
       setResult(filterJob[DATAMATRIX]);
       setStartDate(new Date(filterJob[JOBDATE]));
@@ -135,7 +147,7 @@ const AddJob = ({ navigation, route }) => {
      )
 
     }, []);
-  
+    
   // const addJobSchema = Yup.object().shape({
   //   DataMatirx: Yup.string().required("Please Scan Data Matrix"),
   //   //Name: Yup.string().required("Enter Job Name"),
@@ -293,7 +305,7 @@ const AddJob = ({ navigation, route }) => {
     console.log('submitting data job ------------->',originalData, data);
     
     if(Id) {
-      dispatch(updateJob(data, originalData, Id));
+      dispatch(updateJob(data, originalData, Id, callBack));
     } else {
       dispatch(saveJob(data, originalData, callBack));
     }
@@ -309,7 +321,7 @@ const AddJob = ({ navigation, route }) => {
 
       {scan ? (
         <View>
-          <Camera
+        {Platform.OS === "android" ? <Camera
             style={[
               {
                 flex: 1,
@@ -358,7 +370,51 @@ const AddJob = ({ navigation, route }) => {
             </View> 
 
           </Camera>
-      
+  : <BarCodeScanner
+            style={[
+              {
+                flex: 1,
+                width: Dimensions.get("window").width,
+                height: Dimensions.get("window").height - 140,
+              },
+            ]}
+            barCodeTypes={[BarCodeScanner.Constants.BarCodeType.datamatrix]}
+            flashMode={torch ? Camera.Constants.FlashMode.torch : Camera.Constants.FlashMode.off}
+            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+          >         
+       <BarcodeMask width={300} height={300} edgeBorderWidth={1} outerMaskOpacity={0.8} />
+           <View
+           style={
+            [StyleSheet.absoluteFill,
+            {
+              bottom: 0,
+              top:'73%',
+            }
+            ]
+           }>
+              {/* <Ripple
+                onPress={()=>{setTorch(!torch)}}
+                style={[Styles.torchBtn, {backgroundColor: torch ? 'rgba(255,255,255,1)': 'rgba(255,255,255,0.2)'}]}
+              >
+                <Icon
+                  name="TorchOn"
+                  size={24}
+                  color={torch ? theme.textBlue : theme.textWhite}
+                  style={{ alignSelf: "center" }}
+                />
+              </Ripple> */}
+           <Button
+                text="Close"
+                style={{ margin: 24 }}
+                type={'secondary'}
+                onPress={() => {
+                  setScan(false), setScanned(false);
+                }}
+              />
+
+            </View>
+    </BarCodeScanner>
+}
           {scanned && (
             <Button
               text="Tap to Scan Again"

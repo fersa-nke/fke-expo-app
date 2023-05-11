@@ -54,7 +54,7 @@ const DetailsView = () => {
         <ListItem label="Reasons of Chnage" value={job[JOBKEYMapper.REASONS] ? job[JOBKEYMapper.REASONS][0]?.Name : ''} />
         <ListItem label="Wind Farm" value={job[JOBKEYMapper.WINDFARM]} />
         <ListItem label="Wind Turbine" value={job[JOBKEYMapper.WINDTURBINE]} />
-        <ListItem label="Generator Model" value={job[JOBKEYMapper.GENERATEMODEL]} />
+        <ListItem label="Generator Model" value={job[JOBKEYMapper.GENERATORMODEL] ? job[JOBKEYMapper.GENERATORMODEL][0]?.Name: ''} />
         <ListItem label="Shaft Position" value={job[JOBKEYMapper.POSITION] ? job[JOBKEYMapper.POSITION][0]?.Name: ''} />
         <ListItem label="Removed Bearing Brand" value={job[JOBKEYMapper.REMOVEDBEARINGBRAND] ? job[JOBKEYMapper.REMOVEDBEARINGBRAND][0]?.Name: ''} />
         <ListItem label="Removed Bearing Type" value={job[JOBKEYMapper.REMOVEDBEARINGTYPE] ? job[JOBKEYMapper.REMOVEDBEARINGTYPE][0]?.Name: ''} />

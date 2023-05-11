@@ -103,7 +103,7 @@ export const saveJob = (formData, jobData, callBack) => {
 };
 
 
-export const updateJob = (formData, jobData, Id) => {
+export const updateJob = (formData, jobData, Id, navigation) => {
     return async (dispatch, getState) => {
       const token = getState().userReducer.token;
         dispatch({
@@ -126,7 +126,7 @@ export const updateJob = (formData, jobData, Id) => {
                   type: UPDATE_JOB_ITEM,
                   payload: jobs
                 });
-                // navigation();
+                navigation();
             } else {
                 Toast.error('Unable to save job');
             }
