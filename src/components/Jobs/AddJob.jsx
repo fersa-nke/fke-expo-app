@@ -147,6 +147,11 @@ const AddJob = ({ navigation, route }) => {
      )
 
     }, []);
+
+
+    useEffect(()=>{
+      console.log('showing barcode scan button', showBarCodeScanButton);
+    }, [showBarCodeScanButton]);
     
   // const addJobSchema = Yup.object().shape({
   //   DataMatirx: Yup.string().required("Please Scan Data Matrix"),
@@ -255,7 +260,8 @@ const AddJob = ({ navigation, route }) => {
   }
 
   const handleSubmitPress = (values) => {
-    console.log(values);
+    console.log(showBarCodeScanButton, values);
+
     // let data = {
     //   DataMatirx: result,
     //   Date: startDate ? startDate.toISOString().split("T")[0]: '',
@@ -274,10 +280,13 @@ const AddJob = ({ navigation, route }) => {
     //   Comments: values['Comments'],
     //   ReportCode: values['ReportCode']
     // };
-    
+
     let originalData = {
       ...values,
-      [DATAMATRIX]: result,
+      [DATAMATRIX]: showBarCodeScanButton ? result : null,
+      [BATCHNUMBER]: showBarCodeScanButton ? null: values[BATCHNUMBER],
+      [ORNUMBER]: showBarCodeScanButton ? null : values[ORNUMBER],
+      [IRNUMBER]: showBarCodeScanButton ? null : values[IRNUMBER],
       [JOBDATE]: startDate ? startDate.toISOString().split("T")[0]: '',
       [JOBID]: jobTitle,
       [CUSTOMERID]: AuthService.isOperator() ? userData?.CustomerId : userData?.UserId,
@@ -287,7 +296,7 @@ const AddJob = ({ navigation, route }) => {
     };
     let updateValues = {
       [GENERATORMODEL]: values[GENERATORMODEL][0] ? values[GENERATORMODEL][0].Id : null,
-      [BEARINGMODEL]: values[BEARINGMODEL][0] ? values[BEARINGMODEL][0].Id : null,
+      [BEARINGMODEL]: (!showBarCodeScanButton && values[BEARINGMODEL][0]) ? values[BEARINGMODEL][0].Id : null,
       [EXCHANGETYPE]: values[EXCHANGETYPE][0] ? values[EXCHANGETYPE][0].Id : null,
       [REASONS]: values[REASONS][0] ? values[REASONS][0].Id :  null,
       [POSITION]: values[POSITION][0] ? values[POSITION][0].Id : null,
@@ -321,7 +330,7 @@ const AddJob = ({ navigation, route }) => {
 
       {scan ? (
         <View>
-        {Platform.OS === "android" ? <Camera
+        {Platform.OS === "ios" ? <Camera
             style={[
               {
                 flex: 1,
@@ -368,8 +377,7 @@ const AddJob = ({ navigation, route }) => {
               />
 
             </View> 
-
-          </Camera>
+           </Camera>
   : <BarCodeScanner
             style={[
               {
