@@ -8,6 +8,7 @@ export const LOGOUT = 'LOGOUT';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 
 export const GET_JOBS = 'GET_JOBS';
+export const GET_SEARCH_JOBS = 'GET_SEARCH_JOBS';
 export const DELETE_jOB_ITEM = 'DELETE_jOB_ITEM';
 export const ADD_JOB_ITEM = 'ADD_JOB_ITEM';
 export const SELECTED_JOB_ID = 'SELECTED_JOB_ID';
@@ -32,6 +33,10 @@ export const GET_BRANDS = 'GET_BRANDS';
 export const GET_MODELS = 'GET_MODELS';
 export const GET_BEARING_TYPES = 'GET_BEARING_TYPES';
 export const GET_GENERATOR_MODELS = 'GET_GENERATOR_MODELS';
+export const GET_WIND_FARMS = 'GET_WIND_FARM';
+export const GET_WIND_LOCATIONS = 'GET_WIND_LOCATIONS';
+export const GET_STATES = 'GET_STATES';
+export const GET_OPERATORS = 'GET_OPERATORS';
 
 export const GET_API_Mapper = 'GET_API_Mapper';
 export const GET_KEY_Mapper = 'GET_KEY_Mapper';

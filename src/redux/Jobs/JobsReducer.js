@@ -1,7 +1,8 @@
-import {GET_JOBS, ADD_JOB_ITEM, SELECTED_JOB_ID, DELETE_jOB_ITEM, UPDATE_JOB_ITEM, LOADING_jOBS, SHOW_BARCODE_BUTTON, SET_JOB_TITLE} from './../ReduxConsants';
+import {GET_JOBS, ADD_JOB_ITEM, SELECTED_JOB_ID, DELETE_jOB_ITEM, UPDATE_JOB_ITEM, LOADING_jOBS, SHOW_BARCODE_BUTTON, SET_JOB_TITLE, GET_SEARCH_JOBS} from './../ReduxConsants';
 
 const initialJobState = {
   jobs: [],
+  searchJobs: [],
   pageInfo: {
     totalRows: 0,
     page: 0,
@@ -23,6 +24,9 @@ export default function jobsReducer(state = initialJobState, action) {
     case GET_JOBS:
       console.log(...action.payload.list);
       return {...state, jobs: [...state.jobs, ...action.payload.list], pageInfo: action.payload.pageInfo};
+    case GET_SEARCH_JOBS:
+        console.log(...action.payload.list);
+      return {...state, searchJobs: [...action.payload.list], pageInfo: action.payload.pageInfo};  
     case SELECTED_JOB_ID:
       return {...state, selectedJobId: action.payload}; 
     case ADD_JOB_ITEM:

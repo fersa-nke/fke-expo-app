@@ -23,6 +23,7 @@ import Row from "./Row";
 import Ribbon from "./Ribbon";
 import Button from "./Button";
 import Select from "./Select";
+import SearchForm from "./SearchForm";
 
 const HeaderLeft = () => {
   return (
@@ -99,54 +100,24 @@ const HeaderRight = ({ showSeach = false, isAddPage = false }) => {
           <View style={Styles.modalContent}>
           <Ribbon />
             <View style={Styles.modalBody}>
-              <Row style={Styles.modalHeader} justifyContent={"space-between"}>
-                <Ripple
-                  style={GBStyles.rippleBtn}
-                  onPress={() => setSearchModal(false)}
-                >
-                  <Icon name="LeftAngle" size={20} color={theme.textBlue} />
-                </Ripple>
-                <Text style={Styles.modalTitle}>Search</Text>
-                <Ripple
-                  style={GBStyles.rippleBtn}
-                  onPress={() => setSearchModal(false)}
-                >
-                  <Icon name="Close" size={20} color={theme.textBlue} />
-                </Ripple>
-              </Row>
-              <ScrollView style={{ flex: 1, padding: 16 }}>
-                <View style={{marginBottom: 24}}>
-                <Input
-                  placeholder="Search"
-                  appendIcon
-                  appendIconSize={22}
-                  appendIconColor={theme.textBlue}
-                  appendIconName="Search"
-                  handleChangeText={setSearchText}
-                  handlePress={handleSubmitPress}
-                  onSubmitEditing={handleSubmitPress}
-                />
-                </View>
-                <View style={{marginBottom: 24}}>
-               <Select
-                  selectedValue={''}
-                  disabled={false}
-                  // onChange={(item) =>{
-                  //   let obj = {Id: item.Id, Name: item.Name};
-                  //   setFieldValue(BEARINGMODEL, [obj]);
-                  // }}
-                  placeholder="Select"
-                  label="Select"
-                  modalTitle="Select"
-                  //items={{ Id: "Id", Name: "Name" }}
-                  //modalObj={{ id: "Id", name: "Name" }}
-                />
-                </View>
-              </ScrollView>
-              <Row style={{padding: 16}}>
-                <Button type="Secondary" text="Close" style={{flex: 1, marginRight: 8}} onPress={() => setSearchModal(false)} />
-                <Button text="Search" style={{flex: 1, marginLeft: 8}} onPress={() => setSearchModal(false)} />
-              </Row>
+            <Row style={Styles.modalHeader} justifyContent={"space-between"}>
+        <Ripple
+          style={GBStyles.rippleBtn}
+          onPress={() => setSearchModal(false)}
+        >
+          <Icon name="LeftAngle" size={20} color={theme.textBlue} />
+        </Ripple>
+        <Text style={Styles.modalTitle}>Search</Text>
+        <Ripple
+          style={GBStyles.rippleBtn}
+          onPress={() => setSearchModal(false)}
+        >
+          <Icon name="Close" size={20} color={theme.textBlue} />
+        </Ripple>
+      </Row>
+
+      <SearchForm setSearchModal={setSearchModal} />
+
             </View>
           </View>
         </SafeAreaView>

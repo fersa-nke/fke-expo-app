@@ -22,6 +22,7 @@ import { SafeAreaView, Text } from 'react-native';
 import Container from 'toastify-react-native';
 import CustomSplashScreen from './../shared/SplashScreen';
 import  { getAPIMapper ,getKEYMapper} from "./../redux/Master/MasterActions";
+import SearchJobsResult from './../components/Jobs/SearchJobsResult';
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
 
@@ -71,6 +72,18 @@ const RootNavigator = () => {
                 headerLeft: HeaderLeft,
                 headerRight: () => <HeaderRight showSeach={true} />,
                 title: null,
+              }}
+            />
+            <Stack.Screen
+              name="SearchJobs"
+              component={SearchJobsResult}
+              options={{
+                title: `MRO JOBS`,
+                headerRight: () => <HeaderRight showSeach={true} />,
+                headerTitleStyle: {
+                  fontSize: 16,
+                  fontWeight: '700',
+                },
               }}
             />
             <Stack.Screen

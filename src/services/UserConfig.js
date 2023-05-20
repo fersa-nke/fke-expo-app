@@ -12,7 +12,12 @@ export const APIConfig = {
     REASONTYPE: 'ReasonType',
     POSITIONTYPE: 'ShaftPosition',
     BEARINGTYPE: 'BearingType',
-    GENERATORMODEL: 'GeneratorModel'
+    GENERATORMODEL: 'GeneratorModel',
+    STATE: 'State',
+    CUSTOMERWINDFARM: 'CustomerWindFarm',
+    CUSTOMERWINDLOCATION: 'CustomerWindLocation',
+    LUBRICATIONTYPE: 'LubricationType',
+    LUBRICATIONGRADE: 'LubricationGrade'
 }
 
 export const KEYMapper = {
@@ -33,12 +38,31 @@ export const KEYMapper = {
    IRNUMBER: 'IRNumber',
    ORNUMBER: 'ORNumber',
    COMMENTS: 'Comments',
-   WINDFARM: 'WindFarm',
+   WINDFARM: 'CustomerWindFarm',
    JOBID: 'JobId',
    JOBDATE: 'JobDate',
    OPERATORNAME: 'OperatorName',
    CUSTOMERNAME: 'CustomerName',
    GENERATORMODEL: 'GeneratorModel',
    COMMENTS: 'Comments',
-   BEARINGMODEL: 'BearingModel'
+   BEARINGMODEL: 'BearingModel',
+   STATE: 'State',
+   FAILUREDATE: 'FailureDate',
+   WINDLOCATION: 'CustomerWindLocation',
+   SERIALNUMBER: 'SerialNumber',
+   NOKBEARING: 'NOKBearing',
+   SHAFTNDEMAX: 'ShaftJournalNDEMax',
+   SHAFTNDEMIN: 'ShaftJournalNDEMin',
+   BEARINGNDEMAX: 'BearingHousingNDEMax',
+   BEARINGNDEMIN: 'BearingHousingNDEMin',
+   SHAFTDEMAX: 'SharftJournalDEMax',
+   SHAFTDEMIN: 'ShaftJournalDEMin',
+   BEARINGDEMAX: 'BearingHousingDEMax',
+   BEARINGDEMIN: 'BearingHousingDEMin',
+   LASTLUBRICATION: 'LastLubrication',
+   INSULATERESISTANCE: 'InsulateResistance',
+   VOLTAGETESTED: 'VoltageTested',
+   REPORTDATE: 'ReportDate',
+   LUBRICATIONTYPE: 'LubricationType',
+   LUBRICATIONGRADE: 'LubricationGrade'
 };

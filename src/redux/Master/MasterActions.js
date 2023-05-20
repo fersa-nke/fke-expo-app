@@ -1,6 +1,6 @@
 
 import API from '../../services/Api';
-import { LOGIN_SUCCESS, GET_API_Mapper, GET_GENERATOR_MODELS, ADD_SIGNED_USER_DATA, GET_KEY_Mapper, GET_BEARING_TYPES, GET_BRANDS, GET_EXCHANGE_TYPES, GET_MODELS, GET_REASON_OF_CHANGES, GET_SHAFT_POSITIONS } from '../ReduxConsants';
+import { LOGIN_SUCCESS, GET_API_Mapper, GET_GENERATOR_MODELS, ADD_SIGNED_USER_DATA, GET_KEY_Mapper, GET_BEARING_TYPES, GET_BRANDS, GET_EXCHANGE_TYPES, GET_MODELS, GET_REASON_OF_CHANGES, GET_SHAFT_POSITIONS, GET_WIND_FARMS, GET_WIND_LOCATIONS, GET_STATES } from '../ReduxConsants';
 // Define action types
 import { APIConfig, KEYMapper } from '../../services/UserConfig';
 import { Toast } from 'toastify-react-native';
@@ -41,6 +41,18 @@ export const getBearingTypes = () => {
 export const getGeneratorModels = () => {
     return callAPI(APIConfig.GENERATORMODEL, GET_GENERATOR_MODELS);
 };
+
+export const getWindFarms = () => {
+    return callAPI(APIConfig.CUSTOMERWINDFARM, GET_WIND_FARMS);
+};
+
+export const getWindLocations = () => {
+    return callAPI(APIConfig.CUSTOMERWINDLOCATION, GET_WIND_LOCATIONS);
+};
+
+export const getStates = () => {
+    return callAPI(APIConfig.STATE, GET_STATES);
+}
 
 export function callAPI(URL, dispatchType, token = '') {
     return async (dispatch, getState) => {

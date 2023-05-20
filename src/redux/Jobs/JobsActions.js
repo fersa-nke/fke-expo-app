@@ -1,6 +1,6 @@
 
 import API from '../../services/Api';
-import { GET_JOBS, DELETE_jOB_ITEM, SELECTED_JOB_ID, ADD_JOB_ITEM , UPDATE_JOB_ITEM, LOADING_jOBS} from '../ReduxConsants';
+import { GET_JOBS, DELETE_jOB_ITEM, SELECTED_JOB_ID, ADD_JOB_ITEM , UPDATE_JOB_ITEM, LOADING_jOBS, GET_SEARCH_JOBS} from '../ReduxConsants';
 // Define action types
 import { Toast } from 'toastify-react-native';
 import { KEYMapper as JobMapper } from '../../services/UserConfig';
@@ -36,6 +36,70 @@ export const getJobs = () => {
                 console.log(res.pageInfo);
                 dispatch({
                   type: GET_JOBS,
+                  payload: res,
+                });
+            } else {
+                console.log('Unable to fetch JOB', res, res.list.length);
+            }
+        })
+        .catch((error) => {
+            dispatch({
+                type: LOADING_jOBS,
+                payload: false,
+            });
+
+            console.log('error -------------->', error);
+            //Hide Loader
+    }); // JSON data parsed by `data.json()` call
+    }
+};
+
+export const getJobsBySearchQuery = (query, formObj) => {
+    return async (dispatch, getState) => {
+    const token = getState().userReducer.token;
+    const pageInfo =  getState().jobsReducer.pageInfo;
+    const offSet = pageInfo.offSet || 0;
+    const pageSize = pageInfo.pageSize|| 5;
+    // dispatch({
+    //     type: LOADING_jOBS,
+    //     payload: true,
+    //   });
+   // alert('calling once api jobs,'+pageNo+','+pageSize);
+   let squery ='';
+   if(formObj.windFarm) {
+    squery = squery+'('+JobMapper.WINDFARM+',eq,'+formObj.windFarm+')';
+   }
+   if(formObj.windLocation) {
+    if(squery) {
+        squery = squery+'~and';
+    }
+    squery = squery+'('+JobMapper.WINDLOCATION+',eq,'+formObj.windLocation+')';
+   }
+   if(formObj.windTurbine) {
+    if(squery) {
+        squery = squery+'~and';
+    }
+    squery = squery+'('+JobMapper.WINDTURBINE+',like,'+formObj.windTurbine+')';
+   }
+   if(formObj.jobSearchDate) {
+    if(squery) {
+        squery = squery+'~and';
+    }
+    squery = squery+'('+JobMapper.JOBDATE+',eq,'+formObj.jobSearchDate+')';
+   }
+   console.log(squery, formObj);
+    API.GET(`${BASE_URL}`, token, {where: squery})
+        .then(res => {
+            console.log('search job list lenght',res);
+            dispatch({
+                type: LOADING_jOBS,
+                payload: false,
+            });
+
+            //Hide Loader
+            if (res && res.list && res.list.length > 0) {
+                dispatch({
+                  type: GET_SEARCH_JOBS,
                   payload: res,
                 });
             } else {

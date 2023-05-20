@@ -39,9 +39,10 @@ import NoData from "../../shared/NoData";
 import nodata from "../../assets/images/nodata.png";
 import Loader from '../../shared/Loader';
 
-function Jobs({route}) {
+function SearchJobsResult({route}) {
   const type = route.params?.type;
   const query = route.params?.query;
+  const formObj = route.params?.formObj;
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -50,55 +51,21 @@ function Jobs({route}) {
   const searchJobsResult = useSelector((state) => state.jobsReducer.searchJobs);
   const pagerLoader = useSelector((state) => state.jobsReducer.pageLoader);
   const showLoadMore = useSelector((state) => state.jobsReducer.pageInfo.isLastPage);
-  const fetchExchangeTypes = () => dispatch(getExchangeTypes());
-  const fetchShaftPositions = () => dispatch(getShaftPositions());
-  const fetchReasonOfChanges = () => dispatch(getReasonOfChanges());
-  const fetchBrands = () => dispatch(getBrands());
-  const fetchModels = () => dispatch(getModels());
-  const fetchBearingTypes = () => dispatch(getBearingTypes());
-  const fetchGeneratorModels = () => dispatch(getGeneratorModels());
-  const fetchStates = () => dispatch(getStates());
-  const fetchWindFarms = () => dispatch(getWindFarms());
-  const fetchWindLocations = () => dispatch(getWindLocations());
-  const fetchJobs = () => dispatch(getJobs());
   
   useEffect(() => {
     console.log(type);
     if(type === 'search') {
       console.log(query);
-      dispatch(getJobsBySearchQuery(query));
-    } else {
-      fetchJobs();
+      dispatch(getJobsBySearchQuery(query, formObj));
     }
-    fetchExchangeTypes();
-    fetchShaftPositions();
-    fetchReasonOfChanges();
-    fetchBrands();
-    fetchModels();
-    fetchBearingTypes();
-    fetchGeneratorModels();
-    fetchStates();
-    fetchWindFarms();
-    fetchWindLocations();
     setTimeout(() => {
       setLoading(false);
     }, 500);
-  }, []);
+  }, [route]);
 
   
 
   const loadMore = () => {
-    dispatch(getJobs());
-    // if ((results.length) < totalCount) {
-    //   setShowLoadMore(false);
-    //   setPagerLoader(true);
-    //   let p = pageNumber + 1;
-    //   // fetch another next page results
-    //   setPageNumber(p);
-    //   fetchData(p);
-    // } else {
-    //   console.log("no loadmore button")
-    // }
   };
   const handleRemoveJob = (Id) => {
     removeFromJobs(Id);
@@ -118,29 +85,30 @@ function Jobs({route}) {
     <>
       <StatusBar barStyle="dark-content" backgroundColor={theme.bgWhite} />
       <ScrollView style={Styles.jobs}>
-      <Loader loading={pagerLoader} />
+      
         <View style={[GBStyles.container, {paddingBottom: 50}]}>
           <Text style={GBStyles.pageTitle}>{type === 'search' ? 'Search Results' : 'jobs'}</Text>
           {loading && <View style={{padding: 18}}>{[1,2,3,4,5].map((idx)=>(
        <JobsInitialLoader key={idx} />
      ))}</View>}
-          {!pagerLoader && jobs.length === 0 ? (
+     {type === 'search' ? <> 
+  
+         {!pagerLoader && searchJobsResult.length === 0 ? (
             <NoData title="No Jobs" image={nodata} description="MRO JOBS NOT FOUND" />
           ) : (
-            <JobCard list={jobs} onHandlePress={navigateToJobDetails} JobEdit={onEditClick} JobDelete={handleRemoveJob} />
+            <JobCard list={searchJobsResult} onHandlePress={navigateToJobDetails} JobEdit={onEditClick} JobDelete={handleRemoveJob} />
           )}
+
+          </> :
+          <>
+          </>
+          }
         </View>
-        <View style={Styles.loadMoreCont} >
+        {/* <View style={Styles.loadMoreCont} >
             {pagerLoader == true ? <ActivityIndicator size="large" /> : <></>}
             {!showLoadMore && !pagerLoader  && <Button title="Load more.." onPress={loadMore}></Button>}
-          </View>
+          </View> */}
       </ScrollView>
-      <Ripple
-        style={Styles.addJobBtn}
-        onPress={() => navigation.navigate("AddJob", {Id: ''})}
-      >
-          <IconComp name="Add" size={20} color={theme.textWhite} />
-      </Ripple>
     </>
   );
 }
@@ -168,4 +136,4 @@ const Styles = StyleSheet.create({
   },
 });
 
-export default Jobs;
+export default SearchJobsResult;

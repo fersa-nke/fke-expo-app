@@ -23,13 +23,21 @@ import Report from '../Reports/Report';
 import {useNavigation} from '@react-navigation/native';
 import { useSelector, useDispatch } from "react-redux";
 import { KEYMapper as JOBKEYMapper } from './../../services/UserConfig';
-
+import {
+  setSelectedJobId
+} from "../../redux/Jobs/JobsActions";
 const DetailsView = () => {
   
   const selectedJobId = useSelector((state) => state.jobsReducer.selectedJobId);
   const jobs = useSelector((state) => state.jobsReducer.jobs);
   const [job, setJob] = useState();
-  
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const onEditClick = (Id) => {
+    dispatch(setSelectedJobId(Id));
+    navigation.navigate('EditJob',{Id: Id});
+  }
+
     useEffect(() => {
      if(selectedJobId && jobs && jobs.length > 0) {
       const filterJob = jobs.filter(j => j.Id === selectedJobId)[0];
@@ -52,7 +60,9 @@ const DetailsView = () => {
     }
         <ListItem label="Exchange Type" value={job[JOBKEYMapper.EXCHANGETYPE] ? job[JOBKEYMapper.EXCHANGETYPE][0]?.Name : ''} />
         <ListItem label="Reasons of Chnage" value={job[JOBKEYMapper.REASONS] ? job[JOBKEYMapper.REASONS][0]?.Name : ''} />
-        <ListItem label="Wind Farm" value={job[JOBKEYMapper.WINDFARM]} />
+        <ListItem label="Wind Farm" value={job[JOBKEYMapper.WINDFARM] ? job[JOBKEYMapper.WINDFARM][0]?.Name: ''} />
+        <ListItem label="Wind Farm Location" value={job[JOBKEYMapper.WINDLOCATION] ? job[JOBKEYMapper.WINDLOCATION][0]?.Name: ''} />
+        <ListItem label="State" value={job[JOBKEYMapper.STATE] ? job[JOBKEYMapper.STATE][0]?.Name: ''} />
         <ListItem label="Wind Turbine" value={job[JOBKEYMapper.WINDTURBINE]} />
         <ListItem label="Generator Model" value={job[JOBKEYMapper.GENERATORMODEL] ? job[JOBKEYMapper.GENERATORMODEL][0]?.Name: ''} />
         <ListItem label="Shaft Position" value={job[JOBKEYMapper.POSITION] ? job[JOBKEYMapper.POSITION][0]?.Name: ''} />
@@ -60,8 +70,22 @@ const DetailsView = () => {
         <ListItem label="Removed Bearing Type" value={job[JOBKEYMapper.REMOVEDBEARINGTYPE] ? job[JOBKEYMapper.REMOVEDBEARINGTYPE][0]?.Name: ''} />
         <ListItem label="New Bearing Brand" value={job[JOBKEYMapper.NEWBEARINGBRAND] ? job[JOBKEYMapper.NEWBEARINGBRAND][0]?.Name: ''} />
         <ListItem label="New Bearing Type" value={job[JOBKEYMapper.NEWBEARINGTYPE] ? job[JOBKEYMapper.NEWBEARINGTYPE][0]?.Name: ''} />
+        <ListItem label="Failure Date" value={job[JOBKEYMapper.FAILUREDATE]} />
         <ListItem label="Comments" value={job[JOBKEYMapper.COMMENTS]} />
       </View> }
+      <Row style={{margin: 10}}>
+                <Button
+                  text="Edit"
+                  style={{ flex: 1, marginRight: 8 }}
+                  onPress={() => onEditClick(selectedJobId)}
+                />
+                <Button
+                  text="Close"
+                  type="Secondary"
+                  style={{ flex: 1, marginLeft: 8 }}
+                  onPress={() => navigation.navigate("Jobs")}
+                />
+              </Row>
     </ScrollView>
   );
 };
@@ -169,7 +193,7 @@ const JobDetails = ({route}) => {
                 {job[JOBKEYMapper.JOBID]}
               </Text>
               <Text style={Styles.cardTitle} numberOfLines={1}>
-                {job[JOBKEYMapper.WINDFARM]}
+                {job[JOBKEYMapper.WINDFARM]?.length > 0 ? job[JOBKEYMapper.WINDFARM][0].Name : ''}
               </Text>
               <Text style={Styles.cardDescription} numberOfLines={2}>
                 {job[JOBKEYMapper.JOBDATE]}
