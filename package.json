@@ -26,6 +26,7 @@
     "react-native": "0.69.9",
     "react-native-barcode-mask": "^1.2.4",
     "react-native-gesture-handler": "^2.5.0",
+    "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-material-ripple": "^0.9.1",
     "react-native-modal": "^13.0.1",
     "react-native-pager-view": "5.4.24",
