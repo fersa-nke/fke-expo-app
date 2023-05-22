@@ -111,7 +111,6 @@ export const getJobsBySearchQuery = (query, formObj) => {
                 type: LOADING_jOBS,
                 payload: false,
             });
-
             console.log('error -------------->', error);
             //Hide Loader
     }); // JSON data parsed by `data.json()` call

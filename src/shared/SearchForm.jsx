@@ -149,7 +149,7 @@ const SearchForm = ({setSearchModal}) => {
         />
         {showDate && (
           <DateTimePicker
-            value={jobSearchDate}
+            value={jobSearchDate ? jobSearchDate : new Date()}
             mode="date"
             onChange={onJobDateChange}
             display={Platform.OS === "ios" ? "spinner" : "calendar"}
