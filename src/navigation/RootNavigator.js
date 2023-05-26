@@ -36,6 +36,7 @@ const RootNavigator = () => {
   const keyMapper = useSelector((state)=> state.masterReducer.keyMapperConfig);
   const apiMapper = useSelector((state)=> state.masterReducer.apiMapperConfig);
   const jobTitle = useSelector((state)=> state.jobsReducer.jobTitle);
+  const reportTitle = useSelector((state)=> state.reportsReducer.reportTitle);
 
 
   useEffect(() => {
@@ -145,7 +146,7 @@ const RootNavigator = () => {
               name="ReportView"
               component={ReportView}
               options={{
-                title: 'Report View'
+                title: `${reportTitle}`
               }}
             />
             </>  : <>

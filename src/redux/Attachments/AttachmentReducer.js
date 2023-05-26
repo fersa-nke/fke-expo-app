@@ -9,7 +9,7 @@ export default function attachmentsReducer(state = initialAttachmentState, actio
     case GET_ATTACHMENTS:
       return {...state, attachments: action.payload};
     case ADD_ATTACHMENT_ITEM:
-      return {...state, attachments: [...state.jobs, action.payload]};
+      return {...state, attachments: [...state.attachments, action.payload]};
     case DELETE_ATTACHMENT_ITEM:
       return {
         ...state,

@@ -10,12 +10,19 @@ import Document from '../../shared/Document';
 import Button from '../../shared/Button';
 import * as DocumentPicker from 'expo-document-picker';
 import { useSelector, useDispatch } from "react-redux";
-import {saveReportAttachment } from '../../redux/Attachments/AttachmentActions';
+import {getAttachments, saveReportAttachment } from '../../redux/Attachments/AttachmentActions';
+import { useEffect } from 'react';
 
-function ReportView() {
+function ReportView({route}) {
+  const jobId = route.params?.Id;
   const navigation = useNavigation();
   const [documents, setDocuments] = useState([]);
   const dispatch = useDispatch();
+  const attachments = useSelector(state => state.attachmentsReducer.attachments);
+  
+ useEffect(() => {
+  dispatch(getAttachments(jobId));
+ }, []); 
 
  const pickFile = async () => {
   try {
@@ -27,12 +34,11 @@ function ReportView() {
         throw 'error';
       } else {
         console.log('response file____>',res.type, res);
-        res.id = `${new Date().getTime()}`;
-        res.fileDate = `${new Date()}`;
-        let temparray = [...documents, res];
-        dispatch(saveReportAttachment(res));        
-        setDocuments(temparray);
-        console.log('documents ------------>',temparray, res);
+        //res.id = `${new Date().getTime()}`;
+        //res.fileDate = `${new Date()}`;
+       // let temparray = [...documents, res];
+       dispatch(saveReportAttachment(res, 'JobReport', jobId));        
+       // setDocuments(temparray);
       } 
     });
     
@@ -42,13 +48,14 @@ function ReportView() {
 };
   return (
     <View style={GBStyles.container}>
-      {documents?.map(doc => (
-          <View key={doc.id}>
+      {attachments?.map(doc => (
+          <View key={doc.Id}>
         <Document
-          fileDate={doc.fileDate}
-          fileName={doc.name}
-          fileType={doc.mimeType}
-          key = {doc.id}
+          fileDate={doc.UpdatedAt}
+          fileName={doc.Name}
+          fileType={doc.MimeType}
+          key = {doc.Id}
+          path = {doc.Path}
         />
         </View>
         ))}

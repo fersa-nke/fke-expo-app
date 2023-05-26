@@ -28,9 +28,10 @@ import {
 } from "../../redux/Jobs/JobsActions";
 import {
 getReports,
+removeFromReports,
 setSelectedReportId  
 } from "../../redux/Reports/ReportsAction";
-import { SET_JOB_TITLE } from '../../redux/ReduxConsants';
+import { SET_JOB_TITLE, SELECTED_REPORT_TITLE } from '../../redux/ReduxConsants';
 
 const DetailsView = () => {
   
@@ -115,12 +116,17 @@ const ReportsView = () => {
   
   const handleRemoveReport = (Id) => {
     console.log(Id);
-    removeFromReports(Id);
+    dispatch(removeFromReports(Id));
   };
   
-  const navigateToReportDetails = (Id) => {
-   // dispatch(setSelectedJobId(Id));
-   // navigation.navigate('JobDetails',{Id: Id});
+  const navigateToReportDetails = (report) => {
+    dispatch({
+      type: SELECTED_REPORT_TITLE,
+      payload: report.Name
+    });
+   console.log(report); 
+   dispatch(setSelectedReportId(report.Id));
+   navigation.navigate('ReportView',{Id: report.JobId});
   }
   
   const onEditClick = (Id) => {

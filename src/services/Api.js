@@ -4,6 +4,19 @@ import { useSelector } from 'react-redux';
 
 
 export default API = {
+  UPLOAD: async function (url = '', token = '', data = {}) {
+    // Default options are marked with *1
+    const response = await fetch(serverURL + '' + url, {
+      method: 'POST',
+      headers: {
+        'x-access-token': `${token}`,
+        Accept: 'application/json',
+        'Content-Type': ' multipart/form-data; boundary=—-WebKitFormBoundaryfgtsKTYLsT7PNUVD',
+      },
+      body: JSON.stringify(data),
+    });
+    return response.json(); // parses JSON response into native JavaScript objects
+  },
   POST: async function (url = '', token = '', data = {}) {
     // Default options are marked with *1
     const response = await fetch(serverURL + '' + url, {

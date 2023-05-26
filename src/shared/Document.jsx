@@ -18,7 +18,7 @@ import Ribbon from "./Ribbon";
 import Button from "./Button";
 import PreviewImage from "../assets/images/previewImage.png";
 
-const Document = ({ fileDate, fileName, fileType }) => {
+const Document = ({ fileDate, fileName, fileType, path }) => {
   const [previewModal, setPreviewModal] = useState(false);
 
   const handlePreviewModal = () => {

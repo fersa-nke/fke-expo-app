@@ -61,7 +61,7 @@ const AllReport = ({list, onHandlePress, ReportEdit, ReportDelete}) => {
           <GestureHandlerRootView  key={report.Id}>
           <Swipeable ref={ref => reportRow[index] = ref} renderRightActions={()=>renderLeftActions(report.Id)} onSwipeableOpen={() => onOpen(index)}
           onSwipeableClose={() => onClose(index)}>
-          <TouchableOpacity onPress={() => onHandlePress(report.Id)}>
+          <TouchableOpacity onPress={() => onHandlePress(report)}>
           <View style={[Styles.report]}>
             <Text style={Styles.reportName} numberOfLines={1}>
             {report[NAME]}

@@ -42,12 +42,11 @@ export const saveJobReport = (reportData, originalData, callBack) => {
     const token = getState().userReducer.token;
     API.POST(`${BASE_URL}`, token, reportData)
         .then(res => {
-            console.log(res);
             //Hide Loader
             if (res) {
                 dispatch({
                   type: ADD_REPORT_ITEM,
-                  payload: originalData,
+                  payload: res,
                 });
                 Toast.success('Job Report Created!');
                 callBack();
@@ -94,19 +93,22 @@ export const updateJobReport = (reportData, originalData, Id, callBack) => {
   
 };
 
-export const removeReport = report => dispatch => {
+export const removeFromReports = (Id) => {
+    console.log(Id);
   return async (dispatch, getState) => {
     const token = getState().userReducer.token;
-    API.DELETE(`${BASE_URL}/${report.Id}`, token)
+    API.DELETE(`${BASE_URL}/${Id}`, token)
         .then(res => {
             //Hide Loader
-            if (res) {
+            if (res && res.ok) {
                 dispatch({
-                  type: DELETE_REPORT_ITEM,
-                  payload: res,
-                });
+                    type: DELETE_REPORT_ITEM,
+                    payload: Id,
+                  });
+                Toast.success('Job Report Deleted!');
             } else {
-                console.log('Unable to DELETE job');
+                Toast.error('Unable to DELETE');
+                console.log('Unable to DELETE Report', res);
             }
         })
         .catch((error) => {

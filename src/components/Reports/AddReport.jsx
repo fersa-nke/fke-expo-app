@@ -18,7 +18,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 
 const AddReport = ({navigation, route }) => {
-  const { Id } = route.params;
+  const Id = route.params?.Id;
   const reports = useSelector((state) => state.reportsReducer.reports);
   const selectedJobId = useSelector((state) => state.jobsReducer.selectedJobId);
   const selectedJobTitle = useSelector((state) => state.jobsReducer.jobTitle);
