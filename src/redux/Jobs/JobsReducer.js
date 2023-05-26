@@ -14,7 +14,7 @@ const initialJobState = {
   pageLoader: false,
   showLoadMore: false,
   selectedJobId: null,
-  jobTitle: '',
+  jobTitle: null,
   jobsRefresh: false,
   showBarCodeScanButton: true
 }

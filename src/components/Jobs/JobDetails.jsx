@@ -26,6 +26,12 @@ import { KEYMapper as JOBKEYMapper } from './../../services/UserConfig';
 import {
   setSelectedJobId
 } from "../../redux/Jobs/JobsActions";
+import {
+getReports,
+setSelectedReportId  
+} from "../../redux/Reports/ReportsAction";
+import { SET_JOB_TITLE } from '../../redux/ReduxConsants';
+
 const DetailsView = () => {
   
   const selectedJobId = useSelector((state) => state.jobsReducer.selectedJobId);
@@ -33,6 +39,7 @@ const DetailsView = () => {
   const [job, setJob] = useState();
   const navigation = useNavigation();
   const dispatch = useDispatch();
+
   const onEditClick = (Id) => {
     dispatch(setSelectedJobId(Id));
     navigation.navigate('EditJob',{Id: Id});
@@ -41,8 +48,13 @@ const DetailsView = () => {
     useEffect(() => {
      if(selectedJobId && jobs && jobs.length > 0) {
       const filterJob = jobs.filter(j => j.Id === selectedJobId)[0];
-      console.log(filterJob);
+      console.log(filterJob, filterJob[JOBKEYMapper.JOBID]);
       setJob(filterJob);
+      dispatch({
+        type: SET_JOB_TITLE,
+        payload: filterJob[JOBKEYMapper.JOBID]
+      });
+      dispatch(getReports(selectedJobId));
      }
     }, []);
   
@@ -90,30 +102,45 @@ const DetailsView = () => {
   );
 };
 
+
 const ReportsView = () => {
   const navigation = useNavigation();
+  const reports = useSelector((state) => state.reportsReducer.reports);
+  const dispatch = useDispatch();
+
+
+  const navigateAddReport = () => {
+    navigation.navigate('AddReport');
+  }
+  
+  const handleRemoveReport = (Id) => {
+    console.log(Id);
+    removeFromReports(Id);
+  };
+  
+  const navigateToReportDetails = (Id) => {
+   // dispatch(setSelectedJobId(Id));
+   // navigation.navigate('JobDetails',{Id: Id});
+  }
+  
+  const onEditClick = (Id) => {
+    console.log(Id);
+   dispatch(setSelectedReportId(Id));
+   navigation.navigate('EditReport',{Id: Id});
+  }
+  
+  
   return (
     <ScrollView>
       <View style={GBStyles.container}>
         <Report
-          reportName="Report 1"
-          reportDate="05-04-2023"
-          onPress={() => navigation.navigate('ReportView')}
-        />
-        <Report
-          reportName="Report 2"
-          reportDate="05-04-2023"
-          onPress={() => navigation.navigate('ReportView')}
-        />
-        <Report
-          reportName="Report 3"
-          reportDate="05-04-2023"
-          onPress={() => navigation.navigate('ReportView')}
+          list={reports}
+          onHandlePress={navigateToReportDetails} ReportEdit={onEditClick} ReportDelete={handleRemoveReport}
         />
       </View>
       <Ripple
         style={GBStyles.addReportBtn}
-        onPress={() => navigation.navigate('AddReport')}>
+        onPress={navigateAddReport}>
         <Row>
           <Icon name="AddReport" size={18} color={theme.textBlue} />
           <Text style={[GBStyles.pageTitle, GBStyles.addReportBtnText]}>
@@ -150,8 +177,6 @@ const JobDetails = ({route}) => {
     {key: 'reports', title: 'REPORTS'},
   ]);
 
-
-  
   if(!job) {
     return <></>;
   }

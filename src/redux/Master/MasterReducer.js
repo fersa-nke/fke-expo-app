@@ -1,4 +1,7 @@
-import {GET_API_Mapper, GET_KEY_Mapper, GET_EXCHANGE_TYPES, GET_MODELS, GET_REASON_OF_CHANGES, GET_SHAFT_POSITIONS, GET_BEARING_TYPES, GET_BRANDS, GET_GENERATOR_MODELS, GET_WIND_FARMS, GET_WIND_LOCATIONS, GET_STATES, GET_OPERATORS } from '../ReduxConsants';
+import { GET_API_Mapper, GET_KEY_Mapper, GET_EXCHANGE_TYPES, 
+    GET_MODELS, GET_REASON_OF_CHANGES, GET_SHAFT_POSITIONS, 
+    GET_BEARING_TYPES, GET_BRANDS, GET_GENERATOR_MODELS, GET_WIND_FARMS,
+    GET_WIND_LOCATIONS, GET_STATES, GET_OPERATORS, GET_LUBRICATION_TYPES, GET_LUBRICATION_GRADES } from '../ReduxConsants';
 
 const initialState = {
     exhangeTypes: [],
@@ -13,7 +16,9 @@ const initialState = {
     states: [],
     operators: [],
     apiMapperConfig: [],
-    keyMapperConfig: []
+    keyMapperConfig: [],
+    lubricationTypes: [],
+    lubricationGrades: []
 }
 
 const masterReducer = (state = initialState, action) => {
@@ -82,6 +87,16 @@ const masterReducer = (state = initialState, action) => {
             return {
                 ...state,
                 operators: action.payload
+            }
+        case GET_LUBRICATION_TYPES:
+            return {
+                ...state,
+                lubricationTypes: action.payload
+            }
+        case GET_LUBRICATION_GRADES:
+            return {
+                ...state,
+                lubricationGrades: action.payload
             }
         default:
             return state

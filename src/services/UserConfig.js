@@ -64,5 +64,7 @@ export const KEYMapper = {
    VOLTAGETESTED: 'VoltageTested',
    REPORTDATE: 'ReportDate',
    LUBRICATIONTYPE: 'LubricationType',
-   LUBRICATIONGRADE: 'LubricationGrade'
+   REPORTID: 'ReportId',
+   LUBRICATIONGRADE: 'LubricationGrade',
+   NAME: 'Name'
 };

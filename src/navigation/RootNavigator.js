@@ -122,6 +122,17 @@ const RootNavigator = () => {
               }}
             />
             <Stack.Screen
+              name="EditReport"
+              component={AddReport}
+              options={{
+                title: 'Edit Report',
+                headerTitleStyle: {
+                  fontSize: 16,
+                  fontWeight: '700',
+                },
+              }}
+            />
+            <Stack.Screen
               name="JobDetails"
               component={JobDetails}
               options={{

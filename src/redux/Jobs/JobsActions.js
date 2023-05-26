@@ -85,7 +85,7 @@ export const getJobsBySearchQuery = (query, formObj) => {
     if(squery) {
         squery = squery+'~and';
     }
-    squery = squery+'('+JobMapper.JOBDATE+',eq,'+formObj.jobSearchDate+')';
+    squery = squery+'('+JobMapper.JOBDATE+',eq,exactDate,'+formObj.jobSearchDate+')';
    }
    console.log(squery, formObj);
     API.GET(`${BASE_URL}`, token, {where: squery})

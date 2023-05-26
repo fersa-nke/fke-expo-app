@@ -29,7 +29,9 @@ import {
   getGeneratorModels,
   getWindFarms,
   getWindLocations,
-  getStates
+  getStates,
+  getLubricationGrades,
+  getLubricationTypes
 } from "../../redux/Master/MasterActions";
 import { useNavigation } from "@react-navigation/native";
 import { JobsInitialLoader } from "../../shared/InitialLoaders";
@@ -61,9 +63,10 @@ function Jobs({route}) {
   const fetchWindFarms = () => dispatch(getWindFarms());
   const fetchWindLocations = () => dispatch(getWindLocations());
   const fetchJobs = () => dispatch(getJobs());
-  
+  const fetchLubricationGrades = () => dispatch(getLubricationGrades());
+  const fetchLubricationTypes = () => dispatch(getLubricationTypes());
+
   useEffect(() => {
-    console.log(type);
     if(type === 'search') {
       console.log(query);
       dispatch(getJobsBySearchQuery(query));
@@ -80,6 +83,9 @@ function Jobs({route}) {
     fetchStates();
     fetchWindFarms();
     fetchWindLocations();
+    fetchLubricationGrades();
+    fetchLubricationTypes();
+
     setTimeout(() => {
       setLoading(false);
     }, 500);
