@@ -21,6 +21,7 @@ import Ribbon from "../../shared/Ribbon";
 import PreviewImage from "../../assets/images/previewImage.png";
 import PDFView from 'react-native-view-pdf';
 import * as ImagePicker from 'expo-image-picker';
+import IconComp from '../../shared/IconComp';
 
 
 function ReportView({route}) {
@@ -123,7 +124,23 @@ function ReportView({route}) {
         </View>
         ))}
        
-      <Ripple style={GBStyles.upload} onPress={pickFile}>
+       <Row style={{marginVertical: 24}}>
+       <Ripple style={[Styles.reportUpload, {marginRight: 6}]} onPress={pickImage}>
+        <IconComp name="Camera" size={22} color={theme.textBlue} />
+        <Text style={Styles.reportUploadTitle}>CAPTURE</Text>
+          <Text style={Styles.reportUploadHelpTxt}>
+            Please capture from your device camera
+          </Text>
+       </Ripple>
+       <Ripple style={[Styles.reportUpload, {marginLeft: 6}]} onPress={pickFile}>
+        <IconComp name="File" size={22} color={theme.textBlue} />
+        <Text style={Styles.reportUploadTitle}>UPLOAD</Text>
+          <Text style={Styles.reportUploadHelpTxt}>
+            Please upload PDF, JPG, JPEG, PNG formats
+          </Text>
+       </Ripple>
+       </Row>
+      {/* <Ripple style={GBStyles.upload} onPress={pickFile}>
           <Text style={GBStyles.uploadTitle}>upload report</Text>
           <Text style={GBStyles.uploadHelpText}>
             Please upload PDF, jPG, JPEG, PNG formate files only.
@@ -134,7 +151,7 @@ function ReportView({route}) {
           <Text style={GBStyles.uploadHelpText}>
             Please upload PDF, jPG, JPEG, PNG formate files only.
           </Text>
-        </Ripple>
+        </Ripple> */}
       <Button text="Close" type="Secondary"  onPress={() => navigation.navigate('JobDetails', {id: 1})} />
     </View>
     </ScrollView>
@@ -227,6 +244,30 @@ const Styles = StyleSheet.create({
   image: {
     width: '100%',
     height: 450
+  },
+  reportUpload: {
+    borderWidth: 1,
+    borderColor: theme.bgBlue,
+    borderStyle: 'dashed',
+    backgroundColor: theme.bgWhite,
+    padding: 20,
+    borderRadius: 12,
+    flex: 1,
+    alignItems: 'center'
+  },
+  reportUploadTitle: {
+    fontSize: 16,
+    color: theme.textBlack,
+    fontWeight: '700',
+    marginTop: 10,
+    marginBottom: 6
+    
+  },
+  reportUploadHelpTxt: {
+    fontSize: 10,
+    color: theme.textBlack,
+    textAlign: 'center'
   }
+
 });
 export default ReportView;
