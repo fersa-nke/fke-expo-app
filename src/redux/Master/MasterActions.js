@@ -3,8 +3,8 @@ import API from '../../services/Api';
 import { LOGIN_SUCCESS, GET_API_Mapper, GET_GENERATOR_MODELS, ADD_SIGNED_USER_DATA, GET_KEY_Mapper, GET_BEARING_TYPES, GET_BRANDS, GET_EXCHANGE_TYPES, GET_MODELS, GET_REASON_OF_CHANGES, GET_SHAFT_POSITIONS, GET_WIND_FARMS, GET_WIND_LOCATIONS, GET_STATES, GET_LUBRICATION_GRADES, GET_LUBRICATION_TYPES } from '../ReduxConsants';
 // Define action types
 import { APIConfig, KEYMapper } from '../../services/UserConfig';
-import { Toast } from 'toastify-react-native';
 import AuthService from '../../services/AuthService';
+import displayToast from '../../services/ToastService';
 
 export const getAPIMapper = (token = '') => {
     return callAPI('APIMapper', GET_API_Mapper, token);
@@ -81,7 +81,7 @@ export function callAPI(URL, dispatchType, token = '') {
                             AuthService.setRole(role);
                         }
                         if(token && getState().userReducer.isLogin === false) {
-                            Toast.success(getState().userReducer.message);
+                            displayToast('success', getState().userReducer.message);
                             dispatch({ type: LOGIN_SUCCESS, payload: true });
                         }
                     }

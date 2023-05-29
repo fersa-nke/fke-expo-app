@@ -41,7 +41,7 @@ const RootNavigator = () => {
 
   useEffect(() => {
     if(isLogin) {
-      console.log('apiMapper loaded------------->', apiMapper.length);
+      console.log('apiMapper loaded------------->', apiMapper);
       fetchAPIMapper().then(() => {
         setTimeout(()=>{
           setAppLoaded(false);
@@ -60,8 +60,8 @@ const RootNavigator = () => {
     <><SafeAreaView style={{flex: 1}}>
      {appLoaded ? <CustomSplashScreen /> : <>
      <Ribbon />
+     <Container position="top" />
       <NavigationContainer>
-      <Container position="top" />
         <Stack.Navigator
           initialRouteName={ isLogin ? 'Jobs' : 'Login'}
           screenOptions={{ headerTitleAlign: 'center', headerTitleStyle: {textTransform: 'uppercase'} }}>

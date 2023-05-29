@@ -2,8 +2,8 @@ import { GET_SIGNED_USER, GET_API_Mapper, ADD_SIGNED_USER_DATA, REMOVE_USER_DATA
 import Authservice from '../../services/AuthService';
 import { PURGE } from 'redux-persist';
 const BASE_URL = `Auth/login`;
-import { Toast } from 'toastify-react-native';
 import  { callAPI, getAPIMapper ,getKEYMapper} from "../Master/MasterActions";
+import displayToast from '../../services/ToastService';
 
 export function login(data) {
   return async function loginThunk(dispatch, getState) {
@@ -38,7 +38,7 @@ export function logout() {
       type: USER_LOGOUT,
       payload: null
     });
-    Toast.success('Logout Success!');
+    displayToast('success', 'Logout Success!');
     // dispatch({ 
 		// 	type: PURGE,
 		// 	key: "root",    // Whatever you chose for the "key" value when initialising redux-persist in the **persistCombineReducers** method - e.g. "root"

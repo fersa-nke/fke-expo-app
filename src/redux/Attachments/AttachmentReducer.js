@@ -1,7 +1,8 @@
-import {GET_ATTACHMENTS, ADD_ATTACHMENT_ITEM, DELETE_ATTACHMENT_ITEM} from './../ReduxConsants';
+import {GET_ATTACHMENTS, ADD_ATTACHMENT_ITEM, DELETE_ATTACHMENT_ITEM, DOWNLOADED_ATTACHMENT_ITEM} from './../ReduxConsants';
 
 const initialAttachmentState = {
-  attachments: []
+  attachments: [],
+  downloadedFile: null
 }
 
 export default function attachmentsReducer(state = initialAttachmentState, action) {
@@ -14,9 +15,14 @@ export default function attachmentsReducer(state = initialAttachmentState, actio
       return {
         ...state,
         attachments: state.attachments.filter(
-            attachment => attachment.id !== action.payload.id,
+            attachment => attachment.Id !== action.payload,
         ),
-      };  
+      }; 
+    case DOWNLOADED_ATTACHMENT_ITEM:
+      return {
+        ...state,
+        downloadedFile: action.payload
+      }    
     default:
       return state;
   }

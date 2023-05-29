@@ -2,8 +2,8 @@
 import API from '../../services/Api';
 import { GET_JOBS, DELETE_jOB_ITEM, SELECTED_JOB_ID, ADD_JOB_ITEM , UPDATE_JOB_ITEM, LOADING_jOBS, GET_SEARCH_JOBS} from '../ReduxConsants';
 // Define action types
-import { Toast } from 'toastify-react-native';
 import { KEYMapper as JobMapper } from '../../services/UserConfig';
+import displayToast  from '../../services/ToastService';
 
 // Construct a BASE URL for API endpoint
 const BASE_URL = `nocodb/data/FG-MRO-Tracker/TrackerJobs`;
@@ -142,14 +142,14 @@ export const saveJob = (formData, jobData, callBack) => {
             if (res) {
                 let obj = {...jobData, Id: res.Id};
                 console.log('job data', obj);
-                Toast.success('Job Created!');
+                displayToast('success', 'Job Created!');
                 dispatch({
                   type: ADD_JOB_ITEM,
                   payload: obj,
                 });
                 callBack(obj.Id);
             } else {
-                Toast.error('Unable to save job');
+                displayToast('error', 'Unable to save job!');
             }
         })
         .catch((error) => {
@@ -158,7 +158,7 @@ export const saveJob = (formData, jobData, callBack) => {
                 type: LOADING_jOBS,
                 payload: false,
             });
-            Toast.error('error -------------->'+error);
+            displayToast('error', 'error -------------->'+error);
             //Hide Loader
     }); // JSON data parsed by `data.json()` call
     }
@@ -180,18 +180,18 @@ export const updateJob = (formData, jobData, Id, navigation) => {
                 type: LOADING_jOBS,
                 payload: false,
             });
-            if (res && res.ok) {
+            if (res) {
                 let jobs = getState().jobsReducer.jobs;
                 let jobIndex = jobs.findIndex(x => x.Id === Id);
                 jobs[jobIndex] = jobData;
-                Toast.success('Job Updated!');
+                displayToast('success', 'Job Updated!');
                 dispatch({
                   type: UPDATE_JOB_ITEM,
                   payload: jobs
                 });
                 navigation();
             } else {
-                Toast.error('Unable to save job');
+                displayToast('error', 'Unable to save job!');
             }
         })
         .catch((error) => {
@@ -221,21 +221,21 @@ export const removeJob = (Id) => {
                 type: LOADING_jOBS,
                 payload: false,
             });
-       
+            console.log(res);
             //Hide Loader
-            if (res && res.ok) {
+            if (res) {
                 dispatch({
                   type: DELETE_jOB_ITEM,
                   payload: Id
                 });
-                Toast.success('Job Deleted!');
+                displayToast('success', 'Job Deleted!');
             } else {
-                Toast.error('Unable to DELETE');
+                displayToast('error', 'Unable to DELETE');
                 console.log('Unable to DELETE job', res);
             }
         })
         .catch((error) => {
-            Toast.error('something went wrong in delete actiion');
+            displayToast('error', 'Something went wrong in delete actiion');
             dispatch({
                 type: LOADING_jOBS,
                 payload: false,

@@ -5,7 +5,7 @@ import { GET_REPORTS, ADD_REPORT_ITEM, DELETE_REPORT_ITEM, SELECTED_REPORT_ID, U
 import { KEYMapper as JobMapper } from '../../services/UserConfig';
 // Construct a BASE URL for API endpoint
 const BASE_URL = `nocodb/data/FG-MRO-Tracker/Reports`;
-import { Toast } from 'toastify-react-native';
+import displayToast from '../../services/ToastService';
 
 export const getReports = (Id) => {
     return async (dispatch, getState) => {
@@ -48,10 +48,10 @@ export const saveJobReport = (reportData, originalData, callBack) => {
                   type: ADD_REPORT_ITEM,
                   payload: res,
                 });
-                Toast.success('Job Report Created!');
+                displayToast('success', 'Job Report Created!');
                 callBack();
             } else {
-                Toast.error('Unable to save Report');
+                displayToast('error', 'Unable to save Report!');
             }
         })
         .catch((error) => {
@@ -79,10 +79,10 @@ export const updateJobReport = (reportData, originalData, Id, callBack) => {
                   type: UPDATE_REPORT_ITEM,
                   payload: reports
                 });
-                Toast.success('Job Report Updated!');
+                displayToast('success','Job Report Updated!');
                 callBack();
             } else {
-                Toast.error('Unable to save Report');
+                displayToast('error', 'Unable to save Report');
             }
         })
         .catch((error) => {
@@ -105,9 +105,9 @@ export const removeFromReports = (Id) => {
                     type: DELETE_REPORT_ITEM,
                     payload: Id,
                   });
-                Toast.success('Job Report Deleted!');
+                displayToast('success','Job Report Deleted!');
             } else {
-                Toast.error('Unable to DELETE');
+                displayToast('error','Unable to DELETE');
                 console.log('Unable to DELETE Report', res);
             }
         })
