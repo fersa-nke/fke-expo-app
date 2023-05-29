@@ -12,8 +12,7 @@ export default API = {
         'Content-Type': 'multipart/form-data'
       }
     });
-    console.log('uploading response--------->', response);
-    return response; // parses JSON response into native JavaScript objects
+    return response.data; // parses JSON response into native JavaScript objects
   },
 
   DOWNLOAD: async function (url = '', token = '', data = {}) {

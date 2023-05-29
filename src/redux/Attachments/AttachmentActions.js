@@ -76,7 +76,11 @@ export const downloadAttachment = path => {
                     payload: res,
                   });
               } else {
-                  console.log('Unable to DELETE job');
+                dispatch({
+                    type: DOWNLOADED_ATTACHMENT_ITEM,
+                    payload: null,
+                  });
+                  console.log('Unable to show attachment');
               }
           })
           .catch((error) => {

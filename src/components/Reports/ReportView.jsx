@@ -22,6 +22,7 @@ import PreviewImage from "../../assets/images/previewImage.png";
 import PDFView from 'react-native-view-pdf';
 import * as ImagePicker from 'expo-image-picker';
 import IconComp from '../../shared/IconComp';
+import * as FileSystem from 'expo-file-system';
 
 
 function ReportView({route}) {
@@ -59,6 +60,16 @@ function ReportView({route}) {
 
  const downLoadFile = () => {
   console.log('download file');
+  // FileSystem.downloadAsync(
+  //   'http://techslides.com/demos/sample-videos/small.mp4',
+  //   FileSystem.documentDirectory + 'small.mp4'
+  // )
+  //   .then(({ uri }) => {
+  //     console.log('Finished downloading to ', uri);
+  //   })
+  //   .catch(error => {
+  //     console.error(error);
+  //   });
  };
 
  const pickImage = async () => {
@@ -73,7 +84,7 @@ function ReportView({route}) {
       let dateFormate = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours()).slice(-2) + ("0" + date.getMinutes()).slice(-2) + ("0" + date.getSeconds()).slice(-2);
       let file = {...result,
         mimeType:'image/jpeg',
-        name: `temp.jpeg`
+        name: `${dateFormate}`
       };
       console.log('file------->',result, file);
       dispatch(saveReportAttachment(file, 'JobReport', jobId));
@@ -93,9 +104,9 @@ function ReportView({route}) {
       if (res.type == 'cancel') {
         throw 'error';
       } else {
-        console.log('response file____>',res.type, res);
+        console.log('response file____>',res);
         //res.id = `${new Date().getTime()}`;
-        //res.fileDate = `${new Date()}`;
+       // res.fileDate = `${new Date()}`;
        // let temparray = [...documents, res];
        dispatch(saveReportAttachment(res, 'JobReport', jobId));        
        // setDocuments(temparray);
@@ -110,21 +121,7 @@ function ReportView({route}) {
     <>
     <ScrollView>
     <View style={GBStyles.container}>
-      {attachments?.map(doc => (
-          <View key={doc.Id}>
-        <Document
-          fileDate={doc.UpdatedAt}
-          fileName={doc.Name}
-          fileType={doc.MimeType}
-          id = {doc.Id}
-          path = {doc.Path}
-          onDelete={onDeleteAttachment}
-          onView={onViewAttachment}
-        />
-        </View>
-        ))}
-       
-       <Row style={{marginVertical: 24}}>
+    <Row style={{marginVertical: 24}}>
        <Ripple style={[Styles.reportUpload, {marginRight: 6}]} onPress={pickImage}>
         <IconComp name="Camera" size={22} color={theme.textBlue} />
         <Text style={Styles.reportUploadTitle}>CAPTURE</Text>
@@ -140,6 +137,21 @@ function ReportView({route}) {
           </Text>
        </Ripple>
        </Row>
+      {attachments?.map(doc => (
+          <View key={doc.Id}>
+        <Document
+          fileDate={doc.UpdatedAt}
+          fileName={doc.Name}
+          fileType={doc.MimeType}
+          id = {doc.Id}
+          path = {doc.Path}
+          onDelete={onDeleteAttachment}
+          onView={onViewAttachment}
+        />
+        </View>
+        ))}
+       
+       
       {/* <Ripple style={GBStyles.upload} onPress={pickFile}>
           <Text style={GBStyles.uploadTitle}>upload report</Text>
           <Text style={GBStyles.uploadHelpText}>
@@ -182,7 +194,7 @@ function ReportView({route}) {
                resizeMode="contain"
                style={Styles.image}
               source={{uri: `data:image/png;base64,${downloadedFile}`}}
-            /> : <View style={{ flex: 1 }}>
+            /> : <View style={{ flex: 1, alignItems: 'center', padding: 20 }}>
             {/* <PDFView
               fadeInDuration={250.0}
               style={{ flex: 1 }}
@@ -191,21 +203,20 @@ function ReportView({route}) {
               onLoad={() => console.log(`PDF rendered from base64`)}
               onError={(error) => console.log('Cannot render PDF', error)}
             /> */}
+           <Icon name="Pdf" size={100} color={theme.textGray} />
           </View>
            }
            </> : <></> }
-
-            <View><Text>{openFileObj.fileType}{IconsType[openFileObj.fileType]}</Text></View>
-          
+  
               <View style={GBStyles.container}>
                 <Text style={Styles.fileName}>{openFileObj.fileName}</Text>
                 <Text style={Styles.fileDate}>{openFileObj.fileDate}</Text>
-                <Button
+                {/* <Button
                   text="Download"
                   type="Primary"
                   style={{ marginTop: 20 }}
                   onPress={downLoadFile}
-                />
+                /> */}
                 <Button
                   text="Close"
                   type="Secondary"

@@ -17,7 +17,10 @@ const Document = ({ fileDate, fileName, fileType, path , id , onDelete, onView }
 
   const IconsType = {
     "application/pdf": 'Pdf',
-    "application/image": 'Image'
+    "application/image": 'Image',
+    "image/jpeg": "Image",
+    "image/png": "Image",
+    "text/plain": "Image"
   }
 
   return (
