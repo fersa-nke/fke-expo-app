@@ -64,7 +64,7 @@ function ReportView({route}) {
   // No permissions request is necessary for launching the image library
   try {
   let result = await ImagePicker.launchCameraAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
     allowsEditing: true
   });
     if (!result.canceled) {
@@ -72,9 +72,9 @@ function ReportView({route}) {
       let dateFormate = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours()).slice(-2) + ("0" + date.getMinutes()).slice(-2) + ("0" + date.getSeconds()).slice(-2);
       let file = {...result,
         mimeType:'image/jpeg',
-        name: `RP-${dateFormate}`
+        name: `temp.jpeg`
       };
-      console.log(result, file);
+      console.log('file------->',result, file);
       dispatch(saveReportAttachment(file, 'JobReport', jobId));
      // setImage(result.assets[0].uri);
     }
@@ -107,6 +107,7 @@ function ReportView({route}) {
 };
   return (
     <>
+    <ScrollView>
     <View style={GBStyles.container}>
       {attachments?.map(doc => (
           <View key={doc.Id}>
@@ -136,7 +137,7 @@ function ReportView({route}) {
         </Ripple>
       <Button text="Close" type="Secondary"  onPress={() => navigation.navigate('JobDetails', {id: 1})} />
     </View>
-
+    </ScrollView>
     <Modal visible={previewModal} animationType="slide" transparent={true}>
         <SafeAreaView style={{ flex: 1 }}>
           <Ribbon />

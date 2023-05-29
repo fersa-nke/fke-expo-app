@@ -55,7 +55,7 @@ export const saveReportAttachment = (file, type, jobId) => {
             }
         })
         .catch((error) => {
-            displayToast('error', error);
+            displayToast('error', 'something went wrong!');
             console.log('error -------------->', error);
             //Hide Loader
     }); // JSON data parsed by `data.json()` call
