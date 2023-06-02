@@ -194,7 +194,7 @@ const AddReport = ({navigation, route }) => {
     <ScrollView style={{ backgroundColor: theme.bgWhite }}>
        <Loader loading={loading} />
 
-      <KeyboardAwareScrollView style={GBStyles.container}>
+      <KeyboardAwareScrollView>
       <Formik
           initialValues={formData}
           onSubmit={(values) => {
