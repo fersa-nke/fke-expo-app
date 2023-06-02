@@ -4,13 +4,25 @@ import { PURGE } from 'redux-persist';
 const BASE_URL = `Auth/login`;
 import  { callAPI, getAPIMapper ,getKEYMapper} from "../Master/MasterActions";
 import displayToast from '../../services/ToastService';
+import Axios from "axios";
+Axios.interceptors.response.use(response => {
+  return response;
+  }, error => {
+  if (error.response.status === 401) {
+    console.log('401 error');
+    // logout();
+    //useDispatch(logout());
+  //place your reentry code
+  }
+  return error;
+});
 
 export function login(data) {
   return async function loginThunk(dispatch, getState) {
     dispatch({ type: LOGIN_LOADING, payload: true });
     const response = await Authservice.postData(`${BASE_URL}`, { Email: data.email, Password: data.password });
     if (response.success) {
-      response.UserPrefix = 'VZ'; // this will update by payload
+      // response.ShortCode = 'VZ'; // this will update by payload
       dispatch({ type: ADD_SIGNED_USER_DATA, payload: response });
       Authservice.setRole(response.Role);
       getUserInitConfig(dispatch);
@@ -43,7 +55,7 @@ export function logout() {
 		// 	type: PURGE,
 		// 	key: "root",    // Whatever you chose for the "key" value when initialising redux-persist in the **persistCombineReducers** method - e.g. "root"
 		//    result: () => null              // Func expected on the submitted action. 
-		// });  
+		// });
 
   }
 };

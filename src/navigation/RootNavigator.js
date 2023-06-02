@@ -60,7 +60,6 @@ const RootNavigator = () => {
     <><SafeAreaView style={{flex: 1}}>
      {appLoaded ? <CustomSplashScreen /> : <>
      <Ribbon />
-     <Container position="top" />
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName={ isLogin ? 'Jobs' : 'Login'}
@@ -160,7 +159,7 @@ const RootNavigator = () => {
         </Stack.Navigator>
       </NavigationContainer>
      </>}
-     
+     <Container position="top" />     
       </SafeAreaView>
     </>
   );

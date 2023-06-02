@@ -45,3 +45,5 @@ export const GET_LUBRICATION_GRADES = 'GET_LUBRICATION_GRADES';
 
 export const GET_API_Mapper = 'GET_API_Mapper';
 export const GET_KEY_Mapper = 'GET_KEY_Mapper';
+
+export const LOADING_DATA = 'LOADING_DATA';

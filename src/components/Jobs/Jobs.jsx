@@ -40,6 +40,7 @@ import Ripple from "react-native-material-ripple";
 import NoData from "../../shared/NoData";
 import nodata from "../../assets/images/nodata.png";
 import Loader from '../../shared/Loader';
+import displayToast from "../../services/ToastService";
 
 function Jobs({route}) {
   const type = route.params?.type;

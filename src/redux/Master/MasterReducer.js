@@ -1,7 +1,7 @@
 import { GET_API_Mapper, GET_KEY_Mapper, GET_EXCHANGE_TYPES, 
     GET_MODELS, GET_REASON_OF_CHANGES, GET_SHAFT_POSITIONS, 
     GET_BEARING_TYPES, GET_BRANDS, GET_GENERATOR_MODELS, GET_WIND_FARMS,
-    GET_WIND_LOCATIONS, GET_STATES, GET_OPERATORS, GET_LUBRICATION_TYPES, GET_LUBRICATION_GRADES } from '../ReduxConsants';
+    GET_WIND_LOCATIONS, GET_STATES, GET_OPERATORS, GET_LUBRICATION_TYPES, GET_LUBRICATION_GRADES, LOADING_DATA } from '../ReduxConsants';
 
 const initialState = {
     exhangeTypes: [],
@@ -18,7 +18,8 @@ const initialState = {
     apiMapperConfig: [],
     keyMapperConfig: [],
     lubricationTypes: [],
-    lubricationGrades: []
+    lubricationGrades: [],
+    pageLoader: false
 }
 
 const masterReducer = (state = initialState, action) => {
@@ -97,6 +98,11 @@ const masterReducer = (state = initialState, action) => {
             return {
                 ...state,
                 lubricationGrades: action.payload
+            }
+        case LOADING_DATA:
+            return {
+                ...state,
+                pageLoader: action.payload
             }
         default:
             return state

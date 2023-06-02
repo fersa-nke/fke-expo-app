@@ -1,7 +1,6 @@
 import { serverURL } from './ServerURL';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Axios from "axios";
-
 
 export default API = {
   UPLOAD: async function (url = '', token = '', data = {}) {
@@ -47,7 +46,6 @@ export default API = {
         'Content-Type': 'application/json',
       },
     });
-    console.log(response.data);
     return response.data; // parses JSON response into native JavaScript objects
   },
 
@@ -101,7 +99,6 @@ export default API = {
         'Content-Type': 'application/json',
       }      
     });
-    console.log(response.data);
     return response.data; // parses JSON response into native JavaScript objects
   }
 };

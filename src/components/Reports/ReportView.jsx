@@ -19,21 +19,24 @@ import {getAttachments, saveReportAttachment, removeAttachment, downloadAttachme
 import { useEffect } from 'react';
 import Ribbon from "../../shared/Ribbon";
 import PreviewImage from "../../assets/images/previewImage.png";
-import PDFView from 'react-native-view-pdf';
 import * as ImagePicker from 'expo-image-picker';
 import IconComp from '../../shared/IconComp';
+import displayToast from '../../services/ToastService';
 import * as FileSystem from 'expo-file-system';
-
+import { shareAsync } from 'expo-sharing';
+import Loader from '../../shared/Loader';
 
 function ReportView({route}) {
-  const jobId = route.params?.Id;
+  const reportId = route.params?.Id;
   const [previewModal, setPreviewModal] = useState(false);
   const navigation = useNavigation();
   const [documents, setDocuments] = useState([]);
+  const appDirectory =  FileSystem.cacheDirectory + 'MROtracker/';
   const dispatch = useDispatch();
   const attachments = useSelector(state => state.attachmentsReducer.attachments);
   const downloadedFile = useSelector(state => state.attachmentsReducer.downloadedFile);
   const [openFileObj, setOpenFileObj] = useState({});
+  const loading = useSelector((state) => state.masterReducer.pageLoader);
   const IconsType = {
     "application/pdf": 'Pdf',
     "application/image": 'Image',
@@ -43,7 +46,7 @@ function ReportView({route}) {
   const imageMimeTypes = ['application/pdf'];
 
  useEffect(() => {
-  dispatch(getAttachments(jobId));
+  dispatch(getAttachments(reportId));
  }, []); 
 
  const onDeleteAttachment = (id) => {
@@ -58,19 +61,55 @@ function ReportView({route}) {
   setPreviewModal(true);
  }
 
- const downLoadFile = () => {
-  console.log('download file');
-  // FileSystem.downloadAsync(
-  //   'http://techslides.com/demos/sample-videos/small.mp4',
-  //   FileSystem.documentDirectory + 'small.mp4'
-  // )
-  //   .then(({ uri }) => {
-  //     console.log('Finished downloading to ', uri);
-  //   })
-  //   .catch(error => {
-  //     console.error(error);
-  //   });
+async function ensureDirExists() {
+  const dirInfo = await FileSystem.getInfoAsync(appDirectory);
+  if (!dirInfo.exists) {
+    console.log("Gif directory doesn't exist, creating...");
+    await FileSystem.makeDirectoryAsync(appDirectory, { intermediates: true });
+  }
+}
+
+ const downLoadFile = async () => {
+    console.log('download file', openFileObj);
+    const filename = openFileObj.fileName;
+    const fileType = openFileObj.fileType;
+
+    const uri = `data:image/png;base64,${downloadedFile}`;
+    
+    try{
+    const result = await FileSystem.downloadAsync(
+      'https://images.unsplash.com/photo-1500622944204-b135684e99fd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1161&q=80',
+      FileSystem.documentDirectory + filename
+    );
+    console.log(result, filename, fileType);
+    save(uri, filename, fileType);
+    }
+    catch(e) {
+      console.log('error',e);
+    }
  };
+
+ 
+ const save = async (uri, filename, mimetype) => {
+  if (Platform.OS === "android") {
+    const permissions = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+    if (permissions.granted) {
+      const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+      console.log(base64);
+      await FileSystem.StorageAccessFramework.createFileAsync(permissions.directoryUri, filename, mimetype)
+        .then(async (uri) => {
+          await FileSystem.writeAsStringAsync(uri, downLoadFile, { encoding: FileSystem.EncodingType.Base64 });
+        })
+        .catch(e => console.log(e));
+    } else {
+      shareAsync(uri);
+    }
+  } else {
+    shareAsync(uri);
+  }
+};
+
+ 
 
  const pickImage = async () => {
   // No permissions request is necessary for launching the image library
@@ -79,15 +118,15 @@ function ReportView({route}) {
     mediaTypes: ImagePicker.MediaTypeOptions.Images,
     allowsEditing: true
   });
+  console.log('hello',result);
     if (!result.canceled) {
       let date = new Date();
       let dateFormate = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours()).slice(-2) + ("0" + date.getMinutes()).slice(-2) + ("0" + date.getSeconds()).slice(-2);
       let file = {...result,
-        mimeType:'image/jpeg',
         name: `${dateFormate}`
       };
       console.log('file------->',result, file);
-      dispatch(saveReportAttachment(file, 'JobReport', jobId));
+      dispatch(saveReportAttachment(file, 'JobReport', reportId));
      // setImage(result.assets[0].uri);
     }
   } catch (err) {
@@ -108,7 +147,7 @@ function ReportView({route}) {
         //res.id = `${new Date().getTime()}`;
        // res.fileDate = `${new Date()}`;
        // let temparray = [...documents, res];
-       dispatch(saveReportAttachment(res, 'JobReport', jobId));        
+       dispatch(saveReportAttachment(res, 'JobReport', reportId));        
        // setDocuments(temparray);
       } 
     });
@@ -120,6 +159,7 @@ function ReportView({route}) {
   return (
     <>
     <ScrollView>
+
     <View style={GBStyles.container}>
     <Row style={{marginVertical: 24}}>
        <Ripple style={[Styles.reportUpload, {marginRight: 6}]} onPress={pickImage}>
@@ -164,7 +204,7 @@ function ReportView({route}) {
             Please upload PDF, jPG, JPEG, PNG formate files only.
           </Text>
         </Ripple> */}
-      <Button text="Close" type="Secondary"  onPress={() => navigation.navigate('JobDetails', {id: 1})} />
+      <Button text="Close" style={{marginTop: 20}} type="Secondary"  onPress={() => navigation.navigate('JobDetails', {id: 1})} />
     </View>
     </ScrollView>
     <Modal visible={previewModal} animationType="slide" transparent={true}>
@@ -211,12 +251,12 @@ function ReportView({route}) {
               <View style={GBStyles.container}>
                 <Text style={Styles.fileName}>{openFileObj.fileName}</Text>
                 <Text style={Styles.fileDate}>{openFileObj.fileDate}</Text>
-                {/* <Button
+                <Button
                   text="Download"
                   type="Primary"
                   style={{ marginTop: 20 }}
                   onPress={downLoadFile}
-                /> */}
+                />
                 <Button
                   text="Close"
                   type="Secondary"
@@ -228,6 +268,9 @@ function ReportView({route}) {
           </View>
         </SafeAreaView>
       </Modal>
+
+      <Loader loading={loading} />
+
     </>
   );
 }

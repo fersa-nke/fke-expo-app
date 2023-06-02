@@ -16,6 +16,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { KEYMapper as ReportKEYMapper } from './../../services/UserConfig';
 import { Formik } from "formik";
 import * as Yup from "yup";
+import Loader from '../../shared/Loader';
 
 const AddReport = ({navigation, route }) => {
   const Id = route.params?.Id;
@@ -24,7 +25,7 @@ const AddReport = ({navigation, route }) => {
   const selectedJobTitle = useSelector((state) => state.jobsReducer.jobTitle);
   const selectedReportId = useSelector((state) => state.reportsReducer.selectedReportId);
  // const navigation = useNavigation();
-  const [loading, setLoading] = useState(false);
+  const loading = useSelector((state) => state.masterReducer.pageLoader);
   const [reportName, setReportName] = useState('');
   const [reportDate, setReportDate] = useState(new Date());
   const [lastLubricationDate, setLastLubricationDate] = useState(new Date());
@@ -82,18 +83,18 @@ const AddReport = ({navigation, route }) => {
     [NAME]: Yup.string(),
     [SERIALNUMBER]: Yup.string(),
     [NOKBEARING]: Yup.array(Yup.object()),
-    [SHAFTNDEMAX]: Yup.number(),
-    [SHAFTNDEMIN]: Yup.number(),
-    [BEARINGNDEMAX]: Yup.number(),
-    [BEARINGNDEMIN]: Yup.number(),
-    [SHAFTDEMAX]: Yup.number(),
-    [SHAFTDEMIN]: Yup.number(),
-    [BEARINGDEMAX]: Yup.number(),
-    [BEARINGDEMIN]: Yup.number(),
+    [SHAFTNDEMAX]: Yup.string(),
+    [SHAFTNDEMIN]: Yup.string(),
+    [BEARINGNDEMAX]: Yup.string(),
+    [BEARINGNDEMIN]: Yup.string(),
+    [SHAFTDEMAX]: Yup.string(),
+    [SHAFTDEMIN]: Yup.string(),
+    [BEARINGDEMAX]: Yup.string(),
+    [BEARINGDEMIN]: Yup.string(),
     [LUBRICATIONTYPE]: Yup.array(Yup.object()),
     [LUBRICATIONGRADE]: Yup.array(Yup.object()),
-    [INSULATERESISTANCE]: Yup.number(),
-    [VOLTAGETESTED]: Yup.number(),
+    [INSULATERESISTANCE]: Yup.string(),
+    [VOLTAGETESTED]: Yup.string(),
     [COMMENTS]: Yup.string()
   });
 
@@ -103,17 +104,37 @@ const AddReport = ({navigation, route }) => {
       const filterReport = reports.filter(r => r.Id === selectedReportId)[0];
       console.log('fetched report details', selectedReportId, filterReport);
 
-      let formValues = { ...filterReport,
-      [NOKBEARING]: [{"Id": filterReport[NOKBEARING], "Name": filterReport[NOKBEARING]}] };
+      let lubricationDate = filterReport[LASTLUBRICATION] ? new Date(filterReport[LASTLUBRICATION]) : '';
+
+      let formValues = {
+        ...filterReport,
+      [NOKBEARING]: [{"Id": filterReport[NOKBEARING], "Name": filterReport[NOKBEARING]}],
+      [NAME]: filterReport[NAME] ?  filterReport[NAME] : '',
+      [SERIALNUMBER]: filterReport[SERIALNUMBER] ?  filterReport[SERIALNUMBER] : '',
+      [SHAFTNDEMAX]: filterReport[SHAFTNDEMAX] ?  filterReport[SHAFTNDEMAX] : '',
+      [SHAFTNDEMIN]: filterReport[SHAFTNDEMIN] ?  filterReport[SHAFTNDEMIN] : '',
+      [BEARINGNDEMAX]: filterReport[BEARINGNDEMAX] ?  filterReport[BEARINGNDEMAX] : '',
+      [BEARINGNDEMIN]: filterReport[BEARINGNDEMIN] ?  filterReport[BEARINGNDEMIN] : '',
+      [SHAFTDEMAX]: filterReport[SHAFTDEMAX] ?  filterReport[SHAFTDEMAX] : '',
+      [SHAFTDEMIN]: filterReport[SHAFTDEMIN] ?  filterReport[SHAFTDEMIN] : '',
+      [BEARINGDEMAX]: filterReport[BEARINGDEMAX] ?  filterReport[BEARINGDEMAX] : '',
+      [BEARINGDEMIN]: filterReport[BEARINGDEMIN] ?  filterReport[BEARINGDEMIN] : '',
+      [INSULATERESISTANCE]: filterReport[INSULATERESISTANCE] ?  filterReport[INSULATERESISTANCE] : '',
+      [VOLTAGETESTED]: filterReport[VOLTAGETESTED] ?  filterReport[VOLTAGETESTED] : '',
+      [COMMENTS]: filterReport[COMMENTS],
+      [LASTLUBRICATION]: lastLubricationDate ? lastLubricationDate.toISOString().split("T")[0] : '',
+      [JOBID]: selectedJobId,
+      [LUBRICATIONTYPE]: filterReport[LUBRICATIONTYPE][0] ? filterReport[LUBRICATIONTYPE] : '',
+      [LUBRICATIONGRADE]: filterReport[LUBRICATIONGRADE][0] ? filterReport[LUBRICATIONGRADE] : ''
+ };
       setFormData(formValues);
       setReportDate(new Date(filterReport[REPORTDATE]));
-      let lubricationDate = filterReport[LASTLUBRICATION] ? new Date(filterReport[LASTLUBRICATION]) : '';
       setLastLubricationDate(lubricationDate);
       j = `${filterReport[REPORTID]}`;
     } else {
       let date = new Date();
       let dateFormate = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours()).slice(-2) + ("0" + date.getMinutes()).slice(-2) + ("0" + date.getSeconds()).slice(-2);
-      j = `RM - ${dateFormate} - RP `;
+      j = `RM - ${dateFormate} - ${reports.length + 1}`;
     }
     setReportName(j);
   }, [])
@@ -129,10 +150,10 @@ const AddReport = ({navigation, route }) => {
   };
 
   const handleSubmitPress = (values) => {
-    setLoading(true);
     let originalData = {
-      ...values
-    }
+      ...values,
+      Id
+    };
     let data = {
       [NAME]: values[NAME] ?  values[NAME] : null,
       [SERIALNUMBER]: values[SERIALNUMBER] ?  values[SERIALNUMBER] : null,
@@ -155,7 +176,7 @@ const AddReport = ({navigation, route }) => {
       [LUBRICATIONTYPE]: values[LUBRICATIONTYPE][0] ? values[LUBRICATIONTYPE][0].Id : null,
       [LUBRICATIONGRADE]: values[LUBRICATIONGRADE][0] ? values[LUBRICATIONGRADE][0].Id : null
     };
-    console.log('submit clicked', data, originalData);
+    console.log('submit clicked', data);
 
     if (Id) {
       dispatch(updateJobReport(data, originalData, Id, navigateBack));
@@ -171,6 +192,8 @@ const AddReport = ({navigation, route }) => {
 
   return (
     <ScrollView style={{ backgroundColor: theme.bgWhite }}>
+       <Loader loading={loading} />
+
       <KeyboardAwareScrollView style={GBStyles.container}>
       <Formik
           initialValues={formData}
@@ -290,7 +313,7 @@ const AddReport = ({navigation, route }) => {
           appendIconName="Calendar"
           appendIconColor={theme.textBlue}
           appendIconSize={16}
-          value={lastLubricationDate.toLocaleDateString()}
+          value={lastLubricationDate ? lastLubricationDate.toLocaleDateString() : null}
           handlePress={() => setLastLubricationDateShow(true)}
         />
         {showLastLubricationDate && (

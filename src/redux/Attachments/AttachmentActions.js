@@ -1,7 +1,7 @@
 
 import API from '../../services/Api';
 // Define action types
-import {GET_ATTACHMENTS, ADD_ATTACHMENT_ITEM, DELETE_ATTACHMENT_ITEM ,DOWNLOADED_ATTACHMENT_ITEM} from './../ReduxConsants';
+import {GET_ATTACHMENTS, ADD_ATTACHMENT_ITEM, DELETE_ATTACHMENT_ITEM ,DOWNLOADED_ATTACHMENT_ITEM, LOADING_DATA} from './../ReduxConsants';
 import { KEYMapper as JobMapper } from '../../services/UserConfig';
 // Construct a BASE URL for API endpoint
 const BASE_URL = `nocodb/data/FG-MRO-Tracker/Attachments`;
@@ -10,10 +10,18 @@ import  displayToast  from '../../services/ToastService';
 export const getAttachments = (jobId) => {
     return async (dispatch, getState) => {
     const token = getState().userReducer.token;
+    dispatch({
+        type: LOADING_DATA,
+        payload: true,
+    });
     let squery = '(RefId,eq,'+jobId+')~and(Type,eq,JobReport)';
     API.GET(`${BASE_URL}`, token, {where: squery})
         .then(res => {
             //Hide Loader
+            dispatch({
+                type: LOADING_DATA,
+                payload: false,
+            });
             if (res) {
                 dispatch({
                   type: GET_ATTACHMENTS,
@@ -24,25 +32,36 @@ export const getAttachments = (jobId) => {
             }
         })
         .catch((error) => {
+            dispatch({
+                type: LOADING_DATA,
+                payload: false,
+            });
             console.log('error -------------->', error);
             //Hide Loader
     }); // JSON data parsed by `data.json()` call
     }
 };
 
-export const saveReportAttachment = (file, type, jobId) => {
+export const saveReportAttachment = (file, type, reportId) => {
   return async (dispatch, getState) => {
-    console.log(file, type, jobId);
+    console.log(file, type, reportId);
     const token = getState().userReducer.token;
     let data = new FormData();
-    console.log(file);
     data.append('file', file);
     data.append('type', type);
-    data.append('refId', jobId);
-    console.log(data);
+    data.append('refId', reportId);
+    dispatch({
+        type: LOADING_DATA,
+        payload: true
+    });
+    console.log('file-->',data);
     API.UPLOAD(`nocodb/upload`, token, data)
         .then(res => {
             //Hide Loader
+            dispatch({
+                type: LOADING_DATA,
+                payload: false
+            });
             console.log('upload------->',res);
             if (res) {
                 displayToast('success','Upload Success!');
@@ -58,6 +77,10 @@ export const saveReportAttachment = (file, type, jobId) => {
             displayToast('error', 'something went wrong!');
             console.log('error -------------->', error);
             //Hide Loader
+            dispatch({
+                type: LOADING_DATA,
+                payload: false
+            });
     }); // JSON data parsed by `data.json()` call
     }
   
@@ -67,9 +90,17 @@ export const saveReportAttachment = (file, type, jobId) => {
 export const downloadAttachment = path => {
     return async (dispatch, getState) => {
       const token = getState().userReducer.token;
+      dispatch({
+        type: LOADING_DATA,
+        payload: true,
+    });
       API.DOWNLOAD(`nocodb/download`, token, {path, type: 'base64'})
           .then(res => {
               //Hide Loader
+              dispatch({
+                type: LOADING_DATA,
+                payload: false,
+            });
               if (res) {
                   dispatch({
                     type: DOWNLOADED_ATTACHMENT_ITEM,
@@ -86,6 +117,10 @@ export const downloadAttachment = path => {
           .catch((error) => {
               console.log('error -------------->', error);
               //Hide Loader
+              dispatch({
+                type: LOADING_DATA,
+                payload: false,
+            });
       }); // JSON data parsed by `data.json()` call
       }
   };
@@ -93,9 +128,17 @@ export const downloadAttachment = path => {
 export const removeAttachment = Id => {
   return async (dispatch, getState) => {
     const token = getState().userReducer.token;
+    dispatch({
+        type: LOADING_DATA,
+        payload: false,
+    });
     API.DELETE(`${BASE_URL}/${Id}`, token)
         .then(res => {
             //Hide Loader
+            dispatch({
+                type: LOADING_DATA,
+                payload: false,
+            });
             if (res) {
                 displayToast('success','Deleted Success!');
                 dispatch({
@@ -109,6 +152,10 @@ export const removeAttachment = Id => {
         .catch((error) => {
             console.log('error -------------->', error);
             //Hide Loader
+            dispatch({
+                type: LOADING_DATA,
+                payload: false,
+            });
     }); // JSON data parsed by `data.json()` call
     }
 };

@@ -1,7 +1,7 @@
 
 import API from '../../services/Api';
 // Define action types
-import { GET_REPORTS, ADD_REPORT_ITEM, DELETE_REPORT_ITEM, SELECTED_REPORT_ID, UPDATE_REPORT_ITEM} from './../ReduxConsants';
+import { GET_REPORTS, ADD_REPORT_ITEM, DELETE_REPORT_ITEM, SELECTED_REPORT_ID, UPDATE_REPORT_ITEM, LOADING_DATA} from './../ReduxConsants';
 import { KEYMapper as JobMapper } from '../../services/UserConfig';
 // Construct a BASE URL for API endpoint
 const BASE_URL = `nocodb/data/FG-MRO-Tracker/Reports`;
@@ -39,9 +39,18 @@ export const setSelectedReportId = id => dispatch => {
 
 export const saveJobReport = (reportData, originalData, callBack) => {
     return async (dispatch, getState) => {
+        console.log('calling save method-->',reportData);    
     const token = getState().userReducer.token;
+    dispatch({
+        type: LOADING_DATA,
+        payload: true,
+    });
     API.POST(`${BASE_URL}`, token, reportData)
         .then(res => {
+            dispatch({
+                type: LOADING_DATA,
+                payload: false,
+            });
             //Hide Loader
             if (res) {
                 dispatch({
@@ -56,6 +65,10 @@ export const saveJobReport = (reportData, originalData, callBack) => {
         })
         .catch((error) => {
             console.log('error -------------->', error);
+            dispatch({
+                type: LOADING_DATA,
+                payload: false,
+            });
             //Hide Loader
     }); // JSON data parsed by `data.json()` call
     }
@@ -63,18 +76,27 @@ export const saveJobReport = (reportData, originalData, callBack) => {
 };
 
 
-export const updateJobReport = (reportData, originalData, Id, callBack) => {
+export const updateJobReport = (reportFormData, originalData, Id, callBack) => {
+    console.log('calling update method-->',reportFormData);
     return async (dispatch, getState) => {
     const token = getState().userReducer.token;
-    API.PATCH(`${BASE_URL}/${Id}`, token, reportData)
+    dispatch({
+        type: LOADING_DATA,
+        payload: true,
+    });
+    API.PATCH(`${BASE_URL}/${Id}`, token, reportFormData)
         .then(res => {
             console.log(res);
             //Hide Loader
-            if (res && res.ok) {
+            dispatch({
+                type: LOADING_DATA,
+                payload: false,
+            });
+            if (res) {
                 let reports = getState().reportsReducer.reports;
                 let reportIndex = reports.findIndex(x => x.Id === Id);
-                reports[reportIndex] = reportData;
-                console.log(reportData);
+                reports[reportIndex] = originalData;
+                console.log(originalData);
                 dispatch({
                   type: UPDATE_REPORT_ITEM,
                   payload: reports
@@ -88,6 +110,10 @@ export const updateJobReport = (reportData, originalData, Id, callBack) => {
         .catch((error) => {
             console.log('error -------------->', error);
             //Hide Loader
+            dispatch({
+                type: LOADING_DATA,
+                payload: false,
+            });
     }); // JSON data parsed by `data.json()` call
     }
   
@@ -97,10 +123,18 @@ export const removeFromReports = (Id) => {
     console.log(Id);
   return async (dispatch, getState) => {
     const token = getState().userReducer.token;
+    dispatch({
+        type: LOADING_DATA,
+        payload: true,
+    });
     API.DELETE(`${BASE_URL}/${Id}`, token)
         .then(res => {
             //Hide Loader
-            if (res && res.ok) {
+            dispatch({
+                type: LOADING_DATA,
+                payload: false,
+            });
+            if (res) {
                 dispatch({
                     type: DELETE_REPORT_ITEM,
                     payload: Id,
@@ -114,6 +148,10 @@ export const removeFromReports = (Id) => {
         .catch((error) => {
             console.log('error -------------->', error);
             //Hide Loader
+            dispatch({
+                type: LOADING_DATA,
+                payload: false,
+            });
     }); // JSON data parsed by `data.json()` call
     }
 };

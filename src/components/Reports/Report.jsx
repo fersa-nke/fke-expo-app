@@ -58,19 +58,31 @@ const AllReport = ({list, onHandlePress, ReportEdit, ReportDelete}) => {
   return (
         <>
         {reports?.map((report, index) => (
-          <GestureHandlerRootView  key={report.Id}>
-          <Swipeable ref={ref => reportRow[index] = ref} renderRightActions={()=>renderLeftActions(report.Id)} onSwipeableOpen={() => onOpen(index)}
-          onSwipeableClose={() => onClose(index)}>
-          <TouchableOpacity onPress={() => onHandlePress(report)}>
-          <View style={[Styles.report]}>
+          // <GestureHandlerRootView  key={report.Id}>
+          // <Swipeable ref={ref => reportRow[index] = ref} renderRightActions={()=>renderLeftActions(report.Id)} onSwipeableOpen={() => onOpen(index)}
+          // onSwipeableClose={() => onClose(index)}>
+          <TouchableOpacity key={report.Id} onPress={() => ReportEdit(report.Id)}>
+            <Row style={[Styles.report]} justifyContent='space-between'>
+            <View>
             <Text style={Styles.reportName} numberOfLines={1}>
             {report[NAME]}
             </Text>
             <Text style={Styles.reportDate}>{report[REPORTDATE]}</Text>
           </View>
+          <View>
+          <Row style={{height: 40, marginTop: "3%", justifyContent: 'center', alignItems: 'center', backgroundColor: theme.bgWhite}}>
+        <Ripple style={{width: 70, height: 40,justifyContent: 'center', alignItems: 'center'}} onPress={()=> {onHandlePress(report)}} >
+        <IconComp name="Attachment" size={24} color={theme.textBlue} />
+      </Ripple>
+      <Ripple style={{width: 70, height: 40,justifyContent: 'center', alignItems: 'center'}}  onPress={()=>{ReportDelete(report.Id)}}>
+        <IconComp name="Delete" size={24} color={theme.textRed} />
+      </Ripple>
+      </Row>
+          </View>
+          </Row>
          </TouchableOpacity>
-          </Swipeable>
-          </GestureHandlerRootView>
+          // </Swipeable>
+          // </GestureHandlerRootView>
       ))}      
     </>
   );

@@ -126,7 +126,7 @@ const ReportsView = () => {
     });
    console.log(report); 
    dispatch(setSelectedReportId(report.Id));
-   navigation.navigate('ReportView',{Id: report.JobId});
+   navigation.navigate('ReportView',{Id: report.Id});
   }
   
   const onEditClick = (Id) => {
