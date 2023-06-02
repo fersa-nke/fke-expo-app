@@ -93,7 +93,7 @@ const AllReport = ({ list, onHandlePress, ReportEdit, ReportDelete }) => {
         // onSwipeableClose={() => onClose(index)}>
         <TouchableOpacity key={report.Id} onPress={() => ReportEdit(report.Id)}>
           <Row style={[Styles.report]} justifyContent="space-between">
-            <View>
+            <View style={{flex: 1}}>
               <Text style={Styles.reportName} numberOfLines={1}>
                 {report[NAME]}
               </Text>
@@ -159,7 +159,8 @@ const Styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginLeft: 12,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    backgroundColor: theme.bgLight,
   },
 });
 
