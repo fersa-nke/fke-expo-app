@@ -89,7 +89,7 @@ function JobCard({list, onHandlePress, JobEdit, JobDelete}) {
                 </Row>
                 <Ripple
                   style={Styles.circleBtn}
-                  onPress={() => navigation?.navigate('JobDetails', {id:job.Id, viewType: 'reports'})}>
+                  onPress={() => onHandlePress(job.Id,'reports')}>
                   <Icon name="Report" size={14} color={theme.textBlue} />
                 </Ripple>
               </Row>

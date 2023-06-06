@@ -4,7 +4,7 @@ const initialState = {
     user: null,
     message: '',
     token: null,
-    isLogin: false,
+    isAuthenticate: false,
     failed: false,
     loading: false
 }
@@ -17,7 +17,6 @@ export default function userReducer(state = initialState, action) {
                 user: action.payload,
                 message: 'Login Success!',
                 token: action.payload.token,
-                isLogin: false,
                 failed: false
             }
         case LOGIN_FAILED:
@@ -27,13 +26,13 @@ export default function userReducer(state = initialState, action) {
                 message: action.payload.message,
                 token: null,
                 failed: true,
-                isLogin: false,
+                isAuthenticate: false,
                 loading: false
             }
         case LOGIN_SUCCESS:
                 return {
                     ...state,
-                    isLogin: true,
+                    isAuthenticate: true,
                     loading: false
         }    
         case LOGIN_LOADING:
@@ -45,7 +44,7 @@ export default function userReducer(state = initialState, action) {
         case LOGOUT: 
             return {
                 ...state,
-                isLogin: false,
+                isAuthenticate: false,
                 message: 'Logout Success!',
             }    
         case REMOVE_USER_DATA:
@@ -54,7 +53,7 @@ export default function userReducer(state = initialState, action) {
                 user: null,
                 message: '',
                 token: null,
-                isLogin: false,
+                isAuthenticate: false,
                 failed: false,
                 loading: false
             };

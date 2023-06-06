@@ -46,12 +46,13 @@ const HeaderRight = ({ showSeach = false, isAddPage = false }) => {
   const showBarCode = useSelector(
     (state) => state.jobsReducer.showBarCodeScanButton
   );
+  
+  const isAuthenticate = useSelector((state) => state.userReducer.isAuthenticate);
 
   const handleLogoutPress = () => {
     const callLogOut = logout();
     dispatch(callLogOut);
   };
-  const isLogin = useSelector((state) => state.userReducer.isLogin);
   const handleSearch = () => {
     setSearchModal(true);
   };
@@ -66,9 +67,10 @@ const HeaderRight = ({ showSeach = false, isAddPage = false }) => {
     });
   };
 
-  if (!isLogin) {
-    navigation.navigate("Login");
-  }
+  // if (!isAuthenticate) {
+  //   navigation.navigate("Login");
+  // }
+  
   if (isAddPage) {
     return (
       <>
@@ -92,7 +94,7 @@ const HeaderRight = ({ showSeach = false, isAddPage = false }) => {
           <Icon name="Search" size={22} color={theme.textBlue} />
         </Ripple>
       )}
-      <Ripple style={GBStyles.rippleBtn} onPress={handleLogoutPress}>
+      <Ripple style={GBStyles.rippleBtn} onPress={() => handleLogoutPress()}>
         <Icon name="Logout" size={22} color={theme.textBlue} />
       </Ripple>
       <Modal visible={searchModal} animationType="slide" transparent={true}>

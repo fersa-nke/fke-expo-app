@@ -13,7 +13,8 @@ export const getJobs = () => {
     const pageInfo =  getState().jobsReducer.pageInfo;
     const offSet = pageInfo.offSet || 0;
     const pageSize = pageInfo.pageSize|| 5;
-
+    // alert('calling once api job'+token);
+    console.log(pageInfo);    
     if(pageInfo.isLastPage) {
         return false;
     }
@@ -21,7 +22,6 @@ export const getJobs = () => {
         type: LOADING_jOBS,
         payload: true,
       });
-   // alert('calling once api jobs,'+pageNo+','+pageSize);
     API.GET(`${BASE_URL}`, token, {sort: `-${JobMapper.JOBDATE},-${JobMapper.ID}`})
         .then(res => {
             console.log('job list lenght', res.list.length, res.pageInfo.isLastPage);
@@ -175,6 +175,7 @@ export const updateJob = (formData, jobData, Id, navigation) => {
         });
       API.PATCH(`${BASE_URL}/${Id}`, token, formData)
           .then(res => {
+          //  console.log(res);
             //Hide Loader
             dispatch({
                 type: LOADING_jOBS,
@@ -184,12 +185,12 @@ export const updateJob = (formData, jobData, Id, navigation) => {
                 let jobs = getState().jobsReducer.jobs;
                 let jobIndex = jobs.findIndex(x => x.Id === Id);
                 jobs[jobIndex] = jobData;
+                navigation();
                 displayToast('success', 'Job Updated!');
                 dispatch({
                   type: UPDATE_JOB_ITEM,
                   payload: jobs
                 });
-                navigation();
             } else {
                 displayToast('error', 'Unable to save job!');
             }

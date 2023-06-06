@@ -30,6 +30,7 @@ import { KEYMapper as JOBKEYMapper } from './../../services/UserConfig';
 import { Toast } from 'toastify-react-native';
 import { SET_JOB_TITLE, SHOW_BARCODE_BUTTON } from '../../redux/ReduxConsants';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import displayToast from "../../services/ToastService";
 
 const AddJob = ({ navigation, route }) => {
   const { Id } = route.params;
@@ -217,7 +218,7 @@ const AddJob = ({ navigation, route }) => {
     return (
       <View style={GBStyles.container}>
         <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
-        <Button onPress={requestPermission} title="grant permission" />
+        <Button onPress={requestPermission} text="grant permission" />
       </View>
     );
   }
@@ -279,7 +280,7 @@ const AddJob = ({ navigation, route }) => {
     };
 
     console.log('submitting data job ------------->', originalData, data);
-
+    // return;
     if (Id) {
       dispatch(updateJob(data, originalData, Id, callBack));
     } else {
@@ -293,13 +294,13 @@ const AddJob = ({ navigation, route }) => {
       <Loader loading={loading} />
 
       {scan ? (
-        <View>
+        <>
           <Camera
             style={[
               {
                 flex: 1,
                 width: Dimensions.get("window").width,
-                height: Dimensions.get("window").height - 140,
+                height: Dimensions.get("window").height - 85,
               },
             ]}
             flashMode={torch ? Camera.Constants.FlashMode.torch : Camera.Constants.FlashMode.off}
@@ -307,13 +308,16 @@ const AddJob = ({ navigation, route }) => {
             useCamera2Api={true}
           >
 
-            <BarcodeMask width={300} height={300} edgeBorderWidth={1} outerMaskOpacity={0.8} />
-            <View
+            <BarcodeMask width={280} height={280} edgeBorderWidth={1} outerMaskOpacity={0.8} />
+            
+          </Camera>
+          <View
               style={
                 [StyleSheet.absoluteFill,
                 {
                   bottom: 0,
                   top: '73%',
+                  zIndex: 100
                 }
                 ]
               }>
@@ -338,14 +342,13 @@ const AddJob = ({ navigation, route }) => {
               />
 
             </View>
-          </Camera>
           {scanned && (
             <Button
               text="Tap to Scan Again"
               onPress={() => setScanned(false)}
             />
           )}
-        </View>
+        </>
       ) : (
         <Formik
           initialValues={formData}
@@ -794,7 +797,7 @@ const Styles = StyleSheet.create({
   },
   torchBtn: {
     width: 64, height: 64, borderRadius: 16, padding: 12,
-    alignSelf: 'center', marginTop: 16, justifyContent: 'center'
+    alignSelf: 'center', marginTop: 0, justifyContent: 'center'
   }
 });
 

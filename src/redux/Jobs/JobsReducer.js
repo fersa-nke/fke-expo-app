@@ -54,7 +54,7 @@ export default function jobsReducer(state = initialJobState, action) {
     case SET_JOB_TITLE:
       return {...state, jobTitle: action.payload}
     case CLEAR_JOBS_DATA:
-      return {...state, jobs: []}
+      return {...state, ...initialJobState }
     default:
       return state;
   }

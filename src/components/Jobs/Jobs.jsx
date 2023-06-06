@@ -63,17 +63,19 @@ function Jobs({route}) {
   const fetchStates = () => dispatch(getStates());
   const fetchWindFarms = () => dispatch(getWindFarms());
   const fetchWindLocations = () => dispatch(getWindLocations());
-  const fetchJobs = () => dispatch(getJobs());
+ // const fetchJobs = () => dispatch(getJobs());
   const fetchLubricationGrades = () => dispatch(getLubricationGrades());
   const fetchLubricationTypes = () => dispatch(getLubricationTypes());
 
   useEffect(() => {
+   console.log('loaded fetch jobs', type); 
     if(type === 'search') {
       console.log(query);
       dispatch(getJobsBySearchQuery(query));
     } else {
-      fetchJobs();
+        dispatch(getJobs());
     }
+
     fetchExchangeTypes();
     fetchShaftPositions();
     fetchReasonOfChanges();
@@ -89,7 +91,7 @@ function Jobs({route}) {
 
     setTimeout(() => {
       setLoading(false);
-    }, 500);
+    }, 2000);
   }, []);
 
   
@@ -111,9 +113,9 @@ function Jobs({route}) {
     removeFromJobs(Id);
   };
 
-  const navigateToJobDetails = (Id) => {
+  const navigateToJobDetails = (Id, viewType) => {
     dispatch(setSelectedJobId(Id));
-    navigation.navigate('JobDetails',{Id: Id});
+    navigation.navigate('JobDetails',{Id: Id, viewType});
   }
 
   const onEditClick = (Id) => {

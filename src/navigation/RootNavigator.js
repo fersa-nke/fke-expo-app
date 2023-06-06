@@ -23,13 +23,15 @@ import Container from 'toastify-react-native';
 import CustomSplashScreen from './../shared/SplashScreen';
 import  { getAPIMapper ,getKEYMapper} from "./../redux/Master/MasterActions";
 import SearchJobsResult from './../components/Jobs/SearchJobsResult';
+import Button from "../shared/Button";
+import {LOGIN_SUCCESS} from '../redux/ReduxConsants';
+import displayToast from '../services/ToastService';
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
 
 const Stack = createNativeStackNavigator();
 const RootNavigator = () => {
   const dispatch = useDispatch();
-  const isLogin = useSelector((state)=> state.userReducer.isLogin);
   const [appLoaded, setAppLoaded] = useState(false);
   const fetchAPIMapper = () => dispatch(getAPIMapper());
   const fetchKEYMapper = () => dispatch(getKEYMapper());
@@ -37,34 +39,46 @@ const RootNavigator = () => {
   const apiMapper = useSelector((state)=> state.masterReducer.apiMapperConfig);
   const jobTitle = useSelector((state)=> state.jobsReducer.jobTitle);
   const reportTitle = useSelector((state)=> state.reportsReducer.reportTitle);
+  const isAuthenticate = useSelector((state)=> state.userReducer.isAuthenticate);
+  
+  if(isAuthenticate) {
+    console.log('user login status--------->', isAuthenticate);
+    
+  }
 
+  const handleButtonPress = () => {
+    console.log('button pressed');
+    displayToast('success', 'login success');
+    dispatch({ type: LOGIN_SUCCESS, payload: true });
+  };
 
   useEffect(() => {
-    if(isLogin) {
-      console.log('apiMapper loaded------------->', apiMapper);
-      fetchAPIMapper().then(() => {
-        setTimeout(()=>{
-          setAppLoaded(false);
-        },1000);
-      });
-      fetchKEYMapper();
-    }
-    else {
-      setTimeout(()=>{
-        setAppLoaded(false);
-      },4000);
-    }
-    
+
+    // if(isAuthenticate) {
+    //   console.log('apiMapper loaded------------->', apiMapper);
+    //   fetchAPIMapper().then(() => {
+    //     setTimeout(()=>{
+    //       setAppLoaded(false);
+    //     },1000);
+    //   });
+    //   fetchKEYMapper();
+    // }
+    // else {
+    //   setTimeout(()=>{
+    //     setAppLoaded(false);
+    //   },4000);
+    // }
   }, []);
+
   return (
     <><SafeAreaView style={{flex: 1}}>
      {appLoaded ? <CustomSplashScreen /> : <>
      <Ribbon />
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName={ isLogin ? 'Jobs' : 'Login'}
+          initialRouteName={ isAuthenticate ? 'Jobs' : 'Login'}
           screenOptions={{ headerTitleAlign: 'center', headerTitleStyle: {textTransform: 'uppercase'} }}>
-            {isLogin ?  <>
+            {isAuthenticate ?  <>
             <Stack.Screen
               name="Jobs"
               component={Jobs}

@@ -19,11 +19,11 @@ import { login } from "../../redux/Login/LoginActions";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import Message from "../../shared/Message";
-import { LOGIN_LOADING } from "../../redux/ReduxConsants";
+import { LOGIN_LOADING, LOGIN_SUCCESS } from "../../redux/ReduxConsants";
 
 const Login = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
-  const isLogin = useSelector((state) => state.userReducer.isLogin);
+  const isAuthenticate = useSelector((state) => state.userReducer.isAuthenticate);
   const isLoginFailed = useSelector((state) => state.userReducer.failed);
   const loginMessage = useSelector((state) => state.userReducer.message);
   const loader = useSelector((state) => state.userReducer.loading);
@@ -34,7 +34,6 @@ const Login = ({ navigation }) => {
   const [showOperatorPswd, setShowOperatorPswd] = useState(true);
   const [loginError, setLoginError] = useState(null);
 
-  console.log(isLogin, "user loggin details");
   const dispatch = useDispatch();
 
   // const customerLoginSchema = Yup.object().shape({
@@ -84,9 +83,10 @@ const Login = ({ navigation }) => {
     // let dataToSend = { Email: data.username, Password: data.password };
     // Create the thunk function with the text the user wrote
     // Then dispatch the thunk function itself
-    const callLogin = login(d);
-    dispatch(callLogin);
-    console.log("login status---->", isLogin);
+    //  const callLogin = login(d);
+    //  dispatch(callLogin);
+    dispatch(login(d));
+   // navigation.navigate('Jobs');
   };
 
   const handleCustomerLogin = () => {

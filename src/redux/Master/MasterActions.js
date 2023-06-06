@@ -7,7 +7,7 @@ import AuthService from '../../services/AuthService';
 import displayToast from '../../services/ToastService';
 
 export const getAPIMapper = (token = '') => {
-    return callAPI('APIMapper', GET_API_Mapper, token);
+    return callAPIMapper('APIMapper', GET_API_Mapper, token);
 };
 
 export const getKEYMapper = (token = '') => {
@@ -62,28 +62,26 @@ export const getLubricationTypes = () => {
     return callAPI(APIConfig.LUBRICATIONTYPE, GET_LUBRICATION_TYPES);
 }
 
-export function callAPI(URL, dispatchType, token = '') {
+export function callAPIMapper(URL, dispatchType, token = '') {
     return async (dispatch, getState) => {
         token = token ? token : getState().userReducer.token;
-        console.log(URL, 'api config urls');
-        API.GET(`nocodb/data/FG-MRO-Tracker/${URL}`, token)
+       await API.GET(`nocodb/data/FG-MRO-Tracker/${URL}`, token)
             .then(res => {
                 //Hide Loader
+                try {
                 if (res) {
                     dispatch({
                         type: dispatchType,
                         payload: res.list,
                     });
-                    if(dispatchType === GET_API_Mapper) {
-                        updateAPIMapper(res.list);
-                        let role = getState().userReducer.user.Role;
-                        if(role){
-                            AuthService.setRole(role);
-                        }
-                        if(token && getState().userReducer.isLogin === false) {
-                            displayToast('success', getState().userReducer.message);
-                            dispatch({ type: LOGIN_SUCCESS, payload: true });
-                        }
+                   updateAPIMapper(res.list);
+                    let role = getState().userReducer.user.Role;
+                    if(token && getState().userReducer.isAuthenticate === false) {
+                        displayToast('success', getState().userReducer.message);
+                        dispatch({ type: LOGIN_SUCCESS, payload: true });
+                    }
+                    else {
+                        console.log('weeokskdka');
                     }
                     if(dispatchType === GET_KEY_Mapper) {
                         updateKEYMapper(res.list);
@@ -91,6 +89,42 @@ export function callAPI(URL, dispatchType, token = '') {
                 } else {
                     console.log('Unable to fetch');
                 }
+            }
+            catch(e) {
+                console.log('error------------->', e);
+            }
+
+            })
+            .catch((error) => {
+                console.log('error -------------->', error);
+                //Hide Loader
+            }); // JSON data parsed by `data.json()` call
+    }
+};
+
+export function callAPI(URL, dispatchType, token = '') {
+    return async (dispatch, getState) => {
+        token = token ? token : getState().userReducer.token;
+        API.GET(`nocodb/data/FG-MRO-Tracker/${URL}`, token)
+            .then(res => {
+                //Hide Loader
+                try {
+                if (res) {
+                    dispatch({
+                        type: dispatchType,
+                        payload: res.list,
+                    });
+                    if(dispatchType === GET_KEY_Mapper) {
+                        updateKEYMapper(res.list);
+                    }
+                } else {
+                    console.log('Unable to fetch');
+                }
+            }
+            catch(e) {
+                console.log('error------------->', e);
+            }
+
             })
             .catch((error) => {
                 console.log('error -------------->', error);

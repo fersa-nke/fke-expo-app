@@ -1,41 +1,49 @@
-import { GET_SIGNED_USER, GET_API_Mapper, ADD_SIGNED_USER_DATA, REMOVE_USER_DATA, LOGIN_FAILED, LOGIN_LOADING, USER_LOGOUT, LOGOUT, CLEAR_JOBS_DATA } from '../ReduxConsants';
+import { GET_SIGNED_USER, GET_API_Mapper, ADD_SIGNED_USER_DATA, REMOVE_USER_DATA, LOGIN_FAILED, LOGIN_LOADING, USER_LOGOUT, LOGOUT, CLEAR_JOBS_DATA, LOGIN_SUCCESS } from '../ReduxConsants';
 import Authservice from '../../services/AuthService';
 import { PURGE } from 'redux-persist';
-const BASE_URL = `Auth/login`;
+const BASE_URL = `auth/login`;
 import  { callAPI, getAPIMapper ,getKEYMapper} from "../Master/MasterActions";
 import displayToast from '../../services/ToastService';
 import Axios from "axios";
-Axios.interceptors.response.use(response => {
-  return response;
-  }, error => {
-  if (error.response.status === 401) {
-    console.log('401 error');
-    // logout();
-    //useDispatch(logout());
-  //place your reentry code
-  }
-  return error;
-});
+// Axios.interceptors.response.use(response => {
+//   return response;
+//   }, error => {
+//   if (error.response.status === 401) {
+//     console.log('401 error');
+//     // logout();
+//     //useDispatch(logout());
+//   //place your reentry code
+//   }
+//   return error;
+// });
 
 export function login(data) {
   return async function loginThunk(dispatch, getState) {
-    dispatch({ type: LOGIN_LOADING, payload: true });
-    const response = await Authservice.postData(`${BASE_URL}`, { Email: data.email, Password: data.password });
-    if (response.success) {
-      // response.ShortCode = 'VZ'; // this will update by payload
+  dispatch({ type: LOGIN_LOADING, payload: true });
+ 
+  Authservice.POST(`${BASE_URL}`, { Email: data.email, Password: data.password })
+  .then(response => {
+    console.log('user data--->', response);
+    //Hide Loader
+    if (response && response.success) {
       dispatch({ type: ADD_SIGNED_USER_DATA, payload: response });
       Authservice.setRole(response.Role);
       getUserInitConfig(dispatch);
     } else {
-      console.log(response);
-      dispatch({ type: LOGIN_FAILED, payload: response });
+    dispatch({ type: LOGIN_FAILED, payload: null });
     }
-  }
+})
+.catch((error) => {
+  console.log(error);
+  displayToast('error', 'Unable to Login!');
+    //Hide Loader
+});
+}
 }
 
 function getUserInitConfig(dispatch) {
-  dispatch(getKEYMapper());
   dispatch(getAPIMapper());
+  dispatch(getKEYMapper());
 }
 
 
@@ -53,8 +61,8 @@ export function logout() {
     dispatch({
       type: CLEAR_JOBS_DATA,
       payload: null
-    })
-
+    });
+    
     displayToast('success', 'Logout Success!');
     // dispatch({ 
 		// 	type: PURGE,
