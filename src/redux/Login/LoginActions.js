@@ -1,4 +1,4 @@
-import { GET_SIGNED_USER, GET_API_Mapper, ADD_SIGNED_USER_DATA, REMOVE_USER_DATA, LOGIN_FAILED, LOGIN_LOADING, USER_LOGOUT, LOGOUT } from '../ReduxConsants';
+import { GET_SIGNED_USER, GET_API_Mapper, ADD_SIGNED_USER_DATA, REMOVE_USER_DATA, LOGIN_FAILED, LOGIN_LOADING, USER_LOGOUT, LOGOUT, CLEAR_JOBS_DATA } from '../ReduxConsants';
 import Authservice from '../../services/AuthService';
 import { PURGE } from 'redux-persist';
 const BASE_URL = `Auth/login`;
@@ -50,6 +50,11 @@ export function logout() {
       type: USER_LOGOUT,
       payload: null
     });
+    dispatch({
+      type: CLEAR_JOBS_DATA,
+      payload: null
+    })
+
     displayToast('success', 'Logout Success!');
     // dispatch({ 
 		// 	type: PURGE,

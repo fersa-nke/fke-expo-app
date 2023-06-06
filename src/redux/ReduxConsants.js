@@ -16,6 +16,7 @@ export const UPDATE_JOB_ITEM = 'UPDATE_JOB_ITEM';
 export const LOADING_jOBS = 'LOADING_jOBS';
 export const SHOW_BARCODE_BUTTON = 'SHOW_BARCODE_BUTTON';
 export const SET_JOB_TITLE = 'SET_JOB_TITLE';
+export const CLEAR_JOBS_DATA = 'CLEAR_JOBS_DATA';
 
 export const GET_REPORTS = 'GET_REPORTS';
 export const DELETE_REPORT_ITEM = 'DELETE_REPORT_ITEM';
