@@ -103,14 +103,16 @@ export function callAPI(URL, dispatchType, token = '') {
 
 function updateAPIMapper(list) {
    list.forEach(element => {
-    APIConfig[element.Title] = element['API Name'];
+    if(element.Name)
+       APIConfig[element.Name] = element['API Name'];
    });
    console.log('updated apiconfig', APIConfig);
 }
 
 function updateKEYMapper(list) {
     list.forEach(element => {
-        KEYMapper[element.Title] = element['TAG Name'];
+        if(element.Name)
+            KEYMapper[element.Name] = element['TAG Name'];
     });
     console.log('updated KEYMapper', KEYMapper);
 }

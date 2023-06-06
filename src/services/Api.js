@@ -5,6 +5,17 @@ import Axios from "axios";
 export default API = {
   UPLOAD: async function (url = '', token = '', data = {}) {
     // Default options are marked with *1
+    const response = await fetch(serverURL + '' + url, {
+      method: 'POST',
+      headers: {
+        'x-access-token': `${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+      body: data,
+    });
+    return response.json(); // parses JSON response into native JavaScript objects
+  },
+  UPLOADD: async function (url = '', token = '', data = {}) {
     const response = await Axios.post(serverURL + '' + url, data, {
       headers: {
         'x-access-token': `${token}`,
@@ -12,6 +23,7 @@ export default API = {
       }
     });
     return response.data; // parses JSON response into native JavaScript objects
+
   },
 
   DOWNLOAD: async function (url = '', token = '', data = {}) {
@@ -81,7 +93,7 @@ export default API = {
     const Url = serverURL+''+url;
    // const params = new URLSearchParams().toString();
    // Object.keys(params).forEach(key => Url.searchParams.append(key, params[key]));
-    console.log(Url);
+   // console.log(Url);
     const myHeaders = new Headers({
       'x-access-token': `${token}`,
       'Content-Type': 'application/json',
@@ -90,7 +102,7 @@ export default API = {
       method: 'GET',
       headers: myHeaders
     });
-    console.log(params);
+    // console.log(params);
     // const response = await fetch(request);
     const response = await Axios.get(Url, {
       params,

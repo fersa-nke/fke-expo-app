@@ -1,5 +1,8 @@
 
+import { Platform } from "react-native";
 import API from '../../services/Api';
+import mime from "mime";
+
 // Define action types
 import {GET_ATTACHMENTS, ADD_ATTACHMENT_ITEM, DELETE_ATTACHMENT_ITEM ,DOWNLOADED_ATTACHMENT_ITEM, LOADING_DATA} from './../ReduxConsants';
 import { KEYMapper as JobMapper } from '../../services/UserConfig';
@@ -44,17 +47,25 @@ export const getAttachments = (jobId) => {
 
 export const saveReportAttachment = (file, type, reportId) => {
   return async (dispatch, getState) => {
-    console.log(file, type, reportId);
+    console.log('filessss-------------->',file, type, reportId);
     const token = getState().userReducer.token;
+    const newFileUri =  "file:///" + file.uri.split("file:/").join("");
+
     let data = new FormData();
-    data.append('file', file);
+    data.append('file', {
+        name: newFileUri.split('/').pop(),
+        type: mime.getType(newFileUri),
+        uri: newFileUri,
+    });
+   // data.append('file', file);
     data.append('type', type);
     data.append('refId', reportId);
+    
     dispatch({
         type: LOADING_DATA,
         payload: true
     });
-    console.log('file-->',data);
+     console.log('file-->',data);
     API.UPLOAD(`nocodb/upload`, token, data)
         .then(res => {
             //Hide Loader
@@ -63,6 +74,7 @@ export const saveReportAttachment = (file, type, reportId) => {
                 payload: false
             });
             console.log('upload------->',res);
+         //   return;
             if (res) {
                 displayToast('success','Upload Success!');
                 dispatch({
@@ -74,13 +86,15 @@ export const saveReportAttachment = (file, type, reportId) => {
             }
         })
         .catch((error) => {
+           // return;
             displayToast('error', 'something went wrong!');
-            console.log('error -------------->', error);
-            //Hide Loader
-            dispatch({
-                type: LOADING_DATA,
-                payload: false
-            });
+             console.log('error -------------->', error);
+            // //Hide Loader
+            // dispatch({
+            //     type: LOADING_DATA,
+            //     payload: false
+            // });
+
     }); // JSON data parsed by `data.json()` call
     }
   

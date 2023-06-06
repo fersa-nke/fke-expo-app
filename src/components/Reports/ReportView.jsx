@@ -122,7 +122,7 @@ async function ensureDirExists() {
     if (!result.canceled) {
       let date = new Date();
       let dateFormate = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours()).slice(-2) + ("0" + date.getMinutes()).slice(-2) + ("0" + date.getSeconds()).slice(-2);
-      let file = {...result,
+      let file = {...result.assets[0],
         name: `${dateFormate}`
       };
       console.log('file------->',result, file);
@@ -138,7 +138,7 @@ async function ensureDirExists() {
   try {
     const res = await DocumentPicker.getDocumentAsync({
       allowMultiSelection: true,
-      copyToCacheDirectory: false
+      copyToCacheDirectory: true
     }).then((res) => {
       if (res.type == 'cancel') {
         throw 'error';
