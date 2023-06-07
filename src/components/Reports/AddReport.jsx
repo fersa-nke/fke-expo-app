@@ -134,7 +134,7 @@ const AddReport = ({navigation, route }) => {
     } else {
       let date = new Date();
       let dateFormate = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours()).slice(-2) + ("0" + date.getMinutes()).slice(-2) + ("0" + date.getSeconds()).slice(-2);
-      j = `RM - ${dateFormate} - ${reports.length + 1}`;
+      j = `${selectedJobTitle.split('-JB')[0]}/${reports.length + 1}`;
     }
     setReportName(j);
   }, [])

@@ -132,7 +132,7 @@ const AddJob = ({ navigation, route }) => {
       let date = new Date();
       let dateFormate = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours()).slice(-2) + ("0" + date.getMinutes()).slice(-2) + ("0" + date.getSeconds()).slice(-2);
       console.log(userData);
-      j = `${userData.ShortCode} - ${dateFormate} - JB `;
+      j = `${userData.ShortCode}-${dateFormate}-JB`;
       dispatch({
         type: SHOW_BARCODE_BUTTON,
         payload: true
@@ -145,6 +145,9 @@ const AddJob = ({ navigation, route }) => {
         payload: j
       }
     )
+
+
+
 
   }, []);
 
