@@ -71,6 +71,8 @@ const DetailsView = () => {
         <ListItem label="Bearing Model" value={job[JOBKEYMapper.BEARINGMODEL] ?  job[JOBKEYMapper.BEARINGMODEL][0]?.Name : ''} />
     </>
     }
+        <ListItem label="DE Data Matrix" value={job[JOBKEYMapper.DEDATAMATRIX]} />
+        <ListItem label="NDE Data Matrix" value={job[JOBKEYMapper.NDEDATAMATRIX]} />
         <ListItem label="Exchange Type" value={job[JOBKEYMapper.EXCHANGETYPE] ? job[JOBKEYMapper.EXCHANGETYPE][0]?.Name : ''} />
         <ListItem label="Reasons of Chnage" value={job[JOBKEYMapper.REASONS] ? job[JOBKEYMapper.REASONS][0]?.Name : ''} />
         <ListItem label="Wind Farm" value={job[JOBKEYMapper.WINDFARM] ? job[JOBKEYMapper.WINDFARM][0]?.Name: ''} />
