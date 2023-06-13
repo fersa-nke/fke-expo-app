@@ -66,5 +66,7 @@ export const KEYMapper = {
    LUBRICATIONTYPE: 'LubricationType',
    REPORTID: 'ReportId',
    LUBRICATIONGRADE: 'LubricationGrade',
-   NAME: 'Name'
+   NAME: 'Name',
+   NDEDATAMATRIX: 'NDEDataMatrix',
+   DEDATAMATRIX: 'DEDataMatrix'
 };

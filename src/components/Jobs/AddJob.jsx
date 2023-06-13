@@ -35,7 +35,10 @@ import displayToast from "../../services/ToastService";
 const AddJob = ({ navigation, route }) => {
   const { Id } = route.params;
   const [scan, setScan] = useState(false);
+  const [scanType, setScanType] = useState('');
   const [result, setResult] = useState("");
+  const [deResult, setDEResult] = useState('');
+  const [ndeResult, setNDEResult] = useState('');
   const dispatch = useDispatch();
   const masterData = useSelector((state) => state.masterReducer);
   const userData = useSelector((state) => state.userReducer.user);
@@ -84,11 +87,14 @@ const AddJob = ({ navigation, route }) => {
     BEARINGMODEL,
     STATE,
     FAILUREDATE,
-    WINDLOCATION
+    WINDLOCATION,
+    NDEDATAMATRIX,
+    DEDATAMATRIX
   } = JOBKEYMapper;
 
   const initialFormValues = {
-    [JOBDATE]: '',
+    [DATAMATRIX]: '',
+    [JOBDATE]: startDate,
     [WINDFARM]: '',
     [STATE]: '',
     [WINDLOCATION]: '',
@@ -106,7 +112,9 @@ const AddJob = ({ navigation, route }) => {
     [NEWBEARINGTYPE]: '',
     [REMOVEDBEARINGBRAND]: '',
     [REMOVEDBEARINGTYPE]: '',
-    [BEARINGMODEL]: ''
+    [BEARINGMODEL]: '',
+    [NDEDATAMATRIX]: '',
+    [DEDATAMATRIX]: ''
   };
 
   const [formData, setFormData] = useState(initialFormValues);
@@ -117,9 +125,10 @@ const AddJob = ({ navigation, route }) => {
       const filterJob = jobs.filter(j => j.Id === selectedJobId)[0];
       console.log('fetched job details', customerId, operatorId, selectedJobId, filterJob);
       let formValues = { ...filterJob };
-
       setFormData(formValues);
       setResult(filterJob[DATAMATRIX]);
+      setNDEResult(filterJob[NDEDATAMATRIX]);
+      setDEResult(filterJob[DEDATAMATRIX]);
       setStartDate(new Date(filterJob[JOBDATE]));
       let failedDate = filterJob[FAILUREDATE] ? new Date(filterJob[FAILUREDATE]) : '';
       setFailureDate(failedDate);
@@ -153,14 +162,17 @@ const AddJob = ({ navigation, route }) => {
 
 
   const addJobSchema = Yup.object().shape({
-    [ORNUMBER]: showBarCodeScanButton ? Yup.string() : Yup.string(),
-    [IRNUMBER]: showBarCodeScanButton ? Yup.string() : Yup.string(),
-    [BATCHNUMBER]: showBarCodeScanButton ? Yup.string() : Yup.string(),
+    [DATAMATRIX]: showBarCodeScanButton ? Yup.string().required('Required DataMatrix Number') : Yup.string(), 
+    [ORNUMBER]: showBarCodeScanButton ? Yup.string() : Yup.string().required('Required OR Number'),
+    [IRNUMBER]: showBarCodeScanButton ? Yup.string() : Yup.string().required('Required IR Number'),
+    [BATCHNUMBER]: showBarCodeScanButton ? Yup.string() : Yup.string().required('Required Batch Number'),
     [BEARINGMODEL]: showBarCodeScanButton ? Yup.array(Yup.object()) : Yup.array(Yup.object()),
-    [WINDFARM]: Yup.array(Yup.object()),
+    [WINDFARM]: Yup.array(Yup.object()).required('Required wind farm'),
+    [JOBDATE]: Yup.string().required('Required job date'),
+    [FAILUREDATE]: Yup.string().required('Required job failure date'),
     [STATE]: Yup.array(Yup.object()),
     [WINDLOCATION]: Yup.array(Yup.object()),
-    [WINDTURBINE]: Yup.string(),
+    [WINDTURBINE]: Yup.string().required('Required wind turbine'),
     [GENERATORMODEL]: Yup.array(Yup.object()),
     [REASONS]: Yup.array(Yup.object()),
     [NEWBEARINGBRAND]: Yup.array(Yup.object()),
@@ -168,7 +180,7 @@ const AddJob = ({ navigation, route }) => {
     [REMOVEDBEARINGBRAND]: Yup.array(Yup.object()),
     [REMOVEDBEARINGTYPE]: Yup.array(Yup.object()),
     [POSITION]: Yup.array(Yup.object()),
-    [EXCHANGETYPE]: Yup.array(Yup.object()),
+    [EXCHANGETYPE]: Yup.array(Yup.object()).required('Required exchange type'),
     [COMMENTS]: Yup.string(Yup.string()),
   });
 
@@ -179,8 +191,9 @@ const AddJob = ({ navigation, route }) => {
 
 
 
-  const showScanner = async () => {
+  const showScanner = (type) => {
     setScanLoading(true);
+    setScanType(type);
     // await getBarCodeScannerPermissions();
     setScan(true);
     setScanLoading(false);
@@ -203,14 +216,15 @@ const AddJob = ({ navigation, route }) => {
     // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
   };
 
-  // if (scanLoading && hasPermission === null) {
-  //   return <Loader loading={'true'} />;
-  // }
-  // if (scan && hasPermission === false) {
-  //   Toast.error('No access to camera');
-  //   return <Text>No access to camera</Text>;
-  // }
-
+  if (scanLoading && hasPermission === null) {
+    return <Loader loading={'true'} />;
+  }
+  if (scan && hasPermission === false) {
+   return  <View style={GBStyles.container}>
+  <Text style={{ textAlign: 'center', margin: 50 }}>No access to camera</Text>
+  <Button onPress={requestPermission} text="Request permission" />
+  </View>;
+  }
   if (!permission) {
     // Camera permissions are still loading
     return <Loader loading={'true'} />;
@@ -228,7 +242,19 @@ const AddJob = ({ navigation, route }) => {
 
   const onSuccess = (type, data) => {
     if (type && data != null) {
-      setResult(data);
+      switch(scanType) {
+        case "DATAMATRIX":
+        setResult(data);
+        let formValues = { ...formData, [DATAMATRIX]: data};
+        setFormData(formValues);
+        break;
+        case "DE":
+        setDEResult(data);
+        break;
+        case "NDE":
+          setNDEResult(data);
+        break;
+      }
       setScan(false);
       setScanned(false);
     } else {
@@ -254,13 +280,16 @@ const AddJob = ({ navigation, route }) => {
       [BATCHNUMBER]: showBarCodeScanButton ? '' : values[BATCHNUMBER],
       [ORNUMBER]: showBarCodeScanButton ? '' : values[ORNUMBER],
       [IRNUMBER]: showBarCodeScanButton ? '' : values[IRNUMBER],
+
       [JOBDATE]: startDate ? startDate.toISOString().split("T")[0] : '',
       [FAILUREDATE]: failureDate ? failureDate.toISOString().split("T")[0] : '',
       [JOBID]: jobTitle,
       [CUSTOMERID]: AuthService.isOperator() ? userData?.CustomerId : userData?.UserId,
       [CUSTOMER]: AuthService.isOperator() ? userData?.CustomerId : userData?.UserId,
       [OPERATORID]: AuthService.isOperator() ? userData?.UserId : null,
-      [OPERATORNAME]: userData?.Name
+      [OPERATORNAME]: userData?.Name,
+      [NDEDATAMATRIX]: ndeResult,
+      [DEDATAMATRIX]: deResult
     };
     let updateValues = {
       [WINDFARM]: values[WINDFARM] && values[WINDFARM][0] ? values[WINDFARM][0].Id : null,
@@ -343,7 +372,6 @@ const AddJob = ({ navigation, route }) => {
                   setScan(false), setScanned(false);
                 }}
               />
-
             </View>
           {scanned && (
             <Button
@@ -402,7 +430,11 @@ const AddJob = ({ navigation, route }) => {
                       handleChangeText={handleChange(ORNUMBER)}
                       value={values[ORNUMBER]}
                     />
-                    
+                    {errors[ORNUMBER] && touched[ORNUMBER] && (
+                      <Text style={Styles.validateError}>
+                        {errors[ORNUMBER]}
+                      </Text>
+                    )}
                   </View>
                   <View style={{ marginBottom: 20 }}>
                     <Select
@@ -428,7 +460,7 @@ const AddJob = ({ navigation, route }) => {
                 </>
               ) : <>
                 <Ripple
-                  onPress={showScanner}
+                  onPress={() => showScanner('DATAMATRIX')}
                   style={{ alignSelf: "center", marginBottom: 24, marginTop: 12 }}
                 >
                   <Icon
@@ -448,8 +480,37 @@ const AddJob = ({ navigation, route }) => {
                     value={result}
                     disabled={true}
                   />
+                  {errors[DATAMATRIX] && touched[DATAMATRIX] && (
+                      <Text style={Styles.validateError}>
+                        {errors[DATAMATRIX]}
+                      </Text>
+                    )}
                 </View>
               </>}
+
+              <View style={{ marginBottom: 20 }}>
+                  <Input
+                    labelName="Scan DE"
+                    placeholder="Scan DE"
+                    value={deResult}
+                    appendIconName="DataMatrix"
+                    appendIconColor={theme.textBlue}
+                    appendIconSize={24}
+                    handlePress={() => showScanner('DE')}
+                  />
+                </View>
+
+                <View style={{ marginBottom: 20 }}>
+                  <Input
+                    labelName="Scan NDE"
+                    placeholder="Scan NDE"
+                    value={ndeResult}
+                    appendIconName="DataMatrix"
+                    appendIconColor={theme.textBlue}
+                    appendIconSize={24}
+                    handlePress={() => showScanner('NDE')}  
+                  />
+                </View>  
 
               <View style={{ marginBottom: 20 }}>
                 <Input
@@ -461,11 +522,19 @@ const AddJob = ({ navigation, route }) => {
                   value={startDate.toLocaleDateString()}
                   handlePress={() => setShow(true)}
                 />
+                {errors[JOBDATE] && touched[JOBDATE] && (
+                  <Text style={Styles.validateError}>
+                    {errors[JOBDATE]}
+                  </Text>
+                )}
                 {show && (
                   <DateTimePicker
                     value={startDate}
                     mode="date"
-                    onChange={onChange}
+                    onChange={(event, selectedDate) => {
+                      onChange(event, selectedDate);
+                      setFieldValue(JOBDATE, selectedDate);
+                    }}
                     display={Platform.OS === "ios" ? "spinner" : "calendar"}
                   />
                 )}
@@ -716,11 +785,19 @@ const AddJob = ({ navigation, route }) => {
                   value={failureDate ? failureDate.toLocaleDateString() : null}
                   handlePress={() => setFailureDateShow(true)}
                 />
+                {errors[FAILUREDATE] && touched[FAILUREDATE] && (
+                  <Text style={Styles.validateError}>
+                    {errors[FAILUREDATE]}
+                  </Text>
+                )}
                 {showFailureDate && (
                   <DateTimePicker
                     value={failureDate ? failureDate : new Date()}
                     mode="date"
-                    onChange={onFailureDateChange}
+                    onChange={(event, selectedDate) => {
+                      setFieldValue(FAILUREDATE, selectedDate);
+                      onFailureDateChange(event, selectedDate);
+                    }}
                     display={Platform.OS === "ios" ? "spinner" : "calendar"}
                   />
                 )}

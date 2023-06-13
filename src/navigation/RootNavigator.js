@@ -21,11 +21,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { SafeAreaView, Text } from 'react-native';
 import Container from 'toastify-react-native';
 import CustomSplashScreen from './../shared/SplashScreen';
+import { logout } from "../redux/Login/LoginActions";
 import  { getAPIMapper ,getKEYMapper} from "./../redux/Master/MasterActions";
 import SearchJobsResult from './../components/Jobs/SearchJobsResult';
 import Button from "../shared/Button";
 import {LOGIN_SUCCESS} from '../redux/ReduxConsants';
 import displayToast from '../services/ToastService';
+import Axios from "axios";
+
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
 
@@ -41,6 +44,18 @@ const RootNavigator = () => {
   const reportTitle = useSelector((state)=> state.reportsReducer.reportTitle);
   const isAuthenticate = useSelector((state)=> state.userReducer.isAuthenticate);
   
+  Axios.interceptors.response.use(response => {
+    return response;
+    }, error => {
+    if (error.response.status === 401) {
+      console.log('401 error');
+      dispatch(logout());
+    //place your reentry code
+    }
+    return error;
+  });
+  
+
   if(isAuthenticate) {
     console.log('user login status--------->', isAuthenticate);
     

@@ -33,7 +33,7 @@ const AddReport = ({navigation, route }) => {
   const [showLastLubricationDate, setLastLubricationDateShow] = useState(false);
   const dispatch = useDispatch();
   const masterData = useSelector((state) => state.masterReducer);
-  const nokBearings = [{Name: 'OK', Id: 'OK'}, {Name: 'NOK', Id: 'NOK'}];
+  const nokBearings = [{Name: 'DE', Id: 'DE'}, {Name: 'NDE', Id: 'NDE'}, {Name: 'BOTH', Id: 'BOTH'}, {Name: 'NONE', Id: 'NONE'}];
 
   const {
     JOBID,
@@ -326,10 +326,10 @@ const AddReport = ({navigation, route }) => {
         )}
         </View>
         <View style={{ marginBottom: 20 }}>
-          <Input placeholder="Insulate Resistance" labelName="Insulate Resistance" keyboardType="numeric" value={values[INSULATERESISTANCE]} handleChangeText={handleChange(INSULATERESISTANCE)} />
+          <Input placeholder="Insulate Resistance (G Ohms)" labelName="Insulate Resistance (G Ohms)" keyboardType="numeric" value={values[INSULATERESISTANCE]} handleChangeText={handleChange(INSULATERESISTANCE)} />
         </View>
         <View style={{ marginBottom: 20 }}>
-          <Input placeholder="Voltage Tested" labelName="Voltage Tested" keyboardType="numeric" value={values[VOLTAGETESTED]} handleChangeText={handleChange(VOLTAGETESTED)} />
+          <Input placeholder="Voltage Tested (Volts)" labelName="Voltage Tested (Volts)" keyboardType="numeric" value={values[VOLTAGETESTED]} handleChangeText={handleChange(VOLTAGETESTED)} />
         </View>
         <View style={{ marginBottom: 24 }}>
           <Input placeholder="Comments" labelName="Comments" multiline={true} value={values[COMMENTS]} handleChangeText={handleChange(COMMENTS)} />

@@ -4,18 +4,6 @@ import { PURGE } from 'redux-persist';
 const BASE_URL = `auth/login`;
 import  { callAPI, getAPIMapper ,getKEYMapper} from "../Master/MasterActions";
 import displayToast from '../../services/ToastService';
-import Axios from "axios";
-// Axios.interceptors.response.use(response => {
-//   return response;
-//   }, error => {
-//   if (error.response.status === 401) {
-//     console.log('401 error');
-//     // logout();
-//     //useDispatch(logout());
-//   //place your reentry code
-//   }
-//   return error;
-// });
 
 export function login(data) {
   return async function loginThunk(dispatch, getState) {
