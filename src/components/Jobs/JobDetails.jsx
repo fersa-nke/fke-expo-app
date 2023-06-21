@@ -63,7 +63,11 @@ const DetailsView = () => {
     <ScrollView style={{backgroundColor: theme.bgWhite}}>
       {job && <View style={[GBStyles.container, {flex: 1}]}>
     {job[JOBKEYMapper.DATAMATRIX] ?
-    <ListItem label="Data Matrix" value={job[JOBKEYMapper.DATAMATRIX]} />
+     <>  
+      <ListItem label="New Bearing DE" value={job[JOBKEYMapper.DEDATAMATRIX]} />
+       <ListItem label="New Bearing NDE" value={job[JOBKEYMapper.NDEDATAMATRIX]} />
+      <ListItem label="Sensor DataMatrix" value={job[JOBKEYMapper.DATAMATRIX]} />
+    </>
     : <>
         <ListItem label="Batch Number" value={job[JOBKEYMapper.BATCHNUMBER]} />
         <ListItem label="IR Number" value={job[JOBKEYMapper.IRNUMBER]} />
@@ -71,8 +75,6 @@ const DetailsView = () => {
         <ListItem label="Bearing Model" value={job[JOBKEYMapper.BEARINGMODEL] ?  job[JOBKEYMapper.BEARINGMODEL][0]?.Name : ''} />
     </>
     }
-        <ListItem label="DE Data Matrix" value={job[JOBKEYMapper.DEDATAMATRIX]} />
-        <ListItem label="NDE Data Matrix" value={job[JOBKEYMapper.NDEDATAMATRIX]} />
         <ListItem label="Exchange Type" value={job[JOBKEYMapper.EXCHANGETYPE] ? job[JOBKEYMapper.EXCHANGETYPE][0]?.Name : ''} />
         <ListItem label="Reasons of Chnage" value={job[JOBKEYMapper.REASONS] ? job[JOBKEYMapper.REASONS][0]?.Name : ''} />
         <ListItem label="Wind Farm" value={job[JOBKEYMapper.WINDFARM] ? job[JOBKEYMapper.WINDFARM][0]?.Name: ''} />
@@ -80,7 +82,7 @@ const DetailsView = () => {
         <ListItem label="State" value={job[JOBKEYMapper.STATE] ? job[JOBKEYMapper.STATE][0]?.Name: ''} />
         <ListItem label="Wind Turbine" value={job[JOBKEYMapper.WINDTURBINE]} />
         <ListItem label="Generator Model" value={job[JOBKEYMapper.GENERATORMODEL] ? job[JOBKEYMapper.GENERATORMODEL][0]?.Name: ''} />
-        <ListItem label="Shaft Position" value={job[JOBKEYMapper.POSITION] ? job[JOBKEYMapper.POSITION][0]?.Name: ''} />
+        <ListItem label="Shaft Position Failure" value={job[JOBKEYMapper.POSITION] ? job[JOBKEYMapper.POSITION][0]?.Name: ''} />
         <ListItem label="Removed Bearing Brand" value={job[JOBKEYMapper.REMOVEDBEARINGBRAND] ? job[JOBKEYMapper.REMOVEDBEARINGBRAND][0]?.Name: ''} />
         <ListItem label="Removed Bearing Type" value={job[JOBKEYMapper.REMOVEDBEARINGTYPE] ? job[JOBKEYMapper.REMOVEDBEARINGTYPE][0]?.Name: ''} />
         <ListItem label="New Bearing Brand" value={job[JOBKEYMapper.NEWBEARINGBRAND] ? job[JOBKEYMapper.NEWBEARINGBRAND][0]?.Name: ''} />

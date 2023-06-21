@@ -50,10 +50,18 @@ export const saveReportAttachment = (file, type, reportId) => {
     console.log('filessss-------------->',file, type, reportId);
     const token = getState().userReducer.token;
     const newFileUri =  "file:///" + file.uri.split("file:/").join("");
+    if(file && (file.size || file.fileSize)) {
+        const fileSize = file.size || file.fileSize;
+        const size = (fileSize / 1000000);
+        if(size > 5) {
+            displayToast('error','File too Big, please select a file less than 5mb');
+            return;
+        }
+    }
 
     let data = new FormData();
     data.append('file', {
-        name: newFileUri.split('/').pop(),
+        name: file.name ? file.name : newFileUri.split('/').pop(),
         type: mime.getType(newFileUri),
         uri: newFileUri,
     });
@@ -87,7 +95,11 @@ export const saveReportAttachment = (file, type, reportId) => {
         })
         .catch((error) => {
            // return;
-            displayToast('error', 'something went wrong!');
+            dispatch({
+                type: LOADING_DATA,
+                payload: false
+            });
+           displayToast('error', 'something went wrong!');
              console.log('error -------------->', error);
             // //Hide Loader
             // dispatch({
@@ -115,10 +127,10 @@ export const downloadAttachment = path => {
                 type: LOADING_DATA,
                 payload: false,
             });
-              if (res) {
+              if (res && res.value) {
                   dispatch({
                     type: DOWNLOADED_ATTACHMENT_ITEM,
-                    payload: res,
+                    payload: res.value,
                   });
               } else {
                 dispatch({

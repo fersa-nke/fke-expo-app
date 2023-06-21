@@ -74,13 +74,13 @@ const HeaderRight = ({ showSeach = false, isAddPage = false }) => {
   if (isAddPage) {
     return (
       <>
-        <Ripple style={GBStyles.rippleBtn} onPress={handleIconPress}>
+        {/* <Ripple style={GBStyles.rippleBtn} onPress={handleIconPress}>
           <Icon
             name="DataMatrix"
             size={22}
             color={showBarCode ? theme.textBlue : theme.textGray}
           />
-        </Ripple>
+        </Ripple> */}
       </>
     );
   }

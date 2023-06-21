@@ -117,7 +117,7 @@ function ReportView({ route }) {
         await FileSystem.StorageAccessFramework.createFileAsync(permissions.directoryUri, filename, mimetype)
           .then(async (uri) => {
             await FileSystem.writeAsStringAsync(uri, downloadedFile, { encoding: FileSystem.EncodingType.Base64 });
-            alert('Downloaded succesfully');
+            alert('Downloaded succesfully! Check in' +permissions.directoryUri);
           })
           .catch(e => console.log(e));
       } else {
@@ -138,10 +138,9 @@ function ReportView({ route }) {
       console.log('hello', result);
       if (!result.canceled) {
         let date = new Date();
-        let dateFormate = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours()).slice(-2) + ("0" + date.getMinutes()).slice(-2) + ("0" + date.getSeconds()).slice(-2);
+
         let file = {
-          ...result.assets[0],
-          name: `${dateFormate}`
+          ...result.assets[0]
         };
         console.log('file------->', result, file);
         dispatch(saveReportAttachment(file, 'JobReport', reportId));

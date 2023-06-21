@@ -6,6 +6,7 @@ import {
   View,
   Dimensions,
   Platform,
+  Switch
 } from "react-native";
 import theme from "../../assets/theme";
 import GBStyles from "../../assets/globalstyles";
@@ -39,6 +40,8 @@ const AddJob = ({ navigation, route }) => {
   const [result, setResult] = useState("");
   const [deResult, setDEResult] = useState('');
   const [ndeResult, setNDEResult] = useState('');
+  const [removedResult, setRemovedResult] = useState('');
+
   const dispatch = useDispatch();
   const masterData = useSelector((state) => state.masterReducer);
   const userData = useSelector((state) => state.userReducer.user);
@@ -51,6 +54,13 @@ const AddJob = ({ navigation, route }) => {
   const [scanLoading, setScanLoading] = useState(false);
   const [matrixNumber, setMatrixNumber] = useState(false);
   const showBarCodeScanButton = useSelector((state) => state.jobsReducer.showBarCodeScanButton);
+  
+  const [showDEDataMatrix, setShowDEDataMatrix] = useState(true);
+  const [showNDEDataMatrix, setShowNDEDataMatrix] = useState(true);
+  const [showDataMatrix, setShowDataMatrix] = useState(true);
+  const [showRemovedDataMatrix, setShowRemovedDataMatrix] = useState(true);
+
+
   const [barcodeReaderFailed, setBarCodeReaderFailed] = useState(false);
   const selectedJobId = useSelector((state) => state.jobsReducer.selectedJobId);
   const jobs = useSelector((state) => state.jobsReducer.jobs);
@@ -89,7 +99,12 @@ const AddJob = ({ navigation, route }) => {
     FAILUREDATE,
     WINDLOCATION,
     NDEDATAMATRIX,
-    DEDATAMATRIX
+    DEDATAMATRIX,
+    REMOVEDDATAMATRIX,
+    DEBATCHNUMBER,
+    NDEBATCHNUMBER,
+    SENSORBATCHNUMBER,
+    REMOVEDBATCHNUMBER
   } = JOBKEYMapper;
 
   const initialFormValues = {
@@ -114,7 +129,12 @@ const AddJob = ({ navigation, route }) => {
     [REMOVEDBEARINGTYPE]: '',
     [BEARINGMODEL]: '',
     [NDEDATAMATRIX]: '',
-    [DEDATAMATRIX]: ''
+    [DEDATAMATRIX]: '',
+    [REMOVEDBATCHNUMBER]: '',
+    [REMOVEDDATAMATRIX]: '',
+    [DEBATCHNUMBER]: '',
+    [NDEBATCHNUMBER]: '',
+    [SENSORBATCHNUMBER]: ''
   };
 
   const [formData, setFormData] = useState(initialFormValues);
@@ -129,6 +149,7 @@ const AddJob = ({ navigation, route }) => {
       setResult(filterJob[DATAMATRIX]);
       setNDEResult(filterJob[NDEDATAMATRIX]);
       setDEResult(filterJob[DEDATAMATRIX]);
+      setRemovedResult(filterJob[REMOVEDDATAMATRIX]);
       setStartDate(new Date(filterJob[JOBDATE]));
       let failedDate = filterJob[FAILUREDATE] ? new Date(filterJob[FAILUREDATE]) : '';
       setFailureDate(failedDate);
@@ -154,19 +175,20 @@ const AddJob = ({ navigation, route }) => {
         payload: j
       }
     )
-
-
-
-
   }, []);
 
 
   const addJobSchema = Yup.object().shape({
-    [DATAMATRIX]: showBarCodeScanButton ? Yup.string().required('Required DataMatrix Number') : Yup.string(), 
-    [ORNUMBER]: showBarCodeScanButton ? Yup.string() : Yup.string().required('Required OR Number'),
-    [IRNUMBER]: showBarCodeScanButton ? Yup.string() : Yup.string().required('Required IR Number'),
-    [BATCHNUMBER]: showBarCodeScanButton ? Yup.string() : Yup.string().required('Required Batch Number'),
-    [BEARINGMODEL]: showBarCodeScanButton ? Yup.array(Yup.object()) : Yup.array(Yup.object()),
+    [DATAMATRIX]: Yup.string(),
+    [DEDATAMATRIX]: showDEDataMatrix ? Yup.string().required('Required New Bearing DE Number') : Yup.string(), 
+    [NDEDATAMATRIX]: showNDEDataMatrix ? Yup.string().required('Required New Bearing NDE Number') : Yup.string(),
+    [REMOVEDDATAMATRIX]: showRemovedDataMatrix ? Yup.string().required('Required removed Bearing') : Yup.string(),
+
+    [DEBATCHNUMBER]: showDEDataMatrix ? Yup.string() : Yup.string().required('Required DE Batch Number'),
+    [NDEBATCHNUMBER]: showNDEDataMatrix ? Yup.string() : Yup.string().required('Required NDE Batch Number'),
+    [SENSORBATCHNUMBER]: Yup.string(),
+    [REMOVEDBATCHNUMBER]: showRemovedDataMatrix ? Yup.string() : Yup.string().required('Required removed Bearing'),
+    
     [WINDFARM]: Yup.array(Yup.object()).required('Required wind farm'),
     [JOBDATE]: Yup.string().required('Required job date'),
     [FAILUREDATE]: Yup.string().required('Required job failure date'),
@@ -242,17 +264,31 @@ const AddJob = ({ navigation, route }) => {
 
   const onSuccess = (type, data) => {
     if (type && data != null) {
+      let f;
       switch(scanType) {
         case "DATAMATRIX":
         setResult(data);
-        let formValues = { ...formData, [DATAMATRIX]: data};
-        setFormData(formValues);
+        console.log(formData);
+        f = { ...formData, [DATAMATRIX]: data};
+       // setFormData(f);
         break;
         case "DE":
+          console.log(formData);
         setDEResult(data);
+        f = { ...formData, [DATAMATRIX]: data};
+       // setFormData(f);
         break;
         case "NDE":
+          console.log(formData);
+          f = { ...formData, [NDEDATAMATRIX]: data};
           setNDEResult(data);
+         // setFormData(f);
+        break;
+        case 'REMOVEDBEARING':
+          f = { ...formData, [REMOVEDDATAMATRIX]: data};
+          setRemovedResult(data);
+          console.log(formData);
+         // setFormData(f);
         break;
       }
       setScan(false);
@@ -276,10 +312,15 @@ const AddJob = ({ navigation, route }) => {
 
     let originalData = {
       ...values,
-      [DATAMATRIX]: showBarCodeScanButton ? result : '',
-      [BATCHNUMBER]: showBarCodeScanButton ? '' : values[BATCHNUMBER],
-      [ORNUMBER]: showBarCodeScanButton ? '' : values[ORNUMBER],
-      [IRNUMBER]: showBarCodeScanButton ? '' : values[IRNUMBER],
+      [NDEDATAMATRIX]: showNDEDataMatrix ? ndeResult: '',
+      [DEDATAMATRIX]: showDEDataMatrix ? deResult : '',
+      [DATAMATRIX]: showDataMatrix ? result : '',
+      [REMOVEDDATAMATRIX]: showRemovedDataMatrix ? removedResult: '',
+
+      [DEBATCHNUMBER]: showDEDataMatrix ? '' : values[DEBATCHNUMBER],
+      [NDEBATCHNUMBER]: showNDEDataMatrix ? '' : values[NDEBATCHNUMBER],
+      [SENSORBATCHNUMBER]: showDataMatrix ? '' : values[SENSORBATCHNUMBER],
+      [REMOVEDBATCHNUMBER]: showRemovedDataMatrix ? '' : values[REMOVEDBATCHNUMBER],
 
       [JOBDATE]: startDate ? startDate.toISOString().split("T")[0] : '',
       [FAILUREDATE]: failureDate ? failureDate.toISOString().split("T")[0] : '',
@@ -287,9 +328,7 @@ const AddJob = ({ navigation, route }) => {
       [CUSTOMERID]: AuthService.isOperator() ? userData?.CustomerId : userData?.UserId,
       [CUSTOMER]: AuthService.isOperator() ? userData?.CustomerId : userData?.UserId,
       [OPERATORID]: AuthService.isOperator() ? userData?.UserId : null,
-      [OPERATORNAME]: userData?.Name,
-      [NDEDATAMATRIX]: ndeResult,
-      [DEDATAMATRIX]: deResult
+      [OPERATORNAME]: userData?.Name
     };
     let updateValues = {
       [WINDFARM]: values[WINDFARM] && values[WINDFARM][0] ? values[WINDFARM][0].Id : null,
@@ -391,127 +430,146 @@ const AddJob = ({ navigation, route }) => {
         >
           {({ handleChange, errors, values, handleSubmit, touched, setFieldValue }) => (
             <View style={GBStyles.container}>
-              {/* <View style={{ marginBottom: 20 }}>
-               <Text>{jobTitle}</Text>
-              </View>
-               */}
-              {(!showBarCodeScanButton || barcodeReaderFailed) ? (
-                <>
-                  <View style={{ marginBottom: 20 }}>
-                    <Input
-                      labelName="Batch Number"
-                      placeholder="Enter Batch Number"
-                      handleChangeText={handleChange(BATCHNUMBER)}
-                      value={values[BATCHNUMBER]}
-                    />
-                    {errors[BATCHNUMBER] && touched[BATCHNUMBER] && (
-                      <Text style={Styles.validateError}>
-                        {errors[BATCHNUMBER]}
-                      </Text>
-                    )}
-                  </View>
-                  <View style={{ marginBottom: 20 }}>
-                    <Input
-                      labelName="IR Number"
-                      placeholder="Enter IR Number"
-                      handleChangeText={handleChange(IRNUMBER)}
-                      value={values[IRNUMBER]}
-                    />
-                    {errors[IRNUMBER] && touched[IRNUMBER] && (
-                      <Text style={Styles.validateError}>
-                        {errors[IRNUMBER]}
-                      </Text>
-                    )}
-                  </View>
-                  <View style={{ marginBottom: 20 }}>
-                    <Input
-                      labelName="OR Number"
-                      placeholder="Enter OR Number"
-                      handleChangeText={handleChange(ORNUMBER)}
-                      value={values[ORNUMBER]}
-                    />
-                    {errors[ORNUMBER] && touched[ORNUMBER] && (
-                      <Text style={Styles.validateError}>
-                        {errors[ORNUMBER]}
-                      </Text>
-                    )}
-                  </View>
-                  <View style={{ marginBottom: 20 }}>
-                    <Select
-                      selectedValue={values[BEARINGMODEL][0]?.Name}
-                      disabled={false}
-                      onChange={(item) => {
-                        let obj = { Id: item.Id, Name: item.Name };
-                        setFieldValue(BEARINGMODEL, [obj]);
-                      }}
-                      placeholder="Select Bearing Model"
-                      label="Bearing Model"
-                      modalTitle="Select Bearing Model"
-                      items={masterData.models}
-                      modalObj={{ id: "Id", name: "Name" }}
-                    />
-                    {errors[BEARINGMODEL] && touched[BEARINGMODEL] && (
-                      <Text style={Styles.validateError}>
-                        {errors[BEARINGMODEL]}
-                      </Text>
-                    )}
-                  </View>
-
-                </>
-              ) : <>
-                <Ripple
-                  onPress={() => showScanner('DATAMATRIX')}
-                  style={{ alignSelf: "center", marginBottom: 24, marginTop: 12 }}
-                >
-                  <Icon
-                    name="DataMatrix"
-                    size={60}
-                    color={theme.textBlue}
-                    style={{ alignSelf: "center" }}
+              
+              <View style={{ marginBottom: 20, paddingTop: 20 }}>
+                 <Row style={Styles.SwitchContainer}>
+                  <Switch
+                      trackColor={{false: theme.bgWhite, true: theme.bgBlue}}
+                      thumbColor={showDEDataMatrix ? theme.bgWhite : theme.bgLight}
+                      ios_backgroundColor={showDEDataMatrix ? theme.bgWhite : theme.bgLight}
+                      onValueChange={() => setShowDEDataMatrix(!showDEDataMatrix)}
+                      value={showDEDataMatrix}
                   />
-                  <Text style={{ alignSelf: "center", marginTop: 5 }}>
-                    Scan Data Matrix
-                  </Text>
-                </Ripple>
-                <View style={{ marginBottom: 20 }}>
-                  <Input
-                    labelName="Data Matrix Code"
-                    placeholder="Enter Data Matrix Code"
-                    value={result}
-                    disabled={true}
-                  />
-                  {errors[DATAMATRIX] && touched[DATAMATRIX] && (
-                      <Text style={Styles.validateError}>
-                        {errors[DATAMATRIX]}
-                      </Text>
-                    )}
-                </View>
-              </>}
+                  </Row>
 
-              <View style={{ marginBottom: 20 }}>
-                  <Input
-                    labelName="Scan DE"
-                    placeholder="Scan DE"
+                  {showDEDataMatrix ?   <Input
+                    labelName="Scan New Bearing DE"
+                    placeholder="Scan New Bearing DE"
                     value={deResult}
                     appendIconName="DataMatrix"
                     appendIconColor={theme.textBlue}
                     appendIconSize={24}
                     handlePress={() => showScanner('DE')}
-                  />
+                    mand={true}
+                  /> : <>
+                      <Input
+                      labelName="DE Batch Number"
+                      placeholder="DE Batch Number"
+                      handleChangeText={handleChange(DEBATCHNUMBER)}
+                      value={values[DEBATCHNUMBER]}
+                      mand={true}
+                    />
+                    {errors[DEBATCHNUMBER] && touched[DEBATCHNUMBER] && (
+                      <Text style={Styles.validateError}>
+                        {errors[DEBATCHNUMBER]}
+                      </Text>
+                    )}
+                  </>
+                } 
                 </View>
 
-                <View style={{ marginBottom: 20 }}>
-                  <Input
-                    labelName="Scan NDE"
-                    placeholder="Scan NDE"
+                <View style={{ marginBottom: 20, paddingTop: 20 }}>
+                 <Row style={Styles.SwitchContainer}>
+                  <Switch
+                      trackColor={{false: theme.bgWhite, true: theme.bgBlue}}
+                      thumbColor={showNDEDataMatrix ? theme.bgWhite : theme.bgLight}
+                      ios_backgroundColor={showNDEDataMatrix ? theme.bgWhite : theme.bgLight}
+                      onValueChange={() => setShowNDEDataMatrix(!showNDEDataMatrix)}
+                      value={showNDEDataMatrix}
+                  />
+                  </Row>
+
+                  {showNDEDataMatrix ? <Input
+                    labelName="Scan New Bearing NDE"
+                    placeholder="Scan New Bearing NDE"
                     value={ndeResult}
                     appendIconName="DataMatrix"
                     appendIconColor={theme.textBlue}
                     appendIconSize={24}
                     handlePress={() => showScanner('NDE')}  
-                  />
-                </View>  
+                    mand={true}
+                  /> : <>
+                      <Input
+                      labelName="NDE Batch Number"
+                      placeholder="NDE Batch Number"
+                      handleChangeText={handleChange(NDEBATCHNUMBER)}
+                      value={values[NDEBATCHNUMBER]}
+                      mand={true}
+                    />
+                    {errors[NDEBATCHNUMBER] && touched[NDEBATCHNUMBER] && (
+                      <Text style={Styles.validateError}>
+                        {errors[NDEBATCHNUMBER]}
+                      </Text>
+                    )}
+                  </>
+                } 
+                </View>
 
+                <View style={{ marginBottom: 20, paddingTop: 20 }}>
+                 <Row style={Styles.SwitchContainer}>
+                  <Switch
+                      trackColor={{false: theme.bgWhite, true: theme.bgBlue}}
+                      thumbColor={showDataMatrix ? theme.bgWhite : theme.bgLight}
+                      ios_backgroundColor={showDataMatrix ? theme.bgWhite : theme.bgLight}
+                      onValueChange={() => setShowDataMatrix(!showDataMatrix)}
+                      value={showDataMatrix}
+                  />
+                  </Row>
+
+                  {showDataMatrix ?                   <Input
+                    labelName="Scan Sensor"
+                    placeholder="Scan Sensor"
+                    value={result}
+                    appendIconName="DataMatrix"
+                    appendIconColor={theme.textBlue}
+                    appendIconSize={24}
+                    handlePress={() => showScanner('DATAMATRIX')}
+                  /> : <>
+                      <Input
+                      labelName="Sensor Batch Number"
+                      placeholder="Sensor Batch Number"
+                      handleChangeText={handleChange(SENSORBATCHNUMBER)}
+                      value={values[SENSORBATCHNUMBER]}
+                    />
+                    {errors[SENSORBATCHNUMBER] && touched[SENSORBATCHNUMBER] && (
+                      <Text style={Styles.validateError}>
+                        {errors[SENSORBATCHNUMBER]}
+                      </Text>
+                    )}
+                  </>
+                } 
+                </View>
+
+
+              <View style={{ marginBottom: 20 }}>
+                <Input
+                  labelName="Failure Date"
+                  placeholder="DD/MM/YYYY"
+                  appendIconName="Calendar"
+                  appendIconColor={theme.textBlue}
+                  appendIconSize={16}
+                  value={failureDate ? failureDate.toLocaleDateString() : null}
+                  handlePress={() => setFailureDateShow(true)}
+                  mand={true}
+                />
+                {errors[FAILUREDATE] && touched[FAILUREDATE] && (
+                  <Text style={Styles.validateError}>
+                    {errors[FAILUREDATE]}
+                  </Text>
+                )}
+                {showFailureDate && (
+                  <DateTimePicker
+                    value={failureDate ? failureDate : new Date()}
+                    mode="date"
+                    onChange={(event, selectedDate) => {
+                      setFieldValue(FAILUREDATE, selectedDate);
+                      onFailureDateChange(event, selectedDate);
+                    }}
+                    display={Platform.OS === "ios" ? "spinner" : "calendar"}
+                  />
+                )}
+              </View>
+              
               <View style={{ marginBottom: 20 }}>
                 <Input
                   labelName="Start Date"
@@ -521,6 +579,7 @@ const AddJob = ({ navigation, route }) => {
                   appendIconSize={16}
                   value={startDate.toLocaleDateString()}
                   handlePress={() => setShow(true)}
+                  mand={true}
                 />
                 {errors[JOBDATE] && touched[JOBDATE] && (
                   <Text style={Styles.validateError}>
@@ -547,7 +606,7 @@ const AddJob = ({ navigation, route }) => {
                     let obj = { Id: item.Id, Name: item.Name };
                     setFieldValue(EXCHANGETYPE, [obj]);
                   }}
-                  placeholder="Select Exchange Type"
+                  placeholder="Select Exchange Type *"
                   label={EXCHANGETYPE}
                   modalTitle="Select Exchange Type"
                   items={masterData.exhangeTypes}
@@ -587,7 +646,7 @@ const AddJob = ({ navigation, route }) => {
                     let obj = { Id: item.Id, Name: item.Name };
                     setFieldValue(WINDFARM, [obj]);
                   }}
-                  placeholder="Select Wind Farm"
+                  placeholder="Select Wind Farm *"
                   label="Wind Farm"
                   modalTitle="Select Wind Farm"
                   items={masterData.windFarms}
@@ -645,6 +704,7 @@ const AddJob = ({ navigation, route }) => {
                   placeholder="Enter Wind Turbine"
                   handleChangeText={handleChange(WINDTURBINE)}
                   value={values[WINDTURBINE]}
+                  mand={true}
                 />
                 {errors[WINDTURBINE] && touched[WINDTURBINE] && (
                   <Text style={Styles.validateError}>
@@ -681,9 +741,9 @@ const AddJob = ({ navigation, route }) => {
                     let obj = { Id: item.Id, Name: item.Name };
                     setFieldValue(POSITION, [obj]);
                   }}
-                  placeholder="Select Shaft Position"
-                  label="Shaft Position"
-                  modalTitle="Select Shaft Position"
+                  placeholder="Select Shaft Position failure"
+                  label="Shaft Position failure"
+                  modalTitle="Select Shaft Position failure"
                   items={masterData.shaftPositions}
                   modalObj={{ id: "Id", name: "Name" }}
                 />
@@ -693,6 +753,44 @@ const AddJob = ({ navigation, route }) => {
                   </Text>
                 )}
               </View>
+
+              <View style={{ marginBottom: 20, paddingTop: 20 }}>
+                 <Row style={Styles.SwitchContainer}>
+                  <Switch
+                      trackColor={{false: theme.bgWhite, true: theme.bgBlue}}
+                      thumbColor={showRemovedDataMatrix ? theme.bgWhite : theme.bgLight}
+                      ios_backgroundColor={showRemovedDataMatrix ? theme.bgWhite : theme.bgLight}
+                      onValueChange={() => setShowRemovedDataMatrix(!showRemovedDataMatrix)}
+                      value={showRemovedDataMatrix}
+                  />
+                  </Row>
+
+                  {showRemovedDataMatrix ? <Input
+                    labelName="Scan Removed Bearing"
+                    placeholder="Scan Removed Bearing"
+                    value={removedResult}
+                    appendIconName="DataMatrix"
+                    appendIconColor={theme.textBlue}
+                    appendIconSize={24}
+                    handlePress={() => showScanner('REMOVEDBEARING')}  
+                    mand={true}
+                  /> : <>
+                      <Input
+                      labelName="Removed Batch Number"
+                      placeholder="Removed Batch Number"
+                      handleChangeText={handleChange(REMOVEDBATCHNUMBER)}
+                      value={values[REMOVEDBATCHNUMBER]}
+                      mand={true}
+                    />
+                    {errors[REMOVEDBATCHNUMBER] && touched[REMOVEDBATCHNUMBER] && (
+                      <Text style={Styles.validateError}>
+                        {errors[REMOVEDBATCHNUMBER]}
+                      </Text>
+                    )}
+                  </>
+                } 
+                </View>
+
               <View style={{ marginBottom: 20 }}>
                 <Select
                   selectedValue={values[REMOVEDBEARINGBRAND][0]?.Name}
@@ -775,33 +873,7 @@ const AddJob = ({ navigation, route }) => {
                   </Text>
                 )}
               </View>
-              <View style={{ marginBottom: 20 }}>
-                <Input
-                  labelName="Failure Date"
-                  placeholder="DD/MM/YYYY"
-                  appendIconName="Calendar"
-                  appendIconColor={theme.textBlue}
-                  appendIconSize={16}
-                  value={failureDate ? failureDate.toLocaleDateString() : null}
-                  handlePress={() => setFailureDateShow(true)}
-                />
-                {errors[FAILUREDATE] && touched[FAILUREDATE] && (
-                  <Text style={Styles.validateError}>
-                    {errors[FAILUREDATE]}
-                  </Text>
-                )}
-                {showFailureDate && (
-                  <DateTimePicker
-                    value={failureDate ? failureDate : new Date()}
-                    mode="date"
-                    onChange={(event, selectedDate) => {
-                      setFieldValue(FAILUREDATE, selectedDate);
-                      onFailureDateChange(event, selectedDate);
-                    }}
-                    display={Platform.OS === "ios" ? "spinner" : "calendar"}
-                  />
-                )}
-              </View>
+              
               <View style={{ marginBottom: 20 }}>
                 <Input
                   labelName="Comments"
@@ -878,6 +950,10 @@ const Styles = StyleSheet.create({
   torchBtn: {
     width: 64, height: 64, borderRadius: 16, padding: 12,
     alignSelf: 'center', marginTop: 0, justifyContent: 'center'
+  },
+  SwitchContainer: {
+    position: 'absolute',
+    right: 0
   }
 });
 

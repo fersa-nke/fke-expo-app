@@ -23,7 +23,7 @@ export default function userReducer(state = initialState, action) {
             return {
                 ...state,
                 user: null,
-                message: action.payload.message,
+                message: 'Login Failed!',
                 token: null,
                 failed: true,
                 isAuthenticate: false,

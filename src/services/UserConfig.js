@@ -68,5 +68,11 @@ export const KEYMapper = {
    LUBRICATIONGRADE: 'LubricationGrade',
    NAME: 'Name',
    NDEDATAMATRIX: 'NDEDataMatrix',
-   DEDATAMATRIX: 'DEDataMatrix'
+   DEDATAMATRIX: 'DEDataMatrix',
+   REMOVEDDATAMATRIX: 'RemovedDataMatrix',
+   DEBATCHNUMBER: 'DEBatchNumber',
+   NDEBATCHNUMBER: 'NDEBatchNumber',
+   SENSORBATCHNUMBER: 'SensorBatchNumber',
+   REMOVEDBATCHNUMBER: 'RemovedBatchNumber'
+
 };
