@@ -59,6 +59,7 @@ const AddJob = ({ navigation, route }) => {
   const [showNDEDataMatrix, setShowNDEDataMatrix] = useState(true);
   const [showDataMatrix, setShowDataMatrix] = useState(true);
   const [showRemovedDataMatrix, setShowRemovedDataMatrix] = useState(true);
+  const [tempFormdata, setTempFormdata] = useState();
 
 
   const [barcodeReaderFailed, setBarCodeReaderFailed] = useState(false);
@@ -146,10 +147,28 @@ const AddJob = ({ navigation, route }) => {
       console.log('fetched job details', customerId, operatorId, selectedJobId, filterJob);
       let formValues = { ...filterJob };
       setFormData(formValues);
-      setResult(filterJob[DATAMATRIX]);
-      setNDEResult(filterJob[NDEDATAMATRIX]);
-      setDEResult(filterJob[DEDATAMATRIX]);
-      setRemovedResult(filterJob[REMOVEDDATAMATRIX]);
+
+      if(filterJob[DEDATAMATRIX]){
+        setDEResult(filterJob[DEDATAMATRIX]);
+      } else {
+        setShowDEDataMatrix(false);
+      }
+      if(filterJob[NDEDATAMATRIX]){
+        setNDEResult(filterJob[NDEDATAMATRIX]);
+      } else {
+        setShowNDEDataMatrix(false);
+      }
+      if(filterJob[BATCHNUMBER]){
+        setShowDataMatrix(false);
+      } else {
+        setResult(filterJob[DATAMATRIX]);
+      }
+      if(filterJob[REMOVEDBATCHNUMBER]){
+        setShowRemovedDataMatrix(false);
+      } else {
+        setRemovedResult(filterJob[REMOVEDDATAMATRIX]);
+      }
+      
       setStartDate(new Date(filterJob[JOBDATE]));
       let failedDate = filterJob[FAILUREDATE] ? new Date(filterJob[FAILUREDATE]) : '';
       setFailureDate(failedDate);
@@ -182,21 +201,21 @@ const AddJob = ({ navigation, route }) => {
     [DATAMATRIX]: Yup.string(),
     [DEDATAMATRIX]: showDEDataMatrix ? Yup.string().required('Required New Bearing DE Number') : Yup.string(), 
     [NDEDATAMATRIX]: showNDEDataMatrix ? Yup.string().required('Required New Bearing NDE Number') : Yup.string(),
-    [REMOVEDDATAMATRIX]: showRemovedDataMatrix ? Yup.string().required('Required removed Bearing') : Yup.string(),
+    [REMOVEDDATAMATRIX]: Yup.string(),
 
     [DEBATCHNUMBER]: showDEDataMatrix ? Yup.string() : Yup.string().required('Required DE Batch Number'),
     [NDEBATCHNUMBER]: showNDEDataMatrix ? Yup.string() : Yup.string().required('Required NDE Batch Number'),
     [SENSORBATCHNUMBER]: Yup.string(),
-    [REMOVEDBATCHNUMBER]: showRemovedDataMatrix ? Yup.string() : Yup.string().required('Required removed Bearing'),
+    [REMOVEDBATCHNUMBER]: Yup.string(),
     
-    [WINDFARM]: Yup.array(Yup.object()).required('Required wind farm'),
+    [WINDFARM]: Yup.array(Yup.object()),
     [JOBDATE]: Yup.string().required('Required job date'),
     [FAILUREDATE]: Yup.string().required('Required job failure date'),
     [STATE]: Yup.array(Yup.object()),
     [WINDLOCATION]: Yup.array(Yup.object()),
-    [WINDTURBINE]: Yup.string().required('Required wind turbine'),
+    [WINDTURBINE]: Yup.string(),
     [GENERATORMODEL]: Yup.array(Yup.object()),
-    [REASONS]: Yup.array(Yup.object()),
+    [REASONS]: Yup.array(Yup.object()).required('Required Reason of change'),
     [NEWBEARINGBRAND]: Yup.array(Yup.object()),
     [NEWBEARINGTYPE]: Yup.array(Yup.object()),
     [REMOVEDBEARINGBRAND]: Yup.array(Yup.object()),
@@ -268,27 +287,27 @@ const AddJob = ({ navigation, route }) => {
       switch(scanType) {
         case "DATAMATRIX":
         setResult(data);
-        console.log(formData);
-        f = { ...formData, [DATAMATRIX]: data};
-       // setFormData(f);
+        console.log(tempFormdata);
+        f = { ...tempFormdata, [DATAMATRIX]: data};
+       setFormData(f);
         break;
         case "DE":
-          console.log(formData);
+          console.log(tempFormdata);
         setDEResult(data);
-        f = { ...formData, [DATAMATRIX]: data};
-       // setFormData(f);
+        f = { ...tempFormdata, [DEDATAMATRIX]: data};
+       setFormData(f);
         break;
         case "NDE":
-          console.log(formData);
-          f = { ...formData, [NDEDATAMATRIX]: data};
+          console.log(tempFormdata);
+          f = { ...tempFormdata, [NDEDATAMATRIX]: data};
           setNDEResult(data);
-         // setFormData(f);
+         setFormData(f);
         break;
         case 'REMOVEDBEARING':
-          f = { ...formData, [REMOVEDDATAMATRIX]: data};
+          f = { ...tempFormdata, [REMOVEDDATAMATRIX]: data};
           setRemovedResult(data);
-          console.log(formData);
-         // setFormData(f);
+          console.log(tempFormdata);
+         setFormData(f);
         break;
       }
       setScan(false);
@@ -427,9 +446,12 @@ const AddJob = ({ navigation, route }) => {
           }}
           validationSchema={addJobSchema}
           enableReinitialize
+          onChange
         >
-          {({ handleChange, errors, values, handleSubmit, touched, setFieldValue }) => (
-            <View style={GBStyles.container}>
+          {({ handleChange, errors, values, handleSubmit, touched, setFieldValue }) => {
+            setTempFormdata(values)
+            return(
+              <View style={GBStyles.container}>
               
               <View style={{ marginBottom: 20, paddingTop: 20 }}>
                  <Row style={Styles.SwitchContainer}>
@@ -442,7 +464,8 @@ const AddJob = ({ navigation, route }) => {
                   />
                   </Row>
 
-                  {showDEDataMatrix ?   <Input
+                  {showDEDataMatrix ?  <>
+                    <Input
                     labelName="Scan New Bearing DE"
                     placeholder="Scan New Bearing DE"
                     value={deResult}
@@ -451,7 +474,13 @@ const AddJob = ({ navigation, route }) => {
                     appendIconSize={24}
                     handlePress={() => showScanner('DE')}
                     mand={true}
-                  /> : <>
+                  />
+                    {errors[DEDATAMATRIX] && touched[DEDATAMATRIX] && (
+                      <Text style={Styles.validateError}>
+                        {errors[DEDATAMATRIX]}
+                      </Text>
+                    )}
+                    </>  : <>
                       <Input
                       labelName="DE Batch Number"
                       placeholder="DE Batch Number"
@@ -479,7 +508,8 @@ const AddJob = ({ navigation, route }) => {
                   />
                   </Row>
 
-                  {showNDEDataMatrix ? <Input
+                  {showNDEDataMatrix ? <>
+                    <Input
                     labelName="Scan New Bearing NDE"
                     placeholder="Scan New Bearing NDE"
                     value={ndeResult}
@@ -488,7 +518,13 @@ const AddJob = ({ navigation, route }) => {
                     appendIconSize={24}
                     handlePress={() => showScanner('NDE')}  
                     mand={true}
-                  /> : <>
+                  />
+                    {errors[NDEDATAMATRIX] && touched[NDEDATAMATRIX] && (
+                      <Text style={Styles.validateError}>
+                        {errors[NDEDATAMATRIX]}
+                      </Text>
+                    )}
+                    </> : <>
                       <Input
                       labelName="NDE Batch Number"
                       placeholder="NDE Batch Number"
@@ -516,7 +552,7 @@ const AddJob = ({ navigation, route }) => {
                   />
                   </Row>
 
-                  {showDataMatrix ?                   <Input
+                  {showDataMatrix ? <Input
                     labelName="Scan Sensor"
                     placeholder="Scan Sensor"
                     value={result}
@@ -531,15 +567,9 @@ const AddJob = ({ navigation, route }) => {
                       handleChangeText={handleChange(SENSORBATCHNUMBER)}
                       value={values[SENSORBATCHNUMBER]}
                     />
-                    {errors[SENSORBATCHNUMBER] && touched[SENSORBATCHNUMBER] && (
-                      <Text style={Styles.validateError}>
-                        {errors[SENSORBATCHNUMBER]}
-                      </Text>
-                    )}
                   </>
                 } 
                 </View>
-
 
               <View style={{ marginBottom: 20 }}>
                 <Input
@@ -606,8 +636,8 @@ const AddJob = ({ navigation, route }) => {
                     let obj = { Id: item.Id, Name: item.Name };
                     setFieldValue(EXCHANGETYPE, [obj]);
                   }}
-                  placeholder="Select Exchange Type *"
-                  label={EXCHANGETYPE}
+                  placeholder="Select Exchange Type"
+                  label={EXCHANGETYPE+ ' *'}
                   modalTitle="Select Exchange Type"
                   items={masterData.exhangeTypes}
                   modalObj={{ id: "Id", name: "Name" }}
@@ -627,7 +657,7 @@ const AddJob = ({ navigation, route }) => {
                     setFieldValue(REASONS, [obj]);
                   }}
                   placeholder="Select Reason"
-                  label="Reasons of Change"
+                  label="Reason of Change *"
                   modalTitle="Select Reason"
                   items={masterData.reasonOfChanges}
                   modalObj={{ id: "Id", name: "Name" }}
@@ -646,17 +676,12 @@ const AddJob = ({ navigation, route }) => {
                     let obj = { Id: item.Id, Name: item.Name };
                     setFieldValue(WINDFARM, [obj]);
                   }}
-                  placeholder="Select Wind Farm *"
+                  placeholder="Select Wind Farm"
                   label="Wind Farm"
                   modalTitle="Select Wind Farm"
                   items={masterData.windFarms}
                   modalObj={{ id: "Id", name: "Name" }}
                 />
-                {errors[WINDFARM] && touched[WINDFARM] && (
-                  <Text style={Styles.validateError}>
-                    {errors[WINDFARM]}
-                  </Text>
-                )}
               </View>
               <View style={{ marginBottom: 20 }}>
                 <Select
@@ -704,13 +729,7 @@ const AddJob = ({ navigation, route }) => {
                   placeholder="Enter Wind Turbine"
                   handleChangeText={handleChange(WINDTURBINE)}
                   value={values[WINDTURBINE]}
-                  mand={true}
                 />
-                {errors[WINDTURBINE] && touched[WINDTURBINE] && (
-                  <Text style={Styles.validateError}>
-                    {errors[WINDTURBINE]}
-                  </Text>
-                )}
               </View>
               <View style={{ marginBottom: 20 }}>
                 <Select
@@ -773,20 +792,13 @@ const AddJob = ({ navigation, route }) => {
                     appendIconColor={theme.textBlue}
                     appendIconSize={24}
                     handlePress={() => showScanner('REMOVEDBEARING')}  
-                    mand={true}
                   /> : <>
                       <Input
                       labelName="Removed Batch Number"
                       placeholder="Removed Batch Number"
                       handleChangeText={handleChange(REMOVEDBATCHNUMBER)}
                       value={values[REMOVEDBATCHNUMBER]}
-                      mand={true}
                     />
-                    {errors[REMOVEDBATCHNUMBER] && touched[REMOVEDBATCHNUMBER] && (
-                      <Text style={Styles.validateError}>
-                        {errors[REMOVEDBATCHNUMBER]}
-                      </Text>
-                    )}
                   </>
                 } 
                 </View>
@@ -897,7 +909,10 @@ const AddJob = ({ navigation, route }) => {
                 />
               </Row>
             </View>
-          )}
+            )
+
+            
+          }}
         </Formik>
       )}
     </ScrollView>

@@ -62,7 +62,7 @@ const DetailsView = () => {
   return (
     <ScrollView style={{backgroundColor: theme.bgWhite}}>
       {job && <View style={[GBStyles.container, {flex: 1}]}>
-    {job[JOBKEYMapper.DATAMATRIX] ?
+    {/* {job[JOBKEYMapper.DATAMATRIX] ?
      <>  
       <ListItem label="New Bearing DE" value={job[JOBKEYMapper.DEDATAMATRIX]} />
        <ListItem label="New Bearing NDE" value={job[JOBKEYMapper.NDEDATAMATRIX]} />
@@ -74,20 +74,25 @@ const DetailsView = () => {
         <ListItem label="OR Number" value={job[JOBKEYMapper.ORNUMBER]} />
         <ListItem label="Bearing Model" value={job[JOBKEYMapper.BEARINGMODEL] ?  job[JOBKEYMapper.BEARINGMODEL][0]?.Name : ''} />
     </>
-    }
+    } */}
+{job[JOBKEYMapper.DEDATAMATRIX] ? <ListItem label="New Bearing DE" value={job[JOBKEYMapper.DEDATAMATRIX]} /> : <ListItem label="DE Batch Number" value={job[JOBKEYMapper.DEBATCHNUMBER]} />}
+{job[JOBKEYMapper.NDEDATAMATRIX] ? <ListItem label="New Bearing NDE" value={job[JOBKEYMapper.NDEDATAMATRIX]} /> : <ListItem label="NDE Batch Number" value={job[JOBKEYMapper.NDEBATCHNUMBER]} />}
+{job[JOBKEYMapper.DATAMATRIX] ? <ListItem label="Sensor DataMatrix" value={job[JOBKEYMapper.DATAMATRIX]} /> : <ListItem label="Sensor Batch Number" value={job[JOBKEYMapper.BATCHNUMBER]} />}
+<ListItem label="Failure Date" value={job[JOBKEYMapper.FAILUREDATE]} />
         <ListItem label="Exchange Type" value={job[JOBKEYMapper.EXCHANGETYPE] ? job[JOBKEYMapper.EXCHANGETYPE][0]?.Name : ''} />
-        <ListItem label="Reasons of Chnage" value={job[JOBKEYMapper.REASONS] ? job[JOBKEYMapper.REASONS][0]?.Name : ''} />
+        <ListItem label="Reason of Chnage" value={job[JOBKEYMapper.REASONS] ? job[JOBKEYMapper.REASONS][0]?.Name : ''} />
         <ListItem label="Wind Farm" value={job[JOBKEYMapper.WINDFARM] ? job[JOBKEYMapper.WINDFARM][0]?.Name: ''} />
         <ListItem label="Wind Farm Location" value={job[JOBKEYMapper.WINDLOCATION] ? job[JOBKEYMapper.WINDLOCATION][0]?.Name: ''} />
         <ListItem label="State" value={job[JOBKEYMapper.STATE] ? job[JOBKEYMapper.STATE][0]?.Name: ''} />
         <ListItem label="Wind Turbine" value={job[JOBKEYMapper.WINDTURBINE]} />
         <ListItem label="Generator Model" value={job[JOBKEYMapper.GENERATORMODEL] ? job[JOBKEYMapper.GENERATORMODEL][0]?.Name: ''} />
         <ListItem label="Shaft Position Failure" value={job[JOBKEYMapper.POSITION] ? job[JOBKEYMapper.POSITION][0]?.Name: ''} />
+        {job[JOBKEYMapper.REMOVEDDATAMATRIX] ? <ListItem label="Scan Removed Bearing" value={job[JOBKEYMapper.REMOVEDDATAMATRIX]} /> : <ListItem label="Removed Batch Number" value={job[JOBKEYMapper.REMOVEDBATCHNUMBER]} />}
         <ListItem label="Removed Bearing Brand" value={job[JOBKEYMapper.REMOVEDBEARINGBRAND] ? job[JOBKEYMapper.REMOVEDBEARINGBRAND][0]?.Name: ''} />
         <ListItem label="Removed Bearing Type" value={job[JOBKEYMapper.REMOVEDBEARINGTYPE] ? job[JOBKEYMapper.REMOVEDBEARINGTYPE][0]?.Name: ''} />
         <ListItem label="New Bearing Brand" value={job[JOBKEYMapper.NEWBEARINGBRAND] ? job[JOBKEYMapper.NEWBEARINGBRAND][0]?.Name: ''} />
         <ListItem label="New Bearing Type" value={job[JOBKEYMapper.NEWBEARINGTYPE] ? job[JOBKEYMapper.NEWBEARINGTYPE][0]?.Name: ''} />
-        <ListItem label="Failure Date" value={job[JOBKEYMapper.FAILUREDATE]} />
+        
         <ListItem label="Comments" value={job[JOBKEYMapper.COMMENTS]} />
       </View> }
       <Row style={{margin: 10}}>
@@ -212,7 +217,7 @@ const JobDetails = ({route}) => {
           marginRight: 8}}>
         <Image
               
-              source={job[JOBKEYMapper.DATAMATRIX] ? BarCode : defaultIcon}
+              source={(job[JOBKEYMapper.DATAMATRIX] || job[JOBKEYMapper.NDEDATAMATRIX] || job[JOBKEYMapper.DEDATAMATRIX]) ? BarCode : defaultIcon}
               width={30}
               height={30}
               style={{marginTop: 40 , marginLeft: 10, marginBottom: 5, marginRight: 14 }}

@@ -65,7 +65,7 @@ function JobCard({list, onHandlePress, JobEdit, JobDelete}) {
           <Row style={[Styles.card]}>
             {job.offline && <Text style={Styles.offline}>Offline</Text> }
             <Image
-              source={job[JOBKEYMapper.DATAMATRIX] ? BarCode : defaultIcon}
+              source={(job[JOBKEYMapper.DATAMATRIX] || job[JOBKEYMapper.NDEDATAMATRIX] || job[JOBKEYMapper.DEDATAMATRIX]) ? BarCode : defaultIcon}
               width={40}
               height={40}
               style={{marginTop: 0 , marginLeft: 3, marginBottom: 5, marginRight: 14, width:80 }}
