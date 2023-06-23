@@ -158,7 +158,7 @@ const AddJob = ({ navigation, route }) => {
       } else {
         setShowNDEDataMatrix(false);
       }
-      if(filterJob[BATCHNUMBER]){
+      if(filterJob[SENSORBATCHNUMBER]){
         setShowDataMatrix(false);
       } else {
         setResult(filterJob[DATAMATRIX]);
@@ -199,29 +199,29 @@ const AddJob = ({ navigation, route }) => {
 
   const addJobSchema = Yup.object().shape({
     [DATAMATRIX]: Yup.string(),
-    [DEDATAMATRIX]: showDEDataMatrix ? Yup.string().required('Required New Bearing DE Number') : Yup.string(), 
-    [NDEDATAMATRIX]: showNDEDataMatrix ? Yup.string().required('Required New Bearing NDE Number') : Yup.string(),
+    [DEDATAMATRIX]: showDEDataMatrix ? Yup.string().required('Required New DE DataMatrix') : Yup.string(), 
+    [NDEDATAMATRIX]: showNDEDataMatrix ? Yup.string().required('Required New NDE DataMatrix') : Yup.string(),
     [REMOVEDDATAMATRIX]: Yup.string(),
 
-    [DEBATCHNUMBER]: showDEDataMatrix ? Yup.string() : Yup.string().required('Required DE Batch Number'),
-    [NDEBATCHNUMBER]: showNDEDataMatrix ? Yup.string() : Yup.string().required('Required NDE Batch Number'),
+    [DEBATCHNUMBER]: showDEDataMatrix ? Yup.string() : Yup.string().required('Required New DE Batch'),
+    [NDEBATCHNUMBER]: showNDEDataMatrix ? Yup.string() : Yup.string().required('Required New NDE Batch'),
     [SENSORBATCHNUMBER]: Yup.string(),
     [REMOVEDBATCHNUMBER]: Yup.string(),
     
     [WINDFARM]: Yup.array(Yup.object()),
-    [JOBDATE]: Yup.string().required('Required job date'),
-    [FAILUREDATE]: Yup.string().required('Required job failure date'),
+    [JOBDATE]: Yup.string().required('Required Job jDate'),
+    [FAILUREDATE]: Yup.string().required('Required Job Failure Date'),
     [STATE]: Yup.array(Yup.object()),
     [WINDLOCATION]: Yup.array(Yup.object()),
     [WINDTURBINE]: Yup.string(),
     [GENERATORMODEL]: Yup.array(Yup.object()),
-    [REASONS]: Yup.array(Yup.object()).required('Required Reason of change'),
+    [REASONS]: Yup.array(Yup.object()).required('Required Reason of Change'),
     [NEWBEARINGBRAND]: Yup.array(Yup.object()),
     [NEWBEARINGTYPE]: Yup.array(Yup.object()),
     [REMOVEDBEARINGBRAND]: Yup.array(Yup.object()),
     [REMOVEDBEARINGTYPE]: Yup.array(Yup.object()),
     [POSITION]: Yup.array(Yup.object()),
-    [EXCHANGETYPE]: Yup.array(Yup.object()).required('Required exchange type'),
+    [EXCHANGETYPE]: Yup.array(Yup.object()).required('Required Exchange Type'),
     [COMMENTS]: Yup.string(Yup.string()),
   });
 
@@ -466,8 +466,8 @@ const AddJob = ({ navigation, route }) => {
 
                   {showDEDataMatrix ?  <>
                     <Input
-                    labelName="Scan New Bearing DE"
-                    placeholder="Scan New Bearing DE"
+                    labelName="New DE DataMatrix"
+                    placeholder="Scan DE DataMatrix"
                     value={deResult}
                     appendIconName="DataMatrix"
                     appendIconColor={theme.textBlue}
@@ -482,8 +482,8 @@ const AddJob = ({ navigation, route }) => {
                     )}
                     </>  : <>
                       <Input
-                      labelName="DE Batch Number"
-                      placeholder="DE Batch Number"
+                      labelName="New DE Batch"
+                      placeholder="Enter DE Batch"
                       handleChangeText={handleChange(DEBATCHNUMBER)}
                       value={values[DEBATCHNUMBER]}
                       mand={true}
@@ -510,8 +510,8 @@ const AddJob = ({ navigation, route }) => {
 
                   {showNDEDataMatrix ? <>
                     <Input
-                    labelName="Scan New Bearing NDE"
-                    placeholder="Scan New Bearing NDE"
+                    labelName="New NDE DataMatrix"
+                    placeholder="Scan NDE DataMatrix"
                     value={ndeResult}
                     appendIconName="DataMatrix"
                     appendIconColor={theme.textBlue}
@@ -526,8 +526,8 @@ const AddJob = ({ navigation, route }) => {
                     )}
                     </> : <>
                       <Input
-                      labelName="NDE Batch Number"
-                      placeholder="NDE Batch Number"
+                      labelName="New NDE Batch"
+                      placeholder=" Enter NDE Batch"
                       handleChangeText={handleChange(NDEBATCHNUMBER)}
                       value={values[NDEBATCHNUMBER]}
                       mand={true}
@@ -553,8 +553,8 @@ const AddJob = ({ navigation, route }) => {
                   </Row>
 
                   {showDataMatrix ? <Input
-                    labelName="Scan Sensor"
-                    placeholder="Scan Sensor"
+                    labelName="Sensor DataMatrix"
+                    placeholder="Scan Sensor DataMatrix"
                     value={result}
                     appendIconName="DataMatrix"
                     appendIconColor={theme.textBlue}
@@ -562,8 +562,8 @@ const AddJob = ({ navigation, route }) => {
                     handlePress={() => showScanner('DATAMATRIX')}
                   /> : <>
                       <Input
-                      labelName="Sensor Batch Number"
-                      placeholder="Sensor Batch Number"
+                      labelName="Sensor Batch"
+                      placeholder="Enter Sensor Batch"
                       handleChangeText={handleChange(SENSORBATCHNUMBER)}
                       value={values[SENSORBATCHNUMBER]}
                     />
@@ -637,7 +637,7 @@ const AddJob = ({ navigation, route }) => {
                     setFieldValue(EXCHANGETYPE, [obj]);
                   }}
                   placeholder="Select Exchange Type"
-                  label={EXCHANGETYPE+ ' *'}
+                  label={'Exchange Type *'}
                   modalTitle="Select Exchange Type"
                   items={masterData.exhangeTypes}
                   modalObj={{ id: "Id", name: "Name" }}
@@ -704,6 +704,14 @@ const AddJob = ({ navigation, route }) => {
                 )}
               </View>
               <View style={{ marginBottom: 20 }}>
+                <Input
+                  labelName="Wind Turbine"
+                  placeholder="Enter Wind Turbine"
+                  handleChangeText={handleChange(WINDTURBINE)}
+                  value={values[WINDTURBINE]}
+                />
+              </View>
+              <View style={{ marginBottom: 20 }}>
                 <Select
                   selectedValue={values[STATE][0]?.Name}
                   disabled={false}
@@ -722,14 +730,6 @@ const AddJob = ({ navigation, route }) => {
                     {errors[STATE]}
                   </Text>
                 )}
-              </View>
-              <View style={{ marginBottom: 20 }}>
-                <Input
-                  labelName="Wind Turbine"
-                  placeholder="Enter Wind Turbine"
-                  handleChangeText={handleChange(WINDTURBINE)}
-                  value={values[WINDTURBINE]}
-                />
               </View>
               <View style={{ marginBottom: 20 }}>
                 <Select
@@ -751,7 +751,6 @@ const AddJob = ({ navigation, route }) => {
                   </Text>
                 )}
               </View>
-
               <View style={{ marginBottom: 20 }}>
                 <Select
                   selectedValue={values[POSITION][0]?.Name}
@@ -760,9 +759,9 @@ const AddJob = ({ navigation, route }) => {
                     let obj = { Id: item.Id, Name: item.Name };
                     setFieldValue(POSITION, [obj]);
                   }}
-                  placeholder="Select Shaft Position failure"
-                  label="Shaft Position failure"
-                  modalTitle="Select Shaft Position failure"
+                  placeholder="Select Shaft Position Failure"
+                  label="Shaft Position Failure"
+                  modalTitle="Select Shaft Position Failure"
                   items={masterData.shaftPositions}
                   modalObj={{ id: "Id", name: "Name" }}
                 />
@@ -785,8 +784,8 @@ const AddJob = ({ navigation, route }) => {
                   </Row>
 
                   {showRemovedDataMatrix ? <Input
-                    labelName="Scan Removed Bearing"
-                    placeholder="Scan Removed Bearing"
+                    labelName="Removed DataMatrix"
+                    placeholder="Scan Removed DataMatrix"
                     value={removedResult}
                     appendIconName="DataMatrix"
                     appendIconColor={theme.textBlue}
@@ -794,8 +793,8 @@ const AddJob = ({ navigation, route }) => {
                     handlePress={() => showScanner('REMOVEDBEARING')}  
                   /> : <>
                       <Input
-                      labelName="Removed Batch Number"
-                      placeholder="Removed Batch Number"
+                      labelName="Removed Batch"
+                      placeholder="Enter Removed Batch"
                       handleChangeText={handleChange(REMOVEDBATCHNUMBER)}
                       value={values[REMOVEDBATCHNUMBER]}
                     />
@@ -811,9 +810,9 @@ const AddJob = ({ navigation, route }) => {
                     let obj = { Id: item.Id, Name: item.Name };
                     setFieldValue(REMOVEDBEARINGBRAND, [obj]);
                   }}
-                  placeholder="Select Removed Brearing Brand"
-                  label="Removed Brearing Brand"
-                  modalTitle="Select Removed Brearing Brand"
+                  placeholder="Select Removed Brearings Brand"
+                  label="Removed Brearings Brand"
+                  modalTitle="Select Removed Brearings Brand"
                   items={masterData.brands}
                   modalObj={{ id: "Id", name: "Name" }}
                 />
@@ -831,9 +830,9 @@ const AddJob = ({ navigation, route }) => {
                     let obj = { Id: item.Id, Name: item.Name };
                     setFieldValue(REMOVEDBEARINGTYPE, [obj]);
                   }}
-                  placeholder="Select Removed Brearing Type"
-                  label="Removed Brearing Type"
-                  modalTitle="Select Removed Brearing Type"
+                  placeholder="Select Removed Brearings Type"
+                  label="Removed Brearings Type"
+                  modalTitle="Select Removed Brearings Type"
                   items={masterData.bearingTypes}
                   modalObj={{ id: "Id", name: "Name" }}
                 />

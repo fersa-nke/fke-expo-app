@@ -75,24 +75,23 @@ const DetailsView = () => {
         <ListItem label="Bearing Model" value={job[JOBKEYMapper.BEARINGMODEL] ?  job[JOBKEYMapper.BEARINGMODEL][0]?.Name : ''} />
     </>
     } */}
-{job[JOBKEYMapper.DEDATAMATRIX] ? <ListItem label="New Bearing DE" value={job[JOBKEYMapper.DEDATAMATRIX]} /> : <ListItem label="DE Batch Number" value={job[JOBKEYMapper.DEBATCHNUMBER]} />}
-{job[JOBKEYMapper.NDEDATAMATRIX] ? <ListItem label="New Bearing NDE" value={job[JOBKEYMapper.NDEDATAMATRIX]} /> : <ListItem label="NDE Batch Number" value={job[JOBKEYMapper.NDEBATCHNUMBER]} />}
-{job[JOBKEYMapper.DATAMATRIX] ? <ListItem label="Sensor DataMatrix" value={job[JOBKEYMapper.DATAMATRIX]} /> : <ListItem label="Sensor Batch Number" value={job[JOBKEYMapper.BATCHNUMBER]} />}
-<ListItem label="Failure Date" value={job[JOBKEYMapper.FAILUREDATE]} />
+        {job[JOBKEYMapper.DEDATAMATRIX] ? <ListItem label="New DE DataMatrix" value={job[JOBKEYMapper.DEDATAMATRIX]} /> : <ListItem label="New DE Batch" value={job[JOBKEYMapper.DEBATCHNUMBER]} />}
+        {job[JOBKEYMapper.NDEDATAMATRIX] ? <ListItem label="New NDE DataMatrix" value={job[JOBKEYMapper.NDEDATAMATRIX]} /> : <ListItem label="New NDE Batch" value={job[JOBKEYMapper.NDEBATCHNUMBER]} />}
+        {job[JOBKEYMapper.SENSORBATCHNUMBER] ?<ListItem label="Sensor Batch" value={job[JOBKEYMapper.SENSORBATCHNUMBER]} /> : <ListItem label="Sensor DataMatrix" value={job[JOBKEYMapper.DATAMATRIX]} /> }
+        <ListItem label="Failure Date" value={job[JOBKEYMapper.FAILUREDATE]} />
         <ListItem label="Exchange Type" value={job[JOBKEYMapper.EXCHANGETYPE] ? job[JOBKEYMapper.EXCHANGETYPE][0]?.Name : ''} />
-        <ListItem label="Reason of Chnage" value={job[JOBKEYMapper.REASONS] ? job[JOBKEYMapper.REASONS][0]?.Name : ''} />
+        <ListItem label="Reason of Change" value={job[JOBKEYMapper.REASONS] ? job[JOBKEYMapper.REASONS][0]?.Name : ''} />
         <ListItem label="Wind Farm" value={job[JOBKEYMapper.WINDFARM] ? job[JOBKEYMapper.WINDFARM][0]?.Name: ''} />
         <ListItem label="Wind Farm Location" value={job[JOBKEYMapper.WINDLOCATION] ? job[JOBKEYMapper.WINDLOCATION][0]?.Name: ''} />
-        <ListItem label="State" value={job[JOBKEYMapper.STATE] ? job[JOBKEYMapper.STATE][0]?.Name: ''} />
         <ListItem label="Wind Turbine" value={job[JOBKEYMapper.WINDTURBINE]} />
+        <ListItem label="State" value={job[JOBKEYMapper.STATE] ? job[JOBKEYMapper.STATE][0]?.Name: ''} />
         <ListItem label="Generator Model" value={job[JOBKEYMapper.GENERATORMODEL] ? job[JOBKEYMapper.GENERATORMODEL][0]?.Name: ''} />
         <ListItem label="Shaft Position Failure" value={job[JOBKEYMapper.POSITION] ? job[JOBKEYMapper.POSITION][0]?.Name: ''} />
-        {job[JOBKEYMapper.REMOVEDDATAMATRIX] ? <ListItem label="Scan Removed Bearing" value={job[JOBKEYMapper.REMOVEDDATAMATRIX]} /> : <ListItem label="Removed Batch Number" value={job[JOBKEYMapper.REMOVEDBATCHNUMBER]} />}
+        {job[JOBKEYMapper.REMOVEDBATCHNUMBER] ? <ListItem label="Removed Batch" value={job[JOBKEYMapper.REMOVEDBATCHNUMBER]} /> : <ListItem label="Removed DataMatrix" value={job[JOBKEYMapper.REMOVEDDATAMATRIX]} />}
         <ListItem label="Removed Bearing Brand" value={job[JOBKEYMapper.REMOVEDBEARINGBRAND] ? job[JOBKEYMapper.REMOVEDBEARINGBRAND][0]?.Name: ''} />
         <ListItem label="Removed Bearing Type" value={job[JOBKEYMapper.REMOVEDBEARINGTYPE] ? job[JOBKEYMapper.REMOVEDBEARINGTYPE][0]?.Name: ''} />
         <ListItem label="New Bearing Brand" value={job[JOBKEYMapper.NEWBEARINGBRAND] ? job[JOBKEYMapper.NEWBEARINGBRAND][0]?.Name: ''} />
         <ListItem label="New Bearing Type" value={job[JOBKEYMapper.NEWBEARINGTYPE] ? job[JOBKEYMapper.NEWBEARINGTYPE][0]?.Name: ''} />
-        
         <ListItem label="Comments" value={job[JOBKEYMapper.COMMENTS]} />
       </View> }
       <Row style={{margin: 10}}>
