@@ -22,7 +22,8 @@ export const getJobs = () => {
         type: LOADING_jOBS,
         payload: true,
       });
-    API.GET(`${BASE_URL}`, token, {sort: `-${JobMapper.JOBDATE},-${JobMapper.ID}`})
+      //{sort: `-${JobMapper.JOBDATE},-${JobMapper.ID}
+    API.GET(`${BASE_URL}`, token)
         .then(res => {
             console.log('job list lenght', res.list.length, res.pageInfo.isLastPage);
             dispatch({
