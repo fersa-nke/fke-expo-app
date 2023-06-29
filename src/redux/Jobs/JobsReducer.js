@@ -23,7 +23,7 @@ const initialJobState = {
 export default function jobsReducer(state = initialJobState, action) {
   switch (action.type) {
     case GET_JOBS:
-      console.log(...action.payload.list);
+      console.log('get jobs reducer',action.payload.list);
       return {...state, jobs: [...state.jobs, ...action.payload.list], pageInfo: action.payload.pageInfo};
     case GET_SEARCH_JOBS:
         console.log(...action.payload.list);

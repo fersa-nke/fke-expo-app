@@ -127,7 +127,7 @@ function Jobs({route}) {
     <>
       <StatusBar barStyle="dark-content" backgroundColor={theme.bgWhite} />
       <ScrollView style={Styles.jobs}>
-      <Loader loading={pagerLoader} />
+      {/* <Loader loading={pagerLoader} /> */}
         <View style={[GBStyles.container, {paddingBottom: 50}]}>
           <Text style={GBStyles.pageTitle}>{type === 'search' ? 'Search Results' : 'jobs'}</Text>
           {loading && <View style={{padding: 18}}>{[1,2,3,4,5].map((idx)=>(

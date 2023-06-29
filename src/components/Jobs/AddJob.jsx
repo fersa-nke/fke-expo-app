@@ -80,7 +80,7 @@ const AddJob = ({ navigation, route }) => {
     BATCHNUMBER,
     JOBDATE,
     JOBID,
-    WINDFARM,
+    CUSTOMERWINDFARM,
     WINDTURBINE,
     GENERATORMODEL,
     REASONS,
@@ -111,7 +111,7 @@ const AddJob = ({ navigation, route }) => {
   const initialFormValues = {
     [DATAMATRIX]: '',
     [JOBDATE]: startDate,
-    [WINDFARM]: '',
+    [CUSTOMERWINDFARM]: '',
     [STATE]: '',
     [WINDLOCATION]: '',
     [FAILUREDATE]: '',
@@ -140,14 +140,22 @@ const AddJob = ({ navigation, route }) => {
 
   const [formData, setFormData] = useState(initialFormValues);
 
+  function updateFormData(data) {
+    console.log('---------------------------->', data);
+    setTempFormdata(data);
+  }
+
   useEffect(() => {
     let j = '';
     if (Id && selectedJobId && jobs && jobs.length > 0) {
       const filterJob = jobs.filter(j => j.Id === selectedJobId)[0];
-      console.log('fetched job details', customerId, operatorId, selectedJobId, filterJob);
-      let formValues = { ...filterJob };
+    //  console.log('fetched job details', customerId, operatorId, selectedJobId, filterJob);
+      let formValues = { 
+        ...filterJob
+       };
+      console.log('setting form data job details', formValues, filterJob);
       setFormData(formValues);
-
+   
       if(filterJob[DEDATAMATRIX]){
         setDEResult(filterJob[DEDATAMATRIX]);
       } else {
@@ -208,7 +216,7 @@ const AddJob = ({ navigation, route }) => {
     [SENSORBATCHNUMBER]: Yup.string(),
     [REMOVEDBATCHNUMBER]: Yup.string(),
     
-    [WINDFARM]: Yup.array(Yup.object()),
+    [CUSTOMERWINDFARM]: Yup.array(Yup.object()),
     [JOBDATE]: Yup.string().required('Required Job jDate'),
     [FAILUREDATE]: Yup.string().required('Required Job Failure Date'),
     [STATE]: Yup.array(Yup.object()),
@@ -225,17 +233,29 @@ const AddJob = ({ navigation, route }) => {
     [COMMENTS]: Yup.string(Yup.string()),
   });
 
-  const getBarCodeScannerPermissions = async () => {
-    const { status } = await Camera.useCameraPermissions();
-    setHasPermission(status === "granted");
-  };
+  // const getBarCodeScannerPermissions = async () => {
+  //   const status = await Camera.useCameraPermissions();
+  //   console.log(status);
+  //   setHasPermission(status === "granted");
+  // };
 
 
 
   const showScanner = (type) => {
+ //   await getBarCodeScannerPermissions();
+ console.log('check camera permission before open',permission);
+    if (!permission.granted) {
+    // Camera permissions are not granted yet
+   return requestPermission();
+    // return (
+    //   <View style={GBStyles.container}>
+    //     <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
+    //     <Button onPress={requestPermission} text="grant permission" />
+    //   </View>
+    // );
+  }
     setScanLoading(true);
     setScanType(type);
-    // await getBarCodeScannerPermissions();
     setScan(true);
     setScanLoading(false);
   };
@@ -257,29 +277,30 @@ const AddJob = ({ navigation, route }) => {
     // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
   };
 
-  if (scanLoading && hasPermission === null) {
-    return <Loader loading={'true'} />;
-  }
+  // if (scanLoading && hasPermission === null) {
+  //   return <Loader loading={'true'} />;
+  // }
   if (scan && hasPermission === false) {
    return  <View style={GBStyles.container}>
   <Text style={{ textAlign: 'center', margin: 50 }}>No access to camera</Text>
   <Button onPress={requestPermission} text="Request permission" />
   </View>;
   }
-  if (!permission) {
-    // Camera permissions are still loading
-    return <Loader loading={'true'} />;
-  }
+  
+  // if (!permission) {
+  //   // Camera permissions are still loading
+  //   return <Loader loading={'true'} />;
+  // }
 
-  if (!permission.granted) {
-    // Camera permissions are not granted yet
-    return (
-      <View style={GBStyles.container}>
-        <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
-        <Button onPress={requestPermission} text="grant permission" />
-      </View>
-    );
-  }
+  // if (!permission.granted) {
+  //   // Camera permissions are not granted yet
+  //   return (
+  //     <View style={GBStyles.container}>
+  //       <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
+  //       <Button onPress={requestPermission} text="grant permission" />
+  //     </View>
+  //   );
+  // }
 
   const onSuccess = (type, data) => {
     if (type && data != null) {
@@ -350,18 +371,17 @@ const AddJob = ({ navigation, route }) => {
       [OPERATORNAME]: userData?.Name
     };
     let updateValues = {
-      [WINDFARM]: values[WINDFARM] && values[WINDFARM][0] ? values[WINDFARM][0].Id : null,
+      [CUSTOMERWINDFARM]: values[CUSTOMERWINDFARM] && values[CUSTOMERWINDFARM][0] ? values[CUSTOMERWINDFARM][0].Id : null,
       [WINDLOCATION]: values[WINDLOCATION]?.length > 0 ? values[WINDLOCATION][0].Id : null,
       [STATE]: values[STATE][0] ? values[STATE][0].Id : null,
-      [GENERATORMODEL]: values[GENERATORMODEL][0] ? values[GENERATORMODEL][0].Id : null,
-      [BEARINGMODEL]: (!showBarCodeScanButton && values[BEARINGMODEL][0]) ? values[BEARINGMODEL][0].Id : null,
-      [EXCHANGETYPE]: values[EXCHANGETYPE][0] ? values[EXCHANGETYPE][0].Id : null,
-      [REASONS]: values[REASONS][0] ? values[REASONS][0].Id : null,
-      [POSITION]: values[POSITION][0] ? values[POSITION][0].Id : null,
-      [NEWBEARINGBRAND]: values[NEWBEARINGBRAND][0] ? values[NEWBEARINGBRAND][0].Id : null,
-      [NEWBEARINGTYPE]: values[NEWBEARINGTYPE][0] ? values[NEWBEARINGTYPE][0].Id : null,
-      [REMOVEDBEARINGBRAND]: values[REMOVEDBEARINGBRAND][0] ? values[REMOVEDBEARINGBRAND][0].Id : null,
-      [REMOVEDBEARINGTYPE]: values[REMOVEDBEARINGTYPE][0] ? values[REMOVEDBEARINGTYPE][0].Id : null,
+      [GENERATORMODEL]: values[GENERATORMODEL] && values[GENERATORMODEL][0] ? values[GENERATORMODEL][0].Id : null,
+      [EXCHANGETYPE]: values[EXCHANGETYPE] && values[EXCHANGETYPE][0] ? values[EXCHANGETYPE][0].Id : null,
+      [REASONS]: values[REASONS] && values[REASONS][0] ? values[REASONS][0].Id : null,
+      [POSITION]: values[POSITION] && values[POSITION][0] ? values[POSITION][0].Id : null,
+      [NEWBEARINGBRAND]: values[NEWBEARINGBRAND] && values[NEWBEARINGBRAND][0] ? values[NEWBEARINGBRAND][0].Id : null,
+      [NEWBEARINGTYPE]: values[NEWBEARINGTYPE] && values[NEWBEARINGTYPE][0] ? values[NEWBEARINGTYPE][0].Id : null,
+      [REMOVEDBEARINGBRAND]: values[REMOVEDBEARINGBRAND] && values[REMOVEDBEARINGBRAND][0] ? values[REMOVEDBEARINGBRAND][0].Id : null,
+      [REMOVEDBEARINGTYPE]: values[REMOVEDBEARINGTYPE] && values[REMOVEDBEARINGTYPE][0] ? values[REMOVEDBEARINGTYPE][0].Id : null,
     };
 
     let data = {
@@ -449,7 +469,7 @@ const AddJob = ({ navigation, route }) => {
           onChange
         >
           {({ handleChange, errors, values, handleSubmit, touched, setFieldValue }) => {
-            setTempFormdata(values)
+             updateFormData(values);
             return(
               <View style={GBStyles.container}>
               
@@ -602,7 +622,7 @@ const AddJob = ({ navigation, route }) => {
               
               <View style={{ marginBottom: 20 }}>
                 <Input
-                  labelName="Start Date"
+                  labelName="Job Start Date"
                   placeholder="DD/MM/YYYY"
                   appendIconName="Calendar"
                   appendIconColor={theme.textBlue}
@@ -670,11 +690,11 @@ const AddJob = ({ navigation, route }) => {
               </View>
               <View style={{ marginBottom: 20 }}>
                 <Select
-                  selectedValue={values[WINDFARM][0]?.Name}
+                  selectedValue={values[CUSTOMERWINDFARM][0]?.Name}
                   disabled={false}
                   onChange={(item) => {
                     let obj = { Id: item.Id, Name: item.Name };
-                    setFieldValue(WINDFARM, [obj]);
+                    setFieldValue(CUSTOMERWINDFARM, [obj]);
                   }}
                   placeholder="Select Wind Farm"
                   label="Wind Farm"

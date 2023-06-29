@@ -87,7 +87,7 @@ const RootNavigator = () => {
 
   return (
     <><SafeAreaView style={{flex: 1}}>
-     {appLoaded ? <CustomSplashScreen /> : <>
+    
      <Ribbon />
       <NavigationContainer>
         <Stack.Navigator
@@ -187,7 +187,6 @@ const RootNavigator = () => {
           
         </Stack.Navigator>
       </NavigationContainer>
-     </>}
      <Container position="top" />     
       </SafeAreaView>
     </>

@@ -81,7 +81,7 @@ const DetailsView = () => {
         <ListItem label="Failure Date" value={job[JOBKEYMapper.FAILUREDATE]} />
         <ListItem label="Exchange Type" value={job[JOBKEYMapper.EXCHANGETYPE] ? job[JOBKEYMapper.EXCHANGETYPE][0]?.Name : ''} />
         <ListItem label="Reason of Change" value={job[JOBKEYMapper.REASONS] ? job[JOBKEYMapper.REASONS][0]?.Name : ''} />
-        <ListItem label="Wind Farm" value={job[JOBKEYMapper.WINDFARM] ? job[JOBKEYMapper.WINDFARM][0]?.Name: ''} />
+        <ListItem label="Wind Farm" value={job[JOBKEYMapper.CUSTOMERWINDFARM] ? job[JOBKEYMapper.CUSTOMERWINDFARM][0]?.Name: ''} />
         <ListItem label="Wind Farm Location" value={job[JOBKEYMapper.WINDLOCATION] ? job[JOBKEYMapper.WINDLOCATION][0]?.Name: ''} />
         <ListItem label="Wind Turbine" value={job[JOBKEYMapper.WINDTURBINE]} />
         <ListItem label="State" value={job[JOBKEYMapper.STATE] ? job[JOBKEYMapper.STATE][0]?.Name: ''} />
@@ -232,7 +232,7 @@ const JobDetails = ({route}) => {
                 {job[JOBKEYMapper.JOBID]}
               </Text>
               <Text style={Styles.cardTitle} numberOfLines={1}>
-                {job[JOBKEYMapper.WINDFARM]?.length > 0 ? job[JOBKEYMapper.WINDFARM][0].Name : ''}
+                {job[JOBKEYMapper.CUSTOMERWINDFARM]?.length > 0 ? job[JOBKEYMapper.CUSTOMERWINDFARM][0].Name : ''}
               </Text>
               <Text style={Styles.cardDescription} numberOfLines={2}>
                 {job[JOBKEYMapper.JOBDATE]}

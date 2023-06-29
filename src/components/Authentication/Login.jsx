@@ -26,7 +26,7 @@ const Login = ({ navigation }) => {
   const isAuthenticate = useSelector((state) => state.userReducer.isAuthenticate);
   const isLoginFailed = useSelector((state) => state.userReducer.failed);
   const loginMessage = useSelector((state) => state.userReducer.message);
-  const loader = useSelector((state) => state.userReducer.loading);
+  const loginLoader = useSelector((state) => state.userReducer.loading);
   const loginEmail = useSelector((state) => state.userReducer?.user?.Email);
   const [operatorLogin, setOperatorLogin] = useState(false);
   const [customerLogin, setCustomerLogin] = useState(true);
@@ -104,7 +104,7 @@ const Login = ({ navigation }) => {
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor={theme.bgWhite} />
-      <Loader loading={loader} />
+      {/* <Loader loading={loginLoader} /> */}
       <ScrollView style={{ backgroundColor: theme.bgWhite }}>
         <View
           style={{

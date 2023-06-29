@@ -38,7 +38,7 @@ export const KEYMapper = {
    IRNUMBER: 'IRNumber',
    ORNUMBER: 'ORNumber',
    COMMENTS: 'Comments',
-   WINDFARM: 'CustomerWindFarm',
+   CUSTOMERWINDFARM: 'CustomerWindFarm',
    JOBID: 'JobId',
    JOBDATE: 'JobDate',
    OPERATORNAME: 'OperatorName',
