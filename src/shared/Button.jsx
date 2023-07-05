@@ -37,14 +37,14 @@ const Styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: theme.bgBlue,
     borderStyle: 'solid',
+    height: 48,
+    lineHeight: 48
   },
   buttonText: {
     fontSize: 16,
     fontWeight: '700',
     textTransform: 'uppercase',
-    color: theme.textWhite,
-    height: 48,
-    lineHeight: 48,
+    color: theme.textWhite
   },
 });
 

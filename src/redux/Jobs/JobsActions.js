@@ -185,7 +185,7 @@ export const updateJob = (formData, jobData, Id, navigation) => {
             if (res) {
                 let jobs = getState().jobsReducer.jobs;
                 let jobIndex = jobs.findIndex(x => x.Id === Id);
-                jobs[jobIndex] = jobData;
+                jobs[jobIndex] = {...jobData, Id: Id};
                 navigation();
                 displayToast('success', 'Job Updated!');
                 dispatch({

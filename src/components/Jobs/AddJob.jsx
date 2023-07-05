@@ -19,7 +19,7 @@ import Select from "../../shared/Select";
 import { useSelector, useDispatch } from "react-redux";
 import { saveJob, updateJob } from "../../redux/Jobs/JobsActions";
 // import { BarCodeScanner } from "expo-barcode-scanner";
-import { Camera, CameraType } from 'expo-camera';
+import { Camera, CameraType, PermissionStatus } from 'expo-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { FieldInitialLoader } from "../../shared/InitialLoaders";
@@ -35,6 +35,7 @@ import displayToast from "../../services/ToastService";
 
 const AddJob = ({ navigation, route }) => {
   const { Id } = route.params;
+  console.log("Edit Id--->", Id)
   const [scan, setScan] = useState(false);
   const [scanType, setScanType] = useState('');
   const [result, setResult] = useState("");
@@ -60,8 +61,6 @@ const AddJob = ({ navigation, route }) => {
   const [showDataMatrix, setShowDataMatrix] = useState(true);
   const [showRemovedDataMatrix, setShowRemovedDataMatrix] = useState(true);
   const [tempFormdata, setTempFormdata] = useState();
-
-
   const [barcodeReaderFailed, setBarCodeReaderFailed] = useState(false);
   const selectedJobId = useSelector((state) => state.jobsReducer.selectedJobId);
   const jobs = useSelector((state) => state.jobsReducer.jobs);
@@ -75,9 +74,6 @@ const AddJob = ({ navigation, route }) => {
     TITLE,
     CUSTOMER,
     DATAMATRIX,
-    ORNUMBER,
-    IRNUMBER,
-    BATCHNUMBER,
     JOBDATE,
     JOBID,
     CUSTOMERWINDFARM,
@@ -95,7 +91,6 @@ const AddJob = ({ navigation, route }) => {
     CUSTOMERID,
     REPORTCODE,
     OPERATORNAME,
-    BEARINGMODEL,
     STATE,
     FAILUREDATE,
     WINDLOCATION,
@@ -116,9 +111,6 @@ const AddJob = ({ navigation, route }) => {
     [WINDLOCATION]: '',
     [FAILUREDATE]: '',
     [WINDTURBINE]: '',
-    [ORNUMBER]: '',
-    [IRNUMBER]: '',
-    [BATCHNUMBER]: '',
     [GENERATORMODEL]: '',
     [COMMENTS]: '',
     [REASONS]: '',
@@ -128,7 +120,6 @@ const AddJob = ({ navigation, route }) => {
     [NEWBEARINGTYPE]: '',
     [REMOVEDBEARINGBRAND]: '',
     [REMOVEDBEARINGTYPE]: '',
-    [BEARINGMODEL]: '',
     [NDEDATAMATRIX]: '',
     [DEDATAMATRIX]: '',
     [REMOVEDBATCHNUMBER]: '',
@@ -151,8 +142,31 @@ const AddJob = ({ navigation, route }) => {
       const filterJob = jobs.filter(j => j.Id === selectedJobId)[0];
     //  console.log('fetched job details', customerId, operatorId, selectedJobId, filterJob);
       let formValues = { 
-        ...filterJob
+        [DATAMATRIX]: filterJob[DATAMATRIX] ? filterJob[DATAMATRIX] : '',
+    [JOBDATE]: filterJob[JOBDATE] ? filterJob[JOBDATE] : '',
+      [CUSTOMERWINDFARM]: filterJob[CUSTOMERWINDFARM] && filterJob[CUSTOMERWINDFARM][0] ? filterJob[CUSTOMERWINDFARM] : '',
+    [STATE]: filterJob[STATE] && filterJob[STATE][0] ? filterJob[STATE] : '',
+    [WINDLOCATION]: filterJob[WINDLOCATION] && filterJob[WINDLOCATION][0] ? filterJob[WINDLOCATION] : '',
+    [FAILUREDATE]: filterJob[FAILUREDATE] ? filterJob[FAILUREDATE] : '',
+    [WINDTURBINE]: filterJob[WINDTURBINE] ? filterJob[WINDTURBINE] : '',
+    [GENERATORMODEL]: filterJob[GENERATORMODEL] && filterJob[GENERATORMODEL][0] ? filterJob[GENERATORMODEL] : '',
+    [COMMENTS]: filterJob[COMMENTS] ? filterJob[COMMENTS] : '',
+    [REASONS]: filterJob[REASONS] && filterJob[REASONS][0] ? filterJob[REASONS] : '',
+    [EXCHANGETYPE]: filterJob[EXCHANGETYPE] && filterJob[EXCHANGETYPE][0] ? filterJob[EXCHANGETYPE] : '',
+    [POSITION]: filterJob[POSITION] && filterJob[POSITION][0] ? filterJob[POSITION] : '',
+    [NEWBEARINGBRAND]: filterJob[NEWBEARINGBRAND] && filterJob[NEWBEARINGBRAND][0] ? filterJob[NEWBEARINGBRAND] : '',
+    [NEWBEARINGTYPE]: filterJob[NEWBEARINGTYPE] && filterJob[NEWBEARINGTYPE][0] ? filterJob[NEWBEARINGTYPE] : '',
+    [REMOVEDBEARINGBRAND]: filterJob[REMOVEDBEARINGBRAND] && filterJob[REMOVEDBEARINGBRAND][0] ? filterJob[REMOVEDBEARINGBRAND] : '',
+    [REMOVEDBEARINGTYPE]: filterJob[REMOVEDBEARINGTYPE] && filterJob[REMOVEDBEARINGTYPE][0] ? filterJob[REMOVEDBEARINGTYPE] : '',
+    [NDEDATAMATRIX]: filterJob[NDEDATAMATRIX] ? filterJob[NDEDATAMATRIX] : '',
+    [DEDATAMATRIX]: filterJob[DEDATAMATRIX] ? filterJob[DEDATAMATRIX] : '',
+    [REMOVEDBATCHNUMBER]: filterJob[REMOVEDBATCHNUMBER] ? filterJob[REMOVEDBATCHNUMBER] : '',
+    [REMOVEDDATAMATRIX]: filterJob[REMOVEDDATAMATRIX] ? filterJob[REMOVEDDATAMATRIX] : '',
+    [DEBATCHNUMBER]: filterJob[DEBATCHNUMBER] ? filterJob[DEBATCHNUMBER] : '',
+    [NDEBATCHNUMBER]: filterJob[NDEBATCHNUMBER] ? filterJob[NDEBATCHNUMBER] : '',
+    [SENSORBATCHNUMBER]: filterJob[SENSORBATCHNUMBER] ? filterJob[SENSORBATCHNUMBER] : ''
        };
+       
       console.log('setting form data job details', formValues, filterJob);
       setFormData(formValues);
    
@@ -239,8 +253,6 @@ const AddJob = ({ navigation, route }) => {
   //   setHasPermission(status === "granted");
   // };
 
-
-
   const showScanner = (type) => {
  //   await getBarCodeScannerPermissions();
  console.log('check camera permission before open',permission);
@@ -253,7 +265,7 @@ const AddJob = ({ navigation, route }) => {
     //     <Button onPress={requestPermission} text="grant permission" />
     //   </View>
     // );
-  }
+  }  
     setScanLoading(true);
     setScanType(type);
     setScan(true);
@@ -416,6 +428,7 @@ const AddJob = ({ navigation, route }) => {
             flashMode={torch ? Camera.Constants.FlashMode.torch : Camera.Constants.FlashMode.off}
             onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
             useCamera2Api={true}
+            //PermissionStatus={permission.granted ? Camera.Constants.PermissionStatus.GRANTED : Camera.Constants.PermissionStatus.DENIED}
           >
 
             <BarcodeMask width={280} height={280} edgeBorderWidth={1} outerMaskOpacity={0.8} />
