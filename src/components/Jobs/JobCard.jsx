@@ -77,7 +77,7 @@ function JobCard({list, onHandlePress, JobEdit, JobDelete}) {
                 {job[JOBKEYMapper.JOBID]}
               </Text>
               <Text style={Styles.cardTitle} numberOfLines={1}>
-                {job[JOBKEYMapper.WINDFARM]?.length > 0 ? job[JOBKEYMapper.WINDFARM][0].Name : '' }
+                {job[JOBKEYMapper.CUSTOMERWINDFARM]?.length > 0 ? job[JOBKEYMapper.CUSTOMERWINDFARM][0].Name : '' }
               </Text>
               <Text style={Styles.cardDescription} numberOfLines={2}>
                 {job[JOBKEYMapper.JOBDATE]}
