@@ -232,7 +232,7 @@ const AddJob = ({ navigation, route }) => {
     
     [CUSTOMERWINDFARM]: Yup.array(Yup.object()),
     [JOBDATE]: Yup.string().required('Required Job jDate'),
-    [FAILUREDATE]: Yup.string().required('Required Job Failure Date'),
+    [FAILUREDATE]: Yup.string().required('Required Job Replacement Date'),
     [STATE]: Yup.array(Yup.object()),
     [WINDLOCATION]: Yup.array(Yup.object()),
     [WINDTURBINE]: Yup.string(),
@@ -606,7 +606,7 @@ const AddJob = ({ navigation, route }) => {
 
               <View style={{ marginBottom: 20 }}>
                 <Input
-                  labelName="Failure Date"
+                  labelName="Replacement Date"
                   placeholder="DD/MM/YYYY"
                   appendIconName="Calendar"
                   appendIconColor={theme.textBlue}
@@ -792,9 +792,9 @@ const AddJob = ({ navigation, route }) => {
                     let obj = { Id: item.Id, Name: item.Name };
                     setFieldValue(POSITION, [obj]);
                   }}
-                  placeholder="Select Shaft Position Failure"
-                  label="Shaft Position Failure"
-                  modalTitle="Select Shaft Position Failure"
+                  placeholder="Select Bearing Model"
+                  label="Bearing Model"
+                  modalTitle="Select Bearing Model"
                   items={masterData.shaftPositions}
                   modalObj={{ id: "Id", name: "Name" }}
                 />
@@ -817,8 +817,8 @@ const AddJob = ({ navigation, route }) => {
                   </Row>
 
                   {showRemovedDataMatrix ? <Input
-                    labelName="Removed DataMatrix"
-                    placeholder="Scan Removed DataMatrix"
+                    labelName="Removed DE DataMatrix"
+                    placeholder="Scan Removed DE DataMatrix"
                     value={removedResult}
                     appendIconName="DataMatrix"
                     appendIconColor={theme.textBlue}

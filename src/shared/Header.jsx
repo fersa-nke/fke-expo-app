@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import nke_logo from "../assets/images/nke_logo.png";
+import bccode from "../assets/images/barcode.png";
 import Icon from "./IconComp";
 import theme from "../assets/theme";
 import GBStyles from "../assets/globalstyles";
@@ -37,6 +38,19 @@ const HeaderLeft = () => {
     </>
   );
 };
+
+const HeaderMiddle = () => {
+  return (
+    <>
+      <Image
+        source={bccode}
+        resizeMode="contain"
+        resizeMethod="resize"
+        style={{ height: 35, width: 35 }}
+      />
+    </>
+  )
+}
 
 const HeaderRight = ({ showSeach = false, isAddPage = false }) => {
   const dispatch = useDispatch();
@@ -154,4 +168,4 @@ const Styles = StyleSheet.create({
   },
 });
 
-export { HeaderLeft, HeaderRight };
+export { HeaderLeft, HeaderRight, HeaderMiddle };

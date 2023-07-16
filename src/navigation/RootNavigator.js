@@ -13,7 +13,7 @@ import Login from './../components/Authentication/Login';
 import Jobs from './../components/Jobs/Jobs';
 import Ribbon from '../shared/Ribbon';
 import AddJob from './../components/Jobs/AddJob';
-import { HeaderLeft, HeaderRight } from '../shared/Header';
+import { HeaderLeft, HeaderMiddle, HeaderRight } from '../shared/Header';
 import JobDetails from './../components/Jobs/JobDetails';
 import AddReport from './../components/Reports/AddReport';
 import ReportView from './../components/Reports/ReportView';
@@ -100,7 +100,7 @@ const RootNavigator = () => {
               options={{
                 headerLeft: HeaderLeft,
                 headerRight: () => <HeaderRight showSeach={true} />,
-                title: null,
+                headerTitle: () => <HeaderMiddle />
               }}
             />
             <Stack.Screen
