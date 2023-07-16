@@ -33,6 +33,7 @@ import {
   getLubricationGrades,
   getLubricationTypes
 } from "../../redux/Master/MasterActions";
+import { getUserLogo } from '../../redux/Attachments/AttachmentActions'
 import { useNavigation } from "@react-navigation/native";
 import { JobsInitialLoader } from "../../shared/InitialLoaders";
 import IconComp from "../../shared/IconComp";
@@ -66,6 +67,7 @@ function Jobs({route}) {
  // const fetchJobs = () => dispatch(getJobs());
   const fetchLubricationGrades = () => dispatch(getLubricationGrades());
   const fetchLubricationTypes = () => dispatch(getLubricationTypes());
+  const fetchUserLogo = () => dispatch(getUserLogo());
 
   useEffect(() => {
    console.log('loaded fetch jobs', type); 
@@ -88,6 +90,7 @@ function Jobs({route}) {
     fetchWindLocations();
     fetchLubricationGrades();
     fetchLubricationTypes();
+    fetchUserLogo();
 
     setTimeout(() => {
       setLoading(false);

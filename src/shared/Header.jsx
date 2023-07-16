@@ -40,14 +40,19 @@ const HeaderLeft = () => {
 };
 
 const HeaderMiddle = () => {
+  const userLogo = useSelector(
+    (state) => state.attachmentsReducer.userLogo
+  );
+  console.log('userLogo----------->', userLogo);
   return (
     <>
-      <Image
-        source={bccode}
+    {userLogo &&  <Image
+        source={{ uri: `data:image/png;base64,${userLogo}` }}
         resizeMode="contain"
         resizeMethod="resize"
         style={{ height: 35, width: 35 }}
       />
+    }
     </>
   )
 }

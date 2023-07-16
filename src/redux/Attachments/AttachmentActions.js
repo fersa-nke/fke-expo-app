@@ -4,7 +4,7 @@ import API from '../../services/Api';
 import mime from "mime";
 
 // Define action types
-import {GET_ATTACHMENTS, ADD_ATTACHMENT_ITEM, DELETE_ATTACHMENT_ITEM ,DOWNLOADED_ATTACHMENT_ITEM, LOADING_DATA} from './../ReduxConsants';
+import {GET_ATTACHMENTS, ADD_ATTACHMENT_ITEM, DELETE_ATTACHMENT_ITEM ,DOWNLOADED_ATTACHMENT_ITEM, LOADING_DATA, USER_LOGO} from './../ReduxConsants';
 import { KEYMapper as JobMapper } from '../../services/UserConfig';
 // Construct a BASE URL for API endpoint
 const BASE_URL = `nocodb/data/FG-MRO-Tracker/Attachments`;
@@ -113,7 +113,7 @@ export const saveReportAttachment = (file, type, reportId) => {
 };
 
 
-export const downloadAttachment = path => {
+export const downloadAttachment = (path, imageType='') => {
     return async (dispatch, getState) => {
       const token = getState().userReducer.token;
       dispatch({
@@ -185,3 +185,58 @@ export const removeAttachment = Id => {
     }); // JSON data parsed by `data.json()` call
     }
 };
+
+
+export function getUserLogo() {
+    return async (dispatch, getState) => {
+        const token = getState().userReducer.token;
+        const customerId = getState().userReducer.user.CustomerId;
+        let squery = '(RefId,eq,'+customerId+')~and(Type,eq,CustomerLogo)';
+        API.GET(`${BASE_URL}`, token, {where: squery})
+            .then(res => {
+                console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&',customerId, res);
+                //Hide Loader
+                try {
+                if (res && res.list && res.list.length > 0) {
+                    downloadUserLogo(res.list[0].Path, token, dispatch);
+                } else {
+                    console.log('Unable to fetch');
+                }
+            }
+            catch(e) {
+                console.log('error------------->', e);
+            }
+          })
+            .catch((error) => {
+                console.log('error -------------->', error);
+                //Hide Loader
+            }); // JSON data parsed by `data.json()` call
+    }
+};
+
+
+function downloadUserLogo(path,token, dispatch) {
+    console.log(path, token, dispatch);
+    API.DOWNLOAD(`nocodb/download`, token, {path, type: 'base64'})
+                    .then(res => {
+                        //Hide Loader
+                        if (res && res.value) {
+                            dispatch({
+                              type: USER_LOGO,
+                              payload: res.value,
+                            });
+                         //   console.log('LOOOOOOOOOOOOOOOO', res.value);
+
+                        } else {
+                          dispatch({
+                              type: USER_LOGO,
+                              payload: null,
+                            });
+                            console.log('Unable to show attachment');
+                        }
+                    })
+                    .catch((error) => {
+                        console.log('error -------------->', error);
+                        //Hide Loader
+                }); // JSON data parsed by `data.json()` call
+}
