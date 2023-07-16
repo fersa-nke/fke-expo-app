@@ -49,8 +49,8 @@ const HeaderMiddle = () => {
     {userLogo &&  <Image
         source={{ uri: `data:image/png;base64,${userLogo}` }}
         resizeMode="contain"
-        resizeMethod="resize"
-        style={{ height: 35, width: 35 }}
+        resizeMethod="auto"
+        style={{ height: 36, width: 36 }}
       />
     }
     </>

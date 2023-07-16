@@ -87,7 +87,8 @@ const DetailsView = () => {
         <ListItem label="State" value={job[JOBKEYMapper.STATE] ? job[JOBKEYMapper.STATE][0]?.Name: ''} />
         <ListItem label="Generator Model" value={job[JOBKEYMapper.GENERATORMODEL] ? job[JOBKEYMapper.GENERATORMODEL][0]?.Name: ''} />
         <ListItem label="Bearing Model" value={job[JOBKEYMapper.POSITION] ? job[JOBKEYMapper.POSITION][0]?.Name: ''} />
-        {job[JOBKEYMapper.REMOVEDBATCHNUMBER] ? <ListItem label="Removed Batch" value={job[JOBKEYMapper.REMOVEDBATCHNUMBER]} /> : <ListItem label="Removed DE DataMatrix" value={job[JOBKEYMapper.REMOVEDDATAMATRIX]} />}
+        {job[JOBKEYMapper.REMOVEDDEBATCHNUMBER] ? <ListItem label="Removed Batch" value={job[JOBKEYMapper.REMOVEDDEBATCHNUMBER]} /> : <ListItem label="Removed DE DataMatrix" value={job[JOBKEYMapper.REMOVEDDEDATAMATRIX]} />}
+        {job[JOBKEYMapper.REMOVEDNDEBATCHNUMBER] ? <ListItem label="Removed NDE Batch" value={job[JOBKEYMapper.REMOVEDNDEBATCHNUMBER]} /> : <ListItem label="Removed NDE DataMatrix" value={job[JOBKEYMapper.REMOVEDNDEDATAMATRIX]} />}
         <ListItem label="Removed Bearing Brand" value={job[JOBKEYMapper.REMOVEDBEARINGBRAND] ? job[JOBKEYMapper.REMOVEDBEARINGBRAND][0]?.Name: ''} />
         <ListItem label="Removed Bearing Type" value={job[JOBKEYMapper.REMOVEDBEARINGTYPE] ? job[JOBKEYMapper.REMOVEDBEARINGTYPE][0]?.Name: ''} />
         <ListItem label="New Bearing Brand" value={job[JOBKEYMapper.NEWBEARINGBRAND] ? job[JOBKEYMapper.NEWBEARINGBRAND][0]?.Name: ''} />

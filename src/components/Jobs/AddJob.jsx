@@ -42,6 +42,7 @@ const AddJob = ({ navigation, route }) => {
   const [deResult, setDEResult] = useState('');
   const [ndeResult, setNDEResult] = useState('');
   const [removedResult, setRemovedResult] = useState('');
+  const [removedNdeResult, setRemovedNdeResult] = useState('');
 
   const dispatch = useDispatch();
   const masterData = useSelector((state) => state.masterReducer);
@@ -60,6 +61,7 @@ const AddJob = ({ navigation, route }) => {
   const [showNDEDataMatrix, setShowNDEDataMatrix] = useState(true);
   const [showDataMatrix, setShowDataMatrix] = useState(true);
   const [showRemovedDataMatrix, setShowRemovedDataMatrix] = useState(true);
+  const [showRemovedNdeDataMatrix, setShowRemovedNdeDataMatrix] = useState(true);
   const [tempFormdata, setTempFormdata] = useState();
   const [barcodeReaderFailed, setBarCodeReaderFailed] = useState(false);
   const selectedJobId = useSelector((state) => state.jobsReducer.selectedJobId);
@@ -89,18 +91,20 @@ const AddJob = ({ navigation, route }) => {
     COMMENTS,
     OPERATORID,
     CUSTOMERID,
-    REPORTCODE,
+    //REPORTCODE,
     OPERATORNAME,
     STATE,
     FAILUREDATE,
     WINDLOCATION,
     NDEDATAMATRIX,
     DEDATAMATRIX,
-    REMOVEDDATAMATRIX,
+    REMOVEDDEDATAMATRIX,
     DEBATCHNUMBER,
     NDEBATCHNUMBER,
     SENSORBATCHNUMBER,
-    REMOVEDBATCHNUMBER
+    REMOVEDDEBATCHNUMBER,
+    REMOVEDNDEDATAMATRIX,
+    REMOVEDNDEBATCHNUMBER 
   } = JOBKEYMapper;
 
   const initialFormValues = {
@@ -122,11 +126,14 @@ const AddJob = ({ navigation, route }) => {
     [REMOVEDBEARINGTYPE]: '',
     [NDEDATAMATRIX]: '',
     [DEDATAMATRIX]: '',
-    [REMOVEDBATCHNUMBER]: '',
-    [REMOVEDDATAMATRIX]: '',
+    [REMOVEDDEBATCHNUMBER]: '',
+    [REMOVEDDEDATAMATRIX]: '',
+    [REMOVEDNDEBATCHNUMBER]: '',
+    //[REMOVEDDATAMATRIX]: '',
     [DEBATCHNUMBER]: '',
     [NDEBATCHNUMBER]: '',
-    [SENSORBATCHNUMBER]: ''
+    [SENSORBATCHNUMBER]: '',
+    [REMOVEDNDEDATAMATRIX]: ''
   };
 
   const [formData, setFormData] = useState(initialFormValues);
@@ -160,11 +167,14 @@ const AddJob = ({ navigation, route }) => {
     [REMOVEDBEARINGTYPE]: filterJob[REMOVEDBEARINGTYPE] && filterJob[REMOVEDBEARINGTYPE][0] ? filterJob[REMOVEDBEARINGTYPE] : '',
     [NDEDATAMATRIX]: filterJob[NDEDATAMATRIX] ? filterJob[NDEDATAMATRIX] : '',
     [DEDATAMATRIX]: filterJob[DEDATAMATRIX] ? filterJob[DEDATAMATRIX] : '',
-    [REMOVEDBATCHNUMBER]: filterJob[REMOVEDBATCHNUMBER] ? filterJob[REMOVEDBATCHNUMBER] : '',
-    [REMOVEDDATAMATRIX]: filterJob[REMOVEDDATAMATRIX] ? filterJob[REMOVEDDATAMATRIX] : '',
+    [REMOVEDDEBATCHNUMBER]: filterJob[REMOVEDDEBATCHNUMBER] ? filterJob[REMOVEDDEBATCHNUMBER] : '',
+    [REMOVEDDEDATAMATRIX]: filterJob[REMOVEDDEDATAMATRIX] ? filterJob[REMOVEDDEDATAMATRIX] : '',
+    [REMOVEDNDEDATAMATRIX]: filterJob[REMOVEDNDEDATAMATRIX] ? filterJob[REMOVEDNDEDATAMATRIX] : '',
+    [REMOVEDNDEBATCHNUMBER]: filterJob[REMOVEDNDEBATCHNUMBER] ? filterJob[REMOVEDNDEBATCHNUMBER] : '',
     [DEBATCHNUMBER]: filterJob[DEBATCHNUMBER] ? filterJob[DEBATCHNUMBER] : '',
     [NDEBATCHNUMBER]: filterJob[NDEBATCHNUMBER] ? filterJob[NDEBATCHNUMBER] : '',
     [SENSORBATCHNUMBER]: filterJob[SENSORBATCHNUMBER] ? filterJob[SENSORBATCHNUMBER] : ''
+    
        };
        
       console.log('setting form data job details', formValues, filterJob);
@@ -185,10 +195,15 @@ const AddJob = ({ navigation, route }) => {
       } else {
         setResult(filterJob[DATAMATRIX]);
       }
-      if(filterJob[REMOVEDBATCHNUMBER]){
+      if(filterJob[REMOVEDDEBATCHNUMBER]){
         setShowRemovedDataMatrix(false);
       } else {
-        setRemovedResult(filterJob[REMOVEDDATAMATRIX]);
+        setRemovedResult(filterJob[REMOVEDDEDATAMATRIX]);
+      }
+      if(filterJob[REMOVEDNDEBATCHNUMBER]){
+        setShowRemovedNdeDataMatrix(false);
+      } else {
+        setRemovedNdeResult(filterJob[REMOVEDNDEDATAMATRIX]);
       }
       
       setStartDate(new Date(filterJob[JOBDATE]));
@@ -223,12 +238,14 @@ const AddJob = ({ navigation, route }) => {
     [DATAMATRIX]: Yup.string(),
     [DEDATAMATRIX]: showDEDataMatrix ? Yup.string().required('Required New DE DataMatrix') : Yup.string(), 
     [NDEDATAMATRIX]: showNDEDataMatrix ? Yup.string().required('Required New NDE DataMatrix') : Yup.string(),
-    [REMOVEDDATAMATRIX]: Yup.string(),
+    [REMOVEDDEDATAMATRIX]: Yup.string(),
+    [REMOVEDNDEDATAMATRIX]: Yup.string(),
 
     [DEBATCHNUMBER]: showDEDataMatrix ? Yup.string() : Yup.string().required('Required New DE Batch'),
     [NDEBATCHNUMBER]: showNDEDataMatrix ? Yup.string() : Yup.string().required('Required New NDE Batch'),
     [SENSORBATCHNUMBER]: Yup.string(),
-    [REMOVEDBATCHNUMBER]: Yup.string(),
+    [REMOVEDDEBATCHNUMBER]: Yup.string(),
+    [REMOVEDNDEBATCHNUMBER]: Yup.string(),
     
     [CUSTOMERWINDFARM]: Yup.array(Yup.object()),
     [JOBDATE]: Yup.string().required('Required Job jDate'),
@@ -337,8 +354,13 @@ const AddJob = ({ navigation, route }) => {
          setFormData(f);
         break;
         case 'REMOVEDBEARING':
-          f = { ...tempFormdata, [REMOVEDDATAMATRIX]: data};
+          f = { ...tempFormdata, [REMOVEDDEDATAMATRIX]: data};
           setRemovedResult(data);
+          console.log(tempFormdata);
+         setFormData(f);
+        case 'REMOVEDNDEBEARING':
+          f = { ...tempFormdata, [REMOVEDNDEDATAMATRIX]: data};
+          setRemovedNdeResult(data);
           console.log(tempFormdata);
          setFormData(f);
         break;
@@ -367,12 +389,14 @@ const AddJob = ({ navigation, route }) => {
       [NDEDATAMATRIX]: showNDEDataMatrix ? ndeResult: '',
       [DEDATAMATRIX]: showDEDataMatrix ? deResult : '',
       [DATAMATRIX]: showDataMatrix ? result : '',
-      [REMOVEDDATAMATRIX]: showRemovedDataMatrix ? removedResult: '',
+      [REMOVEDDEDATAMATRIX]: showRemovedDataMatrix ? removedResult: '',
+      [REMOVEDNDEDATAMATRIX]: showRemovedNdeDataMatrix ? removedNdeResult: '',
 
       [DEBATCHNUMBER]: showDEDataMatrix ? '' : values[DEBATCHNUMBER],
       [NDEBATCHNUMBER]: showNDEDataMatrix ? '' : values[NDEBATCHNUMBER],
       [SENSORBATCHNUMBER]: showDataMatrix ? '' : values[SENSORBATCHNUMBER],
-      [REMOVEDBATCHNUMBER]: showRemovedDataMatrix ? '' : values[REMOVEDBATCHNUMBER],
+      [REMOVEDDEBATCHNUMBER]: showRemovedDataMatrix ? '' : values[REMOVEDDEBATCHNUMBER],
+      [REMOVEDNDEBATCHNUMBER]: showRemovedNdeDataMatrix ? '' : values[REMOVEDNDEBATCHNUMBER],
 
       [JOBDATE]: startDate ? startDate.toISOString().split("T")[0] : '',
       [FAILUREDATE]: failureDate ? failureDate.toISOString().split("T")[0] : '',
@@ -828,8 +852,39 @@ const AddJob = ({ navigation, route }) => {
                       <Input
                       labelName="Removed Batch"
                       placeholder="Enter Removed Batch"
-                      handleChangeText={handleChange(REMOVEDBATCHNUMBER)}
-                      value={values[REMOVEDBATCHNUMBER]}
+                      handleChangeText={handleChange(REMOVEDDEBATCHNUMBER)}
+                      value={values[REMOVEDDEBATCHNUMBER]}
+                    />
+                  </>
+                } 
+                </View>
+
+                {/* Removed NDE DataMatrix */}
+                <View style={{ marginBottom: 20, paddingTop: 20 }}>
+                 <Row style={Styles.SwitchContainer}>
+                  <Switch
+                      trackColor={{false: theme.bgWhite, true: theme.bgBlue}}
+                      thumbColor={showRemovedNdeDataMatrix ? theme.bgWhite : theme.bgLight}
+                      ios_backgroundColor={showRemovedNdeDataMatrix ? theme.bgWhite : theme.bgLight}
+                      onValueChange={() => setShowRemovedNdeDataMatrix(!showRemovedNdeDataMatrix)}
+                      value={showRemovedNdeDataMatrix}
+                  />
+                  </Row>
+
+                  {showRemovedNdeDataMatrix ? <Input
+                    labelName="Removed NDE DataMatrix"
+                    placeholder="Scan Removed NDE DataMatrix"
+                    value={removedNdeResult}
+                    appendIconName="DataMatrix"
+                    appendIconColor={theme.textBlue}
+                    appendIconSize={24}
+                    handlePress={() => showScanner('REMOVEDNDEBEARING')}  
+                  /> : <>
+                      <Input
+                      labelName="Removed NDE Batch"
+                      placeholder="Enter Removed NDE Batch"
+                      handleChangeText={handleChange(REMOVEDNDEBATCHNUMBER)}
+                      value={values[REMOVEDNDEBATCHNUMBER]}
                     />
                   </>
                 } 
