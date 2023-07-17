@@ -41,7 +41,7 @@ const AddJob = ({ navigation, route }) => {
   const [result, setResult] = useState("");
   const [deResult, setDEResult] = useState('');
   const [ndeResult, setNDEResult] = useState('');
-  const [removedResult, setRemovedResult] = useState('');
+  const [removedDEResult, setRemovedDEResult] = useState('');
   const [removedNdeResult, setRemovedNdeResult] = useState('');
 
   const dispatch = useDispatch();
@@ -177,7 +177,6 @@ const AddJob = ({ navigation, route }) => {
     
        };
        
-      console.log('setting form data job details', formValues, filterJob);
       setFormData(formValues);
    
       if(filterJob[DEDATAMATRIX]){
@@ -198,7 +197,7 @@ const AddJob = ({ navigation, route }) => {
       if(filterJob[REMOVEDDEBATCHNUMBER]){
         setShowRemovedDataMatrix(false);
       } else {
-        setRemovedResult(filterJob[REMOVEDDEDATAMATRIX]);
+        setRemovedDEResult(filterJob[REMOVEDDEDATAMATRIX]);
       }
       if(filterJob[REMOVEDNDEBATCHNUMBER]){
         setShowRemovedNdeDataMatrix(false);
@@ -272,10 +271,10 @@ const AddJob = ({ navigation, route }) => {
 
   const showScanner = (type) => {
  //   await getBarCodeScannerPermissions();
- console.log('check camera permission before open',permission);
+ console.log('check camera permission before open',permission, type);
     if (!permission.granted) {
     // Camera permissions are not granted yet
-   return requestPermission();
+    requestPermission();
     // return (
     //   <View style={GBStyles.container}>
     //     <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
@@ -353,11 +352,12 @@ const AddJob = ({ navigation, route }) => {
           setNDEResult(data);
          setFormData(f);
         break;
-        case 'REMOVEDBEARING':
+        case 'REMOVEDDEBEARING':
           f = { ...tempFormdata, [REMOVEDDEDATAMATRIX]: data};
-          setRemovedResult(data);
+          setRemovedDEResult(data);
           console.log(tempFormdata);
          setFormData(f);
+        break; 
         case 'REMOVEDNDEBEARING':
           f = { ...tempFormdata, [REMOVEDNDEDATAMATRIX]: data};
           setRemovedNdeResult(data);
@@ -389,7 +389,7 @@ const AddJob = ({ navigation, route }) => {
       [NDEDATAMATRIX]: showNDEDataMatrix ? ndeResult: '',
       [DEDATAMATRIX]: showDEDataMatrix ? deResult : '',
       [DATAMATRIX]: showDataMatrix ? result : '',
-      [REMOVEDDEDATAMATRIX]: showRemovedDataMatrix ? removedResult: '',
+      [REMOVEDDEDATAMATRIX]: showRemovedDataMatrix ? removedDEResult: '',
       [REMOVEDNDEDATAMATRIX]: showRemovedNdeDataMatrix ? removedNdeResult: '',
 
       [DEBATCHNUMBER]: showDEDataMatrix ? '' : values[DEBATCHNUMBER],
@@ -843,11 +843,11 @@ const AddJob = ({ navigation, route }) => {
                   {showRemovedDataMatrix ? <Input
                     labelName="Removed DE DataMatrix"
                     placeholder="Scan Removed DE DataMatrix"
-                    value={removedResult}
+                    value={removedDEResult}
                     appendIconName="DataMatrix"
                     appendIconColor={theme.textBlue}
                     appendIconSize={24}
-                    handlePress={() => showScanner('REMOVEDBEARING')}  
+                    handlePress={() => showScanner('REMOVEDDEBEARING')}  
                   /> : <>
                       <Input
                       labelName="Removed Batch"
