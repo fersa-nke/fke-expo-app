@@ -274,7 +274,17 @@ const AddJob = ({ navigation, route }) => {
  console.log('check camera permission before open',permission, type);
     if (!permission.granted) {
     // Camera permissions are not granted yet
-    requestPermission();
+   return requestPermission().then((permission) => {
+    if(permission.granted) {
+      setScanLoading(true);
+      setScanType(type);
+      setScan(true);
+      setScanLoading(false);
+    } else {
+      displayToast('error', 'Allow Camera permissions In Settings!');
+    }
+    console.log('camera permissions', status);
+   });
     // return (
     //   <View style={GBStyles.container}>
     //     <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
