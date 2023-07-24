@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "pc-api-7353882689896891016-131",
+  "private_key_id": "3251dd981ddbe27d10487bc277450a87efe2dd8a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCUA+4/+evsnsiL\nP+p20cJNpDkGvhr8Val23g+1GmM3feBwweRvToMbdl/8fi3iz9xTVsttH5F3FSLm\nOCJBUBKP4s4A//iV70mjOS6p96b9Pd8n3DiVVBPBCsoVdyw72XGQQJbTkYd8uFiX\nx+bIDqYYEgsPZmbFEsrsNtxZvG3q6myKn/oMAFTNOpsGf81q1uTXEvkwlLonvOoi\nWefGPN1oxVJbGVGBBV3/i+e+nFm6SuuGsfhOX4bANGw2EGmYiCaecgLYhEFvrwMr\nZkuSbzg0oUep5pY69JBJnwwsO5SiUTkgyEVxlLgNOkhBtaguBm4ByJKUJNHbYVmq\nLqnVvV5rAgMBAAECggEADtM+oPQjMBiOpU/kvTublr48+KgVjjJK89J1x/cZepyQ\n3Iphxc+bLHwp92Fwrs07WAeTVDM7aoODSC7Vfi2LJmlE++780uZcPaKDwizBcjpT\nvdYovrWPTaBghvo1mSsEMmVzFe7MyhkGxUZq9EfEqsLdORDRzf8TXx8hk/AJIbnB\nMef8LsdOO1X20Vj22ztDdX9rSrtmu4WcuZWtDddpVQJVDrgsusaiCd1mRYd3ysLB\noPFDqX6QzG5Y/aPPoOX9yy9Vl/awJsngBVkwifLwzkNYJmTFEqc+xhEIlfwF8bkV\nPFA4RCdlEWjw9KO/123l8R1Akhz+fu5BNL3pDUXFlQKBgQDILKNCswfcELAifPs8\nG93zTbWX7p8VuQTx/hxUlKWew9I+3Im7KtzG2gXdIWMxzhFn3jfLL3SOH3ruAiMF\nxGdsGP7dM9JK11PosCP+VGMuJZjVMk9pF8OEQWNW0qfD/OkJUqiH+JN+5w2+l2Zo\npNFnH+BzlztSIC9Z/zBAWtBSbwKBgQC9S2w+wcaphqfA6jGCjXBLXlcGUVFe7NfL\n3ouqksQlYCx8zD7d1M8Fo5rz85/DsPnRuJnso0e6FD4ESLV15ZNT9wSoIYWfaZMl\nlnCk6Hnl1UgeDmK8c3kQCXZ2PceIA0ItPeK43NZn79CMpUVHLESoYslRL4me4cGT\ntEIXRlyBxQKBgQCnsCUwOfQqmVxD9/krGJktOfsXBNIGC5Gl+17WSBQaVSbqfCtx\nPO3oMzpYTaDgVyVjoteQgfedG6gKfIXETgzplGLlAYV4JrxnIC923lCblulaKCQ4\nAK1MPM6wLBZYa6T4p2MBTO6aj4qHECO9I908C4smqhkKqmWgedN9BdagRwKBgQCs\nutgpY/T92IvW81z+PkYL4CgU8bsInaJEu+xCV+54FIxDzLRJA9ls0d+hX9uXXDR5\n9LMwRcY7vCDjE93RmQ2Y/rzXFs+xqUrGb8KWGDSzTq2iD4p1YAFGavwX5UPfjumi\nEuiBu7JB4Ykx7dWLno9//7SoSnKP8n0LZN8yEdhz6QKBgFzjI7tAuV2mI7sQQ+sl\naphVC6wWQCaDCnzAAA2IXB4Jri63xSySbNzUoNCXE0zJNp/+kwPSeFEFVPqyEaQt\nEbRC1qf19ScrFyZuX9+th/NKKkQMgfLc7D7Vh2iL/Q16c2AV2QIPD63ArUYh0DVf\ni4jyh/q2s0IswdNM/gF8BgUr\n-----END PRIVATE KEY-----\n",
+  "client_email": "expo-mro-tracker-app@pc-api-7353882689896891016-131.iam.gserviceaccount.com",
+  "client_id": "101556901017645237165",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/expo-mro-tracker-app%40pc-api-7353882689896891016-131.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

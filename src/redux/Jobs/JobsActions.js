@@ -12,7 +12,7 @@ export const getJobs = () => {
     const token = getState().userReducer.token;
     const pageInfo =  getState().jobsReducer.pageInfo;
     const offSet = pageInfo.offSet || 0;
-    const pageSize = pageInfo.pageSize|| 5;
+    const pageSize = pageInfo.pageSize || 5;
     // alert('calling once api job'+token);
     console.log(pageInfo);    
     if(pageInfo.isLastPage) {
@@ -23,7 +23,7 @@ export const getJobs = () => {
         payload: true,
       });
       //{sort: `-${JobMapper.JOBDATE},-${JobMapper.ID}
-    API.GET(`${BASE_URL}`, token)
+    API.GET(`${BASE_URL}`, token,  {offset : offSet, limit: pageSize} )
         .then(res => {
             console.log('job list lenght', res.list.length, res.pageInfo.isLastPage);
             dispatch({

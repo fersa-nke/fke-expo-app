@@ -4,6 +4,7 @@ import {
   StyleSheet,
   ScrollView,
   View,
+  Modal,
   Dimensions,
   Platform,
   Switch
@@ -450,63 +451,7 @@ const AddJob = ({ navigation, route }) => {
     <ScrollView style={{ backgroundColor: theme.bgWhite }}>
       <Loader loading={loading} />
       <KeyboardAwareScrollView>
-      {scan ? (
-        <>
-          <Camera
-            style={[
-              {
-                flex: 1,
-                width: Dimensions.get("window").width,
-                height: Dimensions.get("window").height - 85,
-              },
-            ]}
-            flashMode={torch ? Camera.Constants.FlashMode.torch : Camera.Constants.FlashMode.off}
-            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-            useCamera2Api={true}
-            //PermissionStatus={permission.granted ? Camera.Constants.PermissionStatus.GRANTED : Camera.Constants.PermissionStatus.DENIED}
-          >
-
-            <BarcodeMask width={280} height={280} edgeBorderWidth={1} outerMaskOpacity={0.8} />
-            
-          </Camera>
-          <View
-              style={
-                [StyleSheet.absoluteFill,
-                {
-                  bottom: 0,
-                  top: '73%',
-                  zIndex: 100
-                }
-                ]
-              }>
-              <Ripple
-                onPress={() => { setTorch(!torch) }}
-                style={[Styles.torchBtn, { backgroundColor: torch ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.2)' }]}
-              >
-                <Icon
-                  name="TorchOn"
-                  size={24}
-                  color={torch ? theme.textBlue : theme.textWhite}
-                  style={{ alignSelf: "center" }}
-                />
-              </Ripple>
-              <Button
-                text="Close"
-                style={{ margin: 24 }}
-                type={'secondary'}
-                onPress={() => {
-                  setScan(false), setScanned(false);
-                }}
-              />
-            </View>
-          {scanned && (
-            <Button
-              text="Tap to Scan Again"
-              onPress={() => setScanned(false)}
-            />
-          )}
-        </>
-      ) : (
+      
         <Formik
           initialValues={formData}
           onSubmit={(values) => {
@@ -1012,7 +957,63 @@ const AddJob = ({ navigation, route }) => {
             
           }}
         </Formik>
-      )}
+      
+        <Modal visible={scan} animationType="slide" transparent={true}>
+          <Camera
+            style={[
+              {
+                flex: 1,
+                width: Dimensions.get("window").width,
+                height: Dimensions.get("window").height - 85,
+              },
+            ]}
+            flashMode={torch ? Camera.Constants.FlashMode.torch : Camera.Constants.FlashMode.off}
+            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+            useCamera2Api={true}
+            //PermissionStatus={permission.granted ? Camera.Constants.PermissionStatus.GRANTED : Camera.Constants.PermissionStatus.DENIED}
+          >
+
+            <BarcodeMask width={280} height={280} edgeBorderWidth={1} outerMaskOpacity={0.8} />
+            
+          </Camera>
+          <View
+              style={
+                [StyleSheet.absoluteFill,
+                {
+                  bottom: 0,
+                  top: '73%',
+                  zIndex: 100
+                }
+                ]
+              }>
+              <Ripple
+                onPress={() => { setTorch(!torch) }}
+                style={[Styles.torchBtn, { backgroundColor: torch ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.2)' }]}
+              >
+                <Icon
+                  name="TorchOn"
+                  size={24}
+                  color={torch ? theme.textBlue : theme.textWhite}
+                  style={{ alignSelf: "center" }}
+                />
+              </Ripple>
+              <Button
+                text="Close"
+                style={{ margin: 24 }}
+                type={'secondary'}
+                onPress={() => {
+                  setScan(false), setScanned(false);
+                }}
+              />
+            </View>
+          {scanned && (
+            <Button
+              text="Tap to Scan Again"
+              onPress={() => setScanned(false)}
+            />
+          )}
+              </Modal>
+
       </KeyboardAwareScrollView>
     </ScrollView>
   );

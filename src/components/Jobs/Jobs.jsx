@@ -144,7 +144,7 @@ function Jobs({route}) {
         </View>
         <View style={Styles.loadMoreCont} >
             {pagerLoader == true ? <ActivityIndicator size="large" /> : <></>}
-            {/* {!showLoadMore && !pagerLoader  && <Button title="Load more.." onPress={loadMore}></Button>} */}
+            {!showLoadMore && !pagerLoader  && <Button title="Load more.." onPress={loadMore}></Button>}
           </View>
       </ScrollView>
       <Ripple
