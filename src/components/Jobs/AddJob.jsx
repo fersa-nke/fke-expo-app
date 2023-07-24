@@ -32,6 +32,7 @@ import { Toast } from 'toastify-react-native';
 import { SET_JOB_TITLE, SHOW_BARCODE_BUTTON } from '../../redux/ReduxConsants';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import displayToast from "../../services/ToastService";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const AddJob = ({ navigation, route }) => {
   const { Id } = route.params;
@@ -448,7 +449,7 @@ const AddJob = ({ navigation, route }) => {
   return (
     <ScrollView style={{ backgroundColor: theme.bgWhite }}>
       <Loader loading={loading} />
-
+      <KeyboardAwareScrollView>
       {scan ? (
         <>
           <Camera
@@ -1012,6 +1013,7 @@ const AddJob = ({ navigation, route }) => {
           }}
         </Formik>
       )}
+      </KeyboardAwareScrollView>
     </ScrollView>
   );
 };

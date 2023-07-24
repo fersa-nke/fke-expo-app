@@ -124,6 +124,7 @@ function ReportView({ route }) {
         shareAsync(filename);
       }
     } else {
+      console.log('sharing file name', filename);
       shareAsync(filename);
     }
   }
