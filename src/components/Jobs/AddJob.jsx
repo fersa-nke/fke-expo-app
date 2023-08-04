@@ -969,7 +969,10 @@ const AddJob = ({ navigation, route }) => {
             ]}
             flashMode={torch ? Camera.Constants.FlashMode.torch : Camera.Constants.FlashMode.off}
             onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-            useCamera2Api={true}
+            useCamera2Api={false}
+            //zoom={0.1}
+            whiteBalance={1}
+            focusDepth={1}
             //PermissionStatus={permission.granted ? Camera.Constants.PermissionStatus.GRANTED : Camera.Constants.PermissionStatus.DENIED}
           >
 
