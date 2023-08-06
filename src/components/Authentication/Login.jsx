@@ -20,6 +20,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import Message from "../../shared/Message";
 import { LOGIN_LOADING, LOGIN_SUCCESS } from "../../redux/ReduxConsants";
+import gbStyles from "../../assets/globalstyles";
 
 const Login = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
@@ -193,9 +194,10 @@ const Login = ({ navigation }) => {
                 </>
               )}
             </Formik>
+            <Button type="Secondary" style={{marginTop: 15}} text="Create a New Account" onPress={() => navigation.navigate('CreateAccount')} />
           <Image
             source={fersa_logo}
-            style={{ marginVertical: 24, alignSelf: "center" }}
+            style={{ marginTop: 36, alignSelf: "center" }}
             height={25}
             resizeMethod="auto"
             resizeMode="contain"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View, Text,
   Modal,
@@ -30,8 +30,10 @@ import { shareAsync } from 'expo-sharing';
 import Loader from '../../shared/Loader';
 import * as MediaLibrary from 'expo-media-library';
 import mime from 'mime';
+import ActionSheet from 'react-native-actionsheet';
 
 function ReportView({ route }) {
+  let actionSheet = useRef();
   const reportId = route.params?.Id;
   const [previewModal, setPreviewModal] = useState(false);
   const navigation = useNavigation();
@@ -46,6 +48,13 @@ function ReportView({ route }) {
     "application/pdf": 'Pdf',
     "application/image": 'Image',
     "image/jpeg": 'Image'
+  };
+
+  var optionArray = ['Capture', 'Upload File', 'Upload From Gallery', 'Cancel'];
+
+  const showActionSheet = () => {
+    //To show the Bottom ActionSheet
+    actionSheet.current.show();
   };
 
   const imageMimeTypes = ['application/pdf'];
@@ -180,16 +189,16 @@ function ReportView({ route }) {
 
         <View style={GBStyles.container}>
           <Row style={{ marginVertical: 24 }}>
-            <Ripple style={[Styles.reportUpload, { marginRight: 6 }]} onPress={pickImage}>
+            {/* <Ripple style={[Styles.reportUpload, { marginRight: 6 }]} onPress={pickImage}>
               <IconComp name="Camera" size={22} color={theme.textBlue} />
               <Text style={Styles.reportUploadTitle}>CAPTURE</Text>
               <Text style={Styles.reportUploadHelpTxt}>
                 Please capture from your device camera
               </Text>
-            </Ripple>
-            <Ripple style={[Styles.reportUpload, { marginLeft: 6 }]} onPress={pickFile}>
-              <IconComp name="File" size={22} color={theme.textBlue} />
-              <Text style={Styles.reportUploadTitle}>UPLOAD</Text>
+            </Ripple> */}
+            <Ripple style={[Styles.reportUpload, { marginLeft: 6 }]} onPress={showActionSheet}>
+              <Row sty><IconComp name="File" size={16} color={theme.textBlue} /><Text style={Styles.reportUploadTitle}>UPLOAD</Text></Row>
+            
               <Text style={Styles.reportUploadHelpTxt}>
                 Please upload PDF, JPG, JPEG, PNG formats
               </Text>
@@ -287,6 +296,23 @@ function ReportView({ route }) {
           </View>
         </SafeAreaView>
       </Modal>
+      <ActionSheet
+          ref={actionSheet}
+          // Title of the Bottom Sheet
+          title={'Which one do you like ?'}
+          // Options Array to show in bottom sheet
+          options={optionArray}
+          // Define cancel button index in the option array
+          // This will take the cancel option in bottom
+          // and will highlight it
+          cancelButtonIndex={4}
+          // Highlight any specific option
+          destructiveButtonIndex={3}
+          onPress={(index) => {
+            // Clicking on the option will give you alert
+            alert(optionArray[index]);
+          }}
+        />
 
       <Loader loading={loading} />
 
@@ -332,14 +358,14 @@ const Styles = StyleSheet.create({
     fontSize: 16,
     color: theme.textBlack,
     fontWeight: '700',
-    marginTop: 10,
-    marginBottom: 6
+    marginLeft: 6
 
   },
   reportUploadHelpTxt: {
     fontSize: 10,
     color: theme.textBlack,
-    textAlign: 'center'
+    textAlign: 'center',
+    marginTop: 6
   }
 
 });

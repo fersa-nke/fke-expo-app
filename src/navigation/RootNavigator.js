@@ -28,6 +28,7 @@ import Button from "../shared/Button";
 import {LOGIN_SUCCESS} from '../redux/ReduxConsants';
 import displayToast from '../services/ToastService';
 import Axios from "axios";
+import CreateAccount from '../components/Authentication/CreateAccount';
 
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
@@ -181,6 +182,11 @@ const RootNavigator = () => {
               <Stack.Screen
             name="Login"
             component={Login}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="CreateAccount"
+            component={CreateAccount}
             options={{ headerShown: false }}
           />
             </>}

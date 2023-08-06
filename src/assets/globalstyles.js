@@ -90,4 +90,9 @@ export default StyleSheet.create({
   modalBody: {
     flex: 1,
   },
+  linkText: {
+    fontSize: 14,
+    color: theme.textBlue,
+    fontWeight: '700'
+  }
 });
