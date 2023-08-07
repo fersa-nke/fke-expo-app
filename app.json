@@ -2,7 +2,7 @@
   "expo": {
     "name": "MRO Tracker by Fersa Group",
     "slug": "mro-tracker-by-fersa-group",
-    "version": "0.0.2",
+    "version": "0.0.1",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "icon": "./src/assets/images/app-icon.png",
@@ -24,9 +24,11 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.mro-tracker.app"
+      "bundleIdentifier": "com.mro-tracker.app",
+      "buildNumber": 2
     },
     "android": {
+      "versionCode": 2,
       "adaptiveIcon": {
         "backgroundColor": "#384E63"
       },
