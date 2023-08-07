@@ -25,7 +25,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.mro-tracker.app",
-      "buildNumber": 2
+      "buildNumber": "2"
     },
     "android": {
       "versionCode": 2,
