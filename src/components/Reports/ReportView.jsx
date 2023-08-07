@@ -31,6 +31,7 @@ import Loader from '../../shared/Loader';
 import * as MediaLibrary from 'expo-media-library';
 import mime from 'mime';
 import ActionSheet from 'react-native-actionsheet';
+import * as Print from 'expo-print';
 
 function ReportView({ route }) {
   let actionSheet = useRef();
@@ -133,8 +134,27 @@ function ReportView({ route }) {
         shareAsync(filename);
       }
     } else {
-      console.log('sharing file name', filename);
-      shareAsync(filename);
+  
+      const extenstion = mime.getExtension(mimetype);
+      console.log(extenstion, mimetype);
+      const margins = {
+        top:-1, right: -1, botttom: -1, left: -1
+      }
+      if(extenstion != 'pdf') {
+        const tempImageUri = `data:image/png;base64,${downloadedFile}`;
+        const html = `<img
+        src="${tempImageUri}"
+        style="width: 100%;" />`;
+        
+        const { uri } = await Print.printToFileAsync({ html, margins });
+        await shareAsync(uri);
+      }
+      else {
+        const tempPdfUri = `data:application/pdf;base64,${downloadedFile},`;
+        const { uri } = await Print.printToFileAsync({uri: tempPdfUri, margins });
+        await shareAsync(uri);
+      }  
+      console.log('File has been saved to:', uri, iosFileName);
     }
   }
 
@@ -183,6 +203,29 @@ function ReportView({ route }) {
 
     }
   };
+
+
+  const pickFromGallery = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true
+      });
+      console.log('hello', result);
+      if (!result.canceled) {
+        let date = new Date();
+        let file = {
+          ...result.assets[0]
+        };
+        console.log('file------->', result, file);
+        dispatch(saveReportAttachment(file, 'JobReport', reportId));
+        // setImage(result.assets[0].uri);
+      }
+    } catch (err) {
+
+    }
+  };
+
   return (
     <>
       <ScrollView>
@@ -310,7 +353,17 @@ function ReportView({ route }) {
           destructiveButtonIndex={3}
           onPress={(index) => {
             // Clicking on the option will give you alert
-            alert(optionArray[index]);
+            switch(index) {
+              case 0: 
+              pickImage();
+              break;
+              case 1:
+                pickFile();  
+              break;
+              case 2:
+                pickFromGallery();
+              break;
+            }
           }}
         />
 
