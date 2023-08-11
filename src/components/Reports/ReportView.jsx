@@ -6,6 +6,7 @@ import {
   ScrollView,
   Image,
   SafeAreaView,
+  ActivityIndicator,
   Platform
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -18,7 +19,7 @@ import Document from '../../shared/Document';
 import Button from '../../shared/Button';
 import * as DocumentPicker from 'expo-document-picker';
 import { useSelector, useDispatch } from "react-redux";
-import { getAttachments, saveReportAttachment, removeAttachment, downloadAttachment } from '../../redux/Attachments/AttachmentActions';
+import { getAttachments, saveReportAttachment, removeAttachment, downloadAttachment, setDownloadAttachment } from '../../redux/Attachments/AttachmentActions';
 import { useEffect } from 'react';
 import Ribbon from "../../shared/Ribbon";
 import PreviewImage from "../../assets/images/previewImage.png";
@@ -33,6 +34,7 @@ import mime from 'mime';
 import ActionSheet from 'react-native-actionsheet';
 import * as Print from 'expo-print';
 import { showLoader } from '../../redux/Master/MasterActions';
+
 
 function ReportView({ route }) {
   let actionSheet = useRef();
@@ -71,7 +73,7 @@ function ReportView({ route }) {
   }
 
   const onViewAttachment = (path, fileDate, fileName, fileType, location) => {
-    console.log(path);
+    dispatch(setDownloadAttachment(null));
     dispatch(downloadAttachment(path));
     console.log('file type', fileType);
     setOpenFileObj({ path, fileDate, fileName, fileType, location });
@@ -91,7 +93,6 @@ function ReportView({ route }) {
     const fileType = openFileObj.fileType;
     const uri = `data:${fileType};base64,${downloadedFile}`;
     const extenstion = mime.getExtension(fileType);
-    console.log(extenstion);
     try {
       const filename = FileSystem.documentDirectory + openFileObj.fileName + '.' + extenstion;
        save(filename, openFileObj.fileType, openFileObj.location); 
@@ -137,32 +138,14 @@ function ReportView({ route }) {
       }
     } else {
       dispatch(showLoader(true));
-      console.log(extenstion, mimetype, remoteURI);
+      const tfilename = openFileObj.fileName.replace(/ /g,"-");
+      console.log(remoteURI, tfilename);
       const result = await FileSystem.downloadAsync(
         remoteURI,
-        filename
+        FileSystem.documentDirectory + tfilename
       );
-      dispatch(showLoader(false));
       await shareAsync(result.uri);
-
-      // const margins = {
-      //   top:-1, right: -1, botttom: -1, left: -1
-      // }
-      // if(extenstion != 'pdf') {
-      //   const tempImageUri = `data:image/png;base64,${downloadedFile}`;
-      //   const html = `<img
-      //   src="${tempImageUri}"
-      //   style="width: 100%;" />`;
-        
-      //   const { uri } = await Print.printToFileAsync({ html, margins });
-      //   await shareAsync(uri);
-      // }
-      // else {
-      //   const tempPdfUri = `data:application/pdf;base64,${downloadedFile},`;
-      //   const { uri } = await Print.printToFileAsync({uri: tempPdfUri, margins });
-      //   await shareAsync(uri);
-      // }  
-      // console.log('File has been saved to:', uri, iosFileName);
+      dispatch(showLoader(false));
     }
   }
 
@@ -176,7 +159,6 @@ function ReportView({ route }) {
       console.log('hello', result);
       if (!result.canceled) {
         let date = new Date();
-
         let file = {
           ...result.assets[0]
         };
@@ -331,12 +313,21 @@ function ReportView({ route }) {
               <View style={GBStyles.container}>
                 <Text style={Styles.fileName}>{openFileObj.fileName}</Text>
                 <Text style={Styles.fileDate}>{openFileObj.fileDate}</Text>
-                <Button
-                  text="Download"
-                  type="Primary"
-                  style={{ marginTop: 20 }}
-                  onPress={downLoadFile}
-                />
+                
+               {
+                loading ? <ActivityIndicator
+                  animating={true}
+                  color="#000000"
+                  size="large"
+                  style={Styles.activityIndicator}
+                /> : <Button
+                text="Download"
+                type="Primary"
+                style={{ marginTop: 20 }}
+                onPress={downLoadFile}
+              />
+               }
+                
                 <Button
                   text="Close"
                   type="Secondary"
@@ -390,6 +381,10 @@ const Styles = StyleSheet.create({
     borderRadius: 12,
     marginVertical: 6,
     backgroundColor: theme.bgWhite,
+  },
+  activityIndicator: {
+    alignItems: 'center',
+    height: 80,
   },
   fileName: {
     fontSize: 14,

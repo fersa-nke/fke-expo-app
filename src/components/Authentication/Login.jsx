@@ -5,7 +5,8 @@ import {
   View,
   Text,
   StyleSheet,
-  StatusBar
+  StatusBar,
+  Platform
 } from "react-native";
 import Ripple from "react-native-material-ripple";
 import nke_logo from "../../assets/images/nke_logo.png";
@@ -21,8 +22,13 @@ import * as Yup from "yup";
 import Message from "../../shared/Message";
 import { LOGIN_LOADING, LOGIN_SUCCESS } from "../../redux/ReduxConsants";
 import gbStyles from "../../assets/globalstyles";
+import Constants from "expo-constants"
+
 
 const Login = ({ navigation }) => {
+  const version = Constants.manifest.version;
+  const buildNumber = Platform.OS === 'ios' ?  Constants.expoConfig.ios.buildNumber : Constants.expoConfig.android.versionCode;
+
   const [loading, setLoading] = useState(false);
   const isAuthenticate = useSelector((state) => state.userReducer.isAuthenticate);
   const isLoginFailed = useSelector((state) => state.userReducer.failed);
@@ -194,7 +200,7 @@ const Login = ({ navigation }) => {
                 </>
               )}
             </Formik>
-            <Button type="Secondary" style={{marginTop: 15}} text="REQUEST ACCESS" onPress={() => navigation.navigate('CreateAccount')} />
+            {/* <Button type="Secondary" style={{marginTop: 15}} text="REQUEST ACCESS" onPress={() => navigation.navigate('CreateAccount')} /> */}
           <Image
             source={fersa_logo}
             style={{ marginTop: 36, alignSelf: "center" }}
@@ -202,6 +208,17 @@ const Login = ({ navigation }) => {
             resizeMethod="auto"
             resizeMode="contain"
           />
+          
+        <View style={{
+            alignItems: "center",
+            justifyContent: "end",
+            marginTop: 5
+          }}>
+          <Text
+          style={{
+            color: theme.textGray
+          }}>Version {version} ({buildNumber})</Text>
+        </View>
         </View>
       </ScrollView>
     </>

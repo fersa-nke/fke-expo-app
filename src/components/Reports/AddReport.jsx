@@ -9,7 +9,7 @@ import Input from "../../shared/Input";
 import Row from "../../shared/Row";
 import Button from "../../shared/Button";
 import { useSelector, useDispatch } from "react-redux";
-import { saveJobReport, updateJobReport } from "../../redux/Reports/ReportsAction";
+import { saveJobReport, updateJobReport, showLoadData } from "../../redux/Reports/ReportsAction";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Select from "../../shared/Select";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -135,8 +135,15 @@ const AddReport = ({navigation, route }) => {
       let date = new Date();
       let dateFormate = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours()).slice(-2) + ("0" + date.getMinutes()).slice(-2) + ("0" + date.getSeconds()).slice(-2);
       j = `${selectedJobTitle.split('-JB')[0]}/${reports.length + 1}`;
+      let tempName = `RP/${reports.length + 1}`;
+      let formValues = {
+        ...initialFormValues,
+        [NAME]: tempName
+      };
+      setFormData(formValues);
     }
     setReportName(j);
+    dispatch(showLoadData(false));
   }, [])
 
   const onReportDateChange = (event, selectedDate) => {
@@ -181,7 +188,7 @@ const AddReport = ({navigation, route }) => {
     if (Id) {
       dispatch(updateJobReport(data, originalData, Id, navigateBack));
     } else {
-      dispatch(saveJobReport(data, originalData, navigateBack));
+      dispatch(saveJobReport(data, navigateBack));
     }
 
   };

@@ -152,6 +152,15 @@ export const downloadAttachment = (path, imageType='') => {
       }
   };
 
+export const setDownloadAttachment = data => {
+    return (dispatch, getState) => {
+        dispatch({
+            type: DOWNLOADED_ATTACHMENT_ITEM,
+            payload: data,
+        });
+    }
+};
+
 export const removeAttachment = Id => {
   return async (dispatch, getState) => {
     const token = getState().userReducer.token;

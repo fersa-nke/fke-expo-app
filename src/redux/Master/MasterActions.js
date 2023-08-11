@@ -63,10 +63,12 @@ export const getLubricationTypes = () => {
 }
 
 export const showLoader = (show) => {
-    dispatch({
+    return (dispatch, getState) => {
+     dispatch({
         type: LOADING_DATA,
         payload: show
-    });
+     });
+    }
 }
 
 export function callAPIMapper(URL, dispatchType, token = '') {

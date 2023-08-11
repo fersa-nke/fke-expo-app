@@ -37,7 +37,7 @@ export const setSelectedReportId = id => dispatch => {
       });
 }
 
-export const saveJobReport = (reportData, originalData, callBack) => {
+export const saveJobReport = (reportData, callBack) => {
     return async (dispatch, getState) => {
         console.log('calling save method-->',reportData);    
     const token = getState().userReducer.token;
@@ -155,3 +155,12 @@ export const removeFromReports = (Id) => {
     }); // JSON data parsed by `data.json()` call
     }
 };
+
+export const showLoadData = (show) => {
+  return (dispatch, getState) => {
+    dispatch({
+        type: LOADING_DATA,
+        payload: show,
+    });
+  }
+}

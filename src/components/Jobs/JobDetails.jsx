@@ -23,6 +23,8 @@ import Report from '../Reports/Report';
 import {useNavigation} from '@react-navigation/native';
 import { useSelector, useDispatch } from "react-redux";
 import { KEYMapper as JOBKEYMapper } from './../../services/UserConfig';
+import { KEYMapper as ReportKEYMapper } from './../../services/UserConfig';
+import { saveJobReport } from "../../redux/Reports/ReportsAction";
 import {
   setSelectedJobId
 } from "../../redux/Jobs/JobsActions";
@@ -117,10 +119,62 @@ const ReportsView = () => {
   const navigation = useNavigation();
   const reports = useSelector((state) => state.reportsReducer.reports);
   const dispatch = useDispatch();
-
+  const selectedJobId = useSelector((state) => state.jobsReducer.selectedJobId);
+  const selectedJobTitle = useSelector((state) => state.jobsReducer.jobTitle);
+  const {
+    JOBID,
+    NAME,
+    COMMENTS,
+    SERIALNUMBER,
+    NOKBEARING,
+    SHAFTNDEMAX,
+    SHAFTNDEMIN,
+    BEARINGNDEMAX,
+    BEARINGNDEMIN,
+    SHAFTDEMAX,
+    SHAFTDEMIN,
+    BEARINGDEMAX,
+    BEARINGDEMIN,
+    LASTLUBRICATION,
+    INSULATERESISTANCE,
+    VOLTAGETESTED,
+    REPORTDATE,
+    REPORTID,
+    LUBRICATIONTYPE,
+    LUBRICATIONGRADE
+  } = ReportKEYMapper;
 
   const navigateAddReport = () => {
-    navigation.navigate('AddReport');
+    const  reportName= `${selectedJobTitle.split('-JB')[0]}/${reports.length + 1}`;
+    const tempName = `RP/${reports.length + 1}`;
+    const data = {
+        [NAME]: tempName,
+        [SERIALNUMBER]: null,
+        [SHAFTNDEMAX]: null,
+        [SHAFTNDEMIN]: null,
+        [BEARINGNDEMAX]: null,
+        [BEARINGNDEMIN]: null,
+        [SHAFTDEMAX]: null,
+        [SHAFTDEMIN]: null,
+        [BEARINGDEMAX]: null,
+        [BEARINGDEMIN]: null,
+        [INSULATERESISTANCE]: null,
+        [VOLTAGETESTED]: null,
+        [COMMENTS]: '',
+        [REPORTDATE]: new Date().toISOString().split("T")[0],
+        [LASTLUBRICATION]: null,
+        [JOBID]: selectedJobId,
+        [REPORTID]: reportName,
+        [NOKBEARING]: null,
+        [LUBRICATIONTYPE]: null,
+        [LUBRICATIONGRADE]: null
+      };
+    dispatch(saveJobReport(data, navigateBack));
+  };
+
+  const navigateBack = () => {
+    dispatch(getReports(selectedJobId));
+   // navigation.navigate('JobDetails',{Id: selectedJobId});
   }
   
   const handleRemoveReport = (Id) => {
