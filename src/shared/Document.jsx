@@ -13,7 +13,7 @@ import GBStyles from "../assets/globalstyles";
 
 import { downloadAttachment } from '../redux/Attachments/AttachmentActions';
 
-const Document = ({ fileDate, fileName, fileType, path , id , onDelete, onView }) => {
+const Document = ({ fileDate, fileName, fileType, path , location, id , onDelete, onView }) => {
 
   const IconsType = {
     "application/pdf": 'Pdf',
@@ -25,7 +25,7 @@ const Document = ({ fileDate, fileName, fileType, path , id , onDelete, onView }
 
   return (
     <>
-      <TouchableOpacity onPress={() => onView(path, fileDate, fileName, fileType)}>
+      <TouchableOpacity onPress={() => onView(path, fileDate, fileName, fileType, location)}>
         <Row style={Styles.document}>
           <Icon name={IconsType[fileType]} size={40} color={theme.textGray} />
           <View style={{ flex: 1, marginLeft: 12 }}>

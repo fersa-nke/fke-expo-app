@@ -26,6 +26,7 @@ export const getAttachments = (jobId) => {
                 payload: false,
             });
             if (res) {
+              console.log('attachment list------------->',res.list)
                 dispatch({
                   type: GET_ATTACHMENTS,
                   payload: res.list,

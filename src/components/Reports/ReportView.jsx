@@ -32,6 +32,7 @@ import * as MediaLibrary from 'expo-media-library';
 import mime from 'mime';
 import ActionSheet from 'react-native-actionsheet';
 import * as Print from 'expo-print';
+import { showLoader } from '../../redux/Master/MasterActions';
 
 function ReportView({ route }) {
   let actionSheet = useRef();
@@ -69,10 +70,11 @@ function ReportView({ route }) {
     dispatch(removeAttachment(id))
   }
 
-  const onViewAttachment = (path, fileDate, fileName, fileType) => {
+  const onViewAttachment = (path, fileDate, fileName, fileType, location) => {
+    console.log(path);
     dispatch(downloadAttachment(path));
     console.log('file type', fileType);
-    setOpenFileObj({ path, fileDate, fileName, fileType });
+    setOpenFileObj({ path, fileDate, fileName, fileType, location });
     setPreviewModal(true);
   }
 
@@ -92,7 +94,7 @@ function ReportView({ route }) {
     console.log(extenstion);
     try {
       const filename = FileSystem.documentDirectory + openFileObj.fileName + '.' + extenstion;
-       save(filename, openFileObj.fileType); 
+       save(filename, openFileObj.fileType, openFileObj.location); 
       // await FileSystem.writeAsStringAsync(filename, downloadedFile, {
       //   encoding: FileSystem.EncodingType.Base64,
       // });
@@ -116,7 +118,7 @@ function ReportView({ route }) {
     //   fr.readAsDataURL(downloadedFile);
   };
 
-  const save = async (filename, mimetype) => {
+  const save = async (filename, mimetype, remoteURI) => {
     if (Platform.OS === "android") {
       const permissions = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
       console.log(permissions, 'permissions status');
@@ -134,27 +136,33 @@ function ReportView({ route }) {
         shareAsync(filename);
       }
     } else {
-  
-      const extenstion = mime.getExtension(mimetype);
-      console.log(extenstion, mimetype);
-      const margins = {
-        top:-1, right: -1, botttom: -1, left: -1
-      }
-      if(extenstion != 'pdf') {
-        const tempImageUri = `data:image/png;base64,${downloadedFile}`;
-        const html = `<img
-        src="${tempImageUri}"
-        style="width: 100%;" />`;
+      dispatch(showLoader(true));
+      console.log(extenstion, mimetype, remoteURI);
+      const result = await FileSystem.downloadAsync(
+        remoteURI,
+        filename
+      );
+      dispatch(showLoader(false));
+      await shareAsync(result.uri);
+
+      // const margins = {
+      //   top:-1, right: -1, botttom: -1, left: -1
+      // }
+      // if(extenstion != 'pdf') {
+      //   const tempImageUri = `data:image/png;base64,${downloadedFile}`;
+      //   const html = `<img
+      //   src="${tempImageUri}"
+      //   style="width: 100%;" />`;
         
-        const { uri } = await Print.printToFileAsync({ html, margins });
-        await shareAsync(uri);
-      }
-      else {
-        const tempPdfUri = `data:application/pdf;base64,${downloadedFile},`;
-        const { uri } = await Print.printToFileAsync({uri: tempPdfUri, margins });
-        await shareAsync(uri);
-      }  
-      console.log('File has been saved to:', uri, iosFileName);
+      //   const { uri } = await Print.printToFileAsync({ html, margins });
+      //   await shareAsync(uri);
+      // }
+      // else {
+      //   const tempPdfUri = `data:application/pdf;base64,${downloadedFile},`;
+      //   const { uri } = await Print.printToFileAsync({uri: tempPdfUri, margins });
+      //   await shareAsync(uri);
+      // }  
+      // console.log('File has been saved to:', uri, iosFileName);
     }
   }
 
@@ -255,6 +263,7 @@ function ReportView({ route }) {
                 fileType={doc.MimeType}
                 id={doc.Id}
                 path={doc.Path}
+                location={doc.Location}
                 onDelete={onDeleteAttachment}
                 onView={onViewAttachment}
               />

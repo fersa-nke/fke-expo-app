@@ -1,6 +1,6 @@
 
 import API from '../../services/Api';
-import { LOGIN_SUCCESS, GET_API_Mapper, GET_GENERATOR_MODELS, ADD_SIGNED_USER_DATA, GET_KEY_Mapper, GET_BEARING_TYPES, GET_BRANDS, GET_EXCHANGE_TYPES, GET_MODELS, GET_REASON_OF_CHANGES, GET_SHAFT_POSITIONS, GET_WIND_FARMS, GET_WIND_LOCATIONS, GET_STATES, GET_LUBRICATION_GRADES, GET_LUBRICATION_TYPES } from '../ReduxConsants';
+import { LOGIN_SUCCESS, GET_API_Mapper, GET_GENERATOR_MODELS, ADD_SIGNED_USER_DATA, GET_KEY_Mapper, GET_BEARING_TYPES, GET_BRANDS, GET_EXCHANGE_TYPES, GET_MODELS, GET_REASON_OF_CHANGES, GET_SHAFT_POSITIONS, GET_WIND_FARMS, GET_WIND_LOCATIONS, GET_STATES, GET_LUBRICATION_GRADES, GET_LUBRICATION_TYPES, LOADING_DATA } from '../ReduxConsants';
 // Define action types
 import { APIConfig, KEYMapper } from '../../services/UserConfig';
 import AuthService from '../../services/AuthService';
@@ -60,6 +60,13 @@ export const getLubricationGrades = () => {
 
 export const getLubricationTypes = () => {
     return callAPI(APIConfig.LUBRICATIONTYPE, GET_LUBRICATION_TYPES);
+}
+
+export const showLoader = (show) => {
+    dispatch({
+        type: LOADING_DATA,
+        payload: show
+    });
 }
 
 export function callAPIMapper(URL, dispatchType, token = '') {
