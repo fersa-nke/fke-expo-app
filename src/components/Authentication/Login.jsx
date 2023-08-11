@@ -194,7 +194,7 @@ const Login = ({ navigation }) => {
                 </>
               )}
             </Formik>
-            <Button type="Secondary" style={{marginTop: 15}} text="Create a New Account" onPress={() => navigation.navigate('CreateAccount')} />
+            <Button type="Secondary" style={{marginTop: 15}} text="REQUEST ACCESS" onPress={() => navigation.navigate('CreateAccount')} />
           <Image
             source={fersa_logo}
             style={{ marginTop: 36, alignSelf: "center" }}
