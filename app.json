@@ -15,8 +15,21 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow $(PRODUCT_NAME) to access camera.",
-          "photosPermission": "Allow $(PRODUCT_NAME) to access camera."
+          "cameraPermission": "Allow $(PRODUCT_NAME) access to your camera for Scan DataMatrix, QR code or Barcode of the bearings traceability. and Capture photos of components previous and after the bearings installation.",
+          "photosPermission": "Allow $(PRODUCT_NAME) accesss to your gallery to Capture/Upload photos of components previous and after the bearings installation."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow $(PRODUCT_NAME) accesss to your gallery to Capture/Upload photos of components previous and after the bearings installation.",
+          "savePhotosPermission": "Allow $(PRODUCT_NAME) accesss to your gallery to Capture/Upload/Save photos of components previous and after the bearings installation."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow $(PRODUCT_NAME) accesss to your gallery to Capture/Upload photos of components previous and after the bearings installation.",
         }
       ]
     ],
@@ -24,16 +37,25 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.mro-tracker.app",
-      "buildNumber": "4"
+      "buildNumber": "4",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to Scan DataMatrix, QR code or Barcode of the bearings traceability.",
+        "NSPhotoLibraryUsageDescription": "This app uses your gallery to Capture/Upload/Save photos of components previous and after the bearings installation."
+      }
     },
     "android": {
       "versionCode": 4,
       "adaptiveIcon": {
         "backgroundColor": "#384E63"
       },
-      "package": "com.mro_tracker.app"
+      "package": "com.mro_tracker.app",
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "extra": {
       "eas": {
