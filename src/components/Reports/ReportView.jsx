@@ -34,7 +34,7 @@ import mime from 'mime';
 import ActionSheet from 'react-native-actionsheet';
 import * as Print from 'expo-print';
 import { showLoader } from '../../redux/Master/MasterActions';
-
+import { Camera } from 'expo-camera';
 
 function ReportView({ route }) {
   let actionSheet = useRef();
@@ -48,6 +48,8 @@ function ReportView({ route }) {
   const downloadedFile = useSelector(state => state.attachmentsReducer.downloadedFile);
   const [openFileObj, setOpenFileObj] = useState({});
   const loading = useSelector((state) => state.masterReducer.pageLoader);
+  const [cameraPermission, requestPermission] = Camera.useCameraPermissions();
+
   const IconsType = {
     "application/pdf": 'Pdf',
     "application/image": 'Image',
@@ -151,25 +153,48 @@ function ReportView({ route }) {
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
-    try {
-      let result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true
-      });
-      console.log('hello', result);
-      if (!result.canceled) {
-        let date = new Date();
-        let file = {
-          ...result.assets[0]
-        };
-        console.log('file------->', result, file);
-        dispatch(saveReportAttachment(file, 'JobReport', reportId));
-        // setImage(result.assets[0].uri);
-      }
-    } catch (err) {
+   // console.log(permission);
 
+    try {
+      if (!cameraPermission.granted) {
+        
+        return requestPermission().then((cameraPermission) => {
+          if(cameraPermission.granted) {
+            console.log(cameraPermission);
+            launchCamera();
+          }});
+      // Camera permissions are not granted yet
+      //  return ImagePicker.requestCameraPermissionsAsync().then((cameraPermission) => {
+      //   console.log(cameraPermission);
+      //   if(cameraPermission.granted) {
+      //     launchCamera();
+      //   }
+      //   }
+      //   );
+      }
+      launchCamera();
+    } catch (err) {
+      console.log(err);
     }
   };
+
+
+  const launchCamera = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true
+    });
+    console.log('hello', result);
+    if (!result.canceled) {
+      let date = new Date();
+      let file = {
+        ...result.assets[0]
+      };
+      console.log('file------->', result, file);
+      dispatch(saveReportAttachment(file, 'JobReport', reportId));
+      // setImage(result.assets[0].uri);
+    }
+  }
 
   const pickFile = async () => {
     try {

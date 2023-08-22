@@ -162,7 +162,7 @@ const ReportsView = () => {
         [VOLTAGETESTED]: null,
         [COMMENTS]: '',
         [REPORTDATE]: new Date().toISOString().split("T")[0],
-        [LASTLUBRICATION]: null,
+        [LASTLUBRICATION]: new Date().toISOString().split("T")[0],
         [JOBID]: selectedJobId,
         [REPORTID]: reportName,
         [NOKBEARING]: null,

@@ -103,12 +103,10 @@ const AddReport = ({navigation, route }) => {
     if (Id && selectedReportId && reports && reports.length > 0) {
       const filterReport = reports.filter(r => r.Id === selectedReportId)[0];
       console.log('fetched report details', selectedReportId, filterReport);
-
       let lubricationDate = filterReport[LASTLUBRICATION] ? new Date(filterReport[LASTLUBRICATION]) : '';
-
       let formValues = {
         ...filterReport,
-      [NOKBEARING]: [{"Id": filterReport[NOKBEARING], "Name": filterReport[NOKBEARING]}],
+      [NOKBEARING]: filterReport[NOKBEARING] && filterReport[NOKBEARING][0] ? filterReport[NOKBEARING] : '',
       [NAME]: filterReport[NAME] ?  filterReport[NAME] : '',
       [SERIALNUMBER]: filterReport[SERIALNUMBER] ?  filterReport[SERIALNUMBER] : '',
       [SHAFTNDEMAX]: filterReport[SHAFTNDEMAX] ?  filterReport[SHAFTNDEMAX] : '',
@@ -126,7 +124,7 @@ const AddReport = ({navigation, route }) => {
       [JOBID]: selectedJobId,
       [LUBRICATIONTYPE]: filterReport[LUBRICATIONTYPE][0] ? filterReport[LUBRICATIONTYPE] : '',
       [LUBRICATIONGRADE]: filterReport[LUBRICATIONGRADE][0] ? filterReport[LUBRICATIONGRADE] : ''
- };
+    };
       setFormData(formValues);
       setReportDate(new Date(filterReport[REPORTDATE]));
       setLastLubricationDate(lubricationDate);

@@ -150,7 +150,8 @@ const AddJob = ({ navigation, route }) => {
     if (Id && selectedJobId && jobs && jobs.length > 0) {
       const filterJob = jobs.filter(j => j.Id === selectedJobId)[0];
     //  console.log('fetched job details', customerId, operatorId, selectedJobId, filterJob);
-      let formValues = { 
+      
+    let formValues = { 
         [DATAMATRIX]: filterJob[DATAMATRIX] ? filterJob[DATAMATRIX] : '',
     [JOBDATE]: filterJob[JOBDATE] ? filterJob[JOBDATE] : '',
       [CUSTOMERWINDFARM]: filterJob[CUSTOMERWINDFARM] && filterJob[CUSTOMERWINDFARM][0] ? filterJob[CUSTOMERWINDFARM] : '',
@@ -285,7 +286,7 @@ const AddJob = ({ navigation, route }) => {
     } else {
       displayToast('error', 'Allow Camera permissions In Settings!');
     }
-    console.log('camera permissions', status);
+    console.log('camera permissions', permission.status);
    });
     // return (
     //   <View style={GBStyles.container}>
