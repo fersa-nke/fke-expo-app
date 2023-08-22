@@ -7,7 +7,9 @@ import {
   Image,
   SafeAreaView,
   ActivityIndicator,
-  Platform
+  Platform,
+  Linking,
+  Alert
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import GBStyles from '../../assets/globalstyles';
@@ -162,7 +164,18 @@ function ReportView({ route }) {
           if(cameraPermission.granted) {
             console.log(cameraPermission);
             launchCamera();
-          }});
+          }
+          else {
+            Alert.alert('Permission denied', 'MRO Tracker does not have permission to access your camera. please go to Settings and enable it', [
+              {
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+              },
+              {text: 'Settings', onPress: () => Linking.openSettings()},
+            ]);
+          }
+        });
       // Camera permissions are not granted yet
       //  return ImagePicker.requestCameraPermissionsAsync().then((cameraPermission) => {
       //   console.log(cameraPermission);

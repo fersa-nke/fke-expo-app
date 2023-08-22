@@ -211,7 +211,7 @@ const Login = ({ navigation }) => {
           
         <View style={{
             alignItems: "center",
-            justifyContent: "end",
+            justifyContent: "flex-end",
             marginTop: 5
           }}>
           <Text

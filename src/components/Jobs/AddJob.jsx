@@ -7,7 +7,9 @@ import {
   Modal,
   Dimensions,
   Platform,
-  Switch
+  Switch,
+  Linking,
+  Alert
 } from "react-native";
 import theme from "../../assets/theme";
 import GBStyles from "../../assets/globalstyles";
@@ -152,36 +154,34 @@ const AddJob = ({ navigation, route }) => {
     //  console.log('fetched job details', customerId, operatorId, selectedJobId, filterJob);
       
     let formValues = { 
-        [DATAMATRIX]: filterJob[DATAMATRIX] ? filterJob[DATAMATRIX] : '',
-    [JOBDATE]: filterJob[JOBDATE] ? filterJob[JOBDATE] : '',
+      [DATAMATRIX]: filterJob[DATAMATRIX] ? filterJob[DATAMATRIX] : '',
+      [JOBDATE]: filterJob[JOBDATE] ? filterJob[JOBDATE] : '',
       [CUSTOMERWINDFARM]: filterJob[CUSTOMERWINDFARM] && filterJob[CUSTOMERWINDFARM][0] ? filterJob[CUSTOMERWINDFARM] : '',
-    [STATE]: filterJob[STATE] && filterJob[STATE][0] ? filterJob[STATE] : '',
-    [WINDLOCATION]: filterJob[WINDLOCATION] && filterJob[WINDLOCATION][0] ? filterJob[WINDLOCATION] : '',
-    [FAILUREDATE]: filterJob[FAILUREDATE] ? filterJob[FAILUREDATE] : '',
-    [WINDTURBINE]: filterJob[WINDTURBINE] ? filterJob[WINDTURBINE] : '',
-    [GENERATORMODEL]: filterJob[GENERATORMODEL] && filterJob[GENERATORMODEL][0] ? filterJob[GENERATORMODEL] : '',
-    [COMMENTS]: filterJob[COMMENTS] ? filterJob[COMMENTS] : '',
-    [REASONS]: filterJob[REASONS] && filterJob[REASONS][0] ? filterJob[REASONS] : '',
-    [EXCHANGETYPE]: filterJob[EXCHANGETYPE] && filterJob[EXCHANGETYPE][0] ? filterJob[EXCHANGETYPE] : '',
-    [POSITION]: filterJob[POSITION] && filterJob[POSITION][0] ? filterJob[POSITION] : '',
-    [NEWBEARINGBRAND]: filterJob[NEWBEARINGBRAND] && filterJob[NEWBEARINGBRAND][0] ? filterJob[NEWBEARINGBRAND] : '',
-    [NEWBEARINGTYPE]: filterJob[NEWBEARINGTYPE] && filterJob[NEWBEARINGTYPE][0] ? filterJob[NEWBEARINGTYPE] : '',
-    [REMOVEDBEARINGBRAND]: filterJob[REMOVEDBEARINGBRAND] && filterJob[REMOVEDBEARINGBRAND][0] ? filterJob[REMOVEDBEARINGBRAND] : '',
-    [REMOVEDBEARINGTYPE]: filterJob[REMOVEDBEARINGTYPE] && filterJob[REMOVEDBEARINGTYPE][0] ? filterJob[REMOVEDBEARINGTYPE] : '',
-    [NDEDATAMATRIX]: filterJob[NDEDATAMATRIX] ? filterJob[NDEDATAMATRIX] : '',
-    [DEDATAMATRIX]: filterJob[DEDATAMATRIX] ? filterJob[DEDATAMATRIX] : '',
-    [REMOVEDDEBATCHNUMBER]: filterJob[REMOVEDDEBATCHNUMBER] ? filterJob[REMOVEDDEBATCHNUMBER] : '',
-    [REMOVEDDEDATAMATRIX]: filterJob[REMOVEDDEDATAMATRIX] ? filterJob[REMOVEDDEDATAMATRIX] : '',
-    [REMOVEDNDEDATAMATRIX]: filterJob[REMOVEDNDEDATAMATRIX] ? filterJob[REMOVEDNDEDATAMATRIX] : '',
-    [REMOVEDNDEBATCHNUMBER]: filterJob[REMOVEDNDEBATCHNUMBER] ? filterJob[REMOVEDNDEBATCHNUMBER] : '',
-    [DEBATCHNUMBER]: filterJob[DEBATCHNUMBER] ? filterJob[DEBATCHNUMBER] : '',
-    [NDEBATCHNUMBER]: filterJob[NDEBATCHNUMBER] ? filterJob[NDEBATCHNUMBER] : '',
-    [SENSORBATCHNUMBER]: filterJob[SENSORBATCHNUMBER] ? filterJob[SENSORBATCHNUMBER] : ''
-    
-       };
+      [STATE]: filterJob[STATE] && filterJob[STATE][0] ? filterJob[STATE] : '',
+      [WINDLOCATION]: filterJob[WINDLOCATION] && filterJob[WINDLOCATION][0] ? filterJob[WINDLOCATION] : '',
+      [FAILUREDATE]: filterJob[FAILUREDATE] ? filterJob[FAILUREDATE] : '',
+      [WINDTURBINE]: filterJob[WINDTURBINE] ? filterJob[WINDTURBINE] : '',
+      [GENERATORMODEL]: filterJob[GENERATORMODEL] && filterJob[GENERATORMODEL][0] ? filterJob[GENERATORMODEL] : '',
+      [COMMENTS]: filterJob[COMMENTS] ? filterJob[COMMENTS] : '',
+      [REASONS]: filterJob[REASONS] && filterJob[REASONS][0] ? filterJob[REASONS] : '',
+      [EXCHANGETYPE]: filterJob[EXCHANGETYPE] && filterJob[EXCHANGETYPE][0] ? filterJob[EXCHANGETYPE] : '',
+      [POSITION]: filterJob[POSITION] && filterJob[POSITION][0] ? filterJob[POSITION] : '',
+      [NEWBEARINGBRAND]: filterJob[NEWBEARINGBRAND] && filterJob[NEWBEARINGBRAND][0] ? filterJob[NEWBEARINGBRAND] : '',
+      [NEWBEARINGTYPE]: filterJob[NEWBEARINGTYPE] && filterJob[NEWBEARINGTYPE][0] ? filterJob[NEWBEARINGTYPE] : '',
+      [REMOVEDBEARINGBRAND]: filterJob[REMOVEDBEARINGBRAND] && filterJob[REMOVEDBEARINGBRAND][0] ? filterJob[REMOVEDBEARINGBRAND] : '',
+      [REMOVEDBEARINGTYPE]: filterJob[REMOVEDBEARINGTYPE] && filterJob[REMOVEDBEARINGTYPE][0] ? filterJob[REMOVEDBEARINGTYPE] : '',
+      [NDEDATAMATRIX]: filterJob[NDEDATAMATRIX] ? filterJob[NDEDATAMATRIX] : '',
+      [DEDATAMATRIX]: filterJob[DEDATAMATRIX] ? filterJob[DEDATAMATRIX] : '',
+      [REMOVEDDEBATCHNUMBER]: filterJob[REMOVEDDEBATCHNUMBER] ? filterJob[REMOVEDDEBATCHNUMBER] : '',
+      [REMOVEDDEDATAMATRIX]: filterJob[REMOVEDDEDATAMATRIX] ? filterJob[REMOVEDDEDATAMATRIX] : '',
+      [REMOVEDNDEDATAMATRIX]: filterJob[REMOVEDNDEDATAMATRIX] ? filterJob[REMOVEDNDEDATAMATRIX] : '',
+      [REMOVEDNDEBATCHNUMBER]: filterJob[REMOVEDNDEBATCHNUMBER] ? filterJob[REMOVEDNDEBATCHNUMBER] : '',
+      [DEBATCHNUMBER]: filterJob[DEBATCHNUMBER] ? filterJob[DEBATCHNUMBER] : '',
+      [NDEBATCHNUMBER]: filterJob[NDEBATCHNUMBER] ? filterJob[NDEBATCHNUMBER] : '',
+      [SENSORBATCHNUMBER]: filterJob[SENSORBATCHNUMBER] ? filterJob[SENSORBATCHNUMBER] : ''
+    };
        
       setFormData(formValues);
-   
       if(filterJob[DEDATAMATRIX]){
         setDEResult(filterJob[DEDATAMATRIX]);
       } else {
@@ -284,7 +284,16 @@ const AddJob = ({ navigation, route }) => {
       setScan(true);
       setScanLoading(false);
     } else {
-      displayToast('error', 'Allow Camera permissions In Settings!');
+      Alert.alert('Permission denied', 'MRO Tracker does not have permission to access your camera. please go to Settings and enable it', [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {text: 'Settings', onPress: () => Linking.openSettings()},
+      ]);
+  
+   //   displayToast('error', 'Allow Camera permissions In Settings!');
     }
     console.log('camera permissions', permission.status);
    });
