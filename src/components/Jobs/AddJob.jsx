@@ -63,7 +63,7 @@ const AddJob = ({ navigation, route }) => {
   
   const [showDEDataMatrix, setShowDEDataMatrix] = useState(true);
   const [showNDEDataMatrix, setShowNDEDataMatrix] = useState(true);
-  const [showDataMatrix, setShowDataMatrix] = useState(true);
+  const [showSensorDataMatrix, setShowSensorDataMatrix] = useState(true);
   const [showRemovedDataMatrix, setShowRemovedDataMatrix] = useState(true);
   const [showRemovedNdeDataMatrix, setShowRemovedNdeDataMatrix] = useState(true);
   const [tempFormdata, setTempFormdata] = useState();
@@ -79,7 +79,7 @@ const AddJob = ({ navigation, route }) => {
   const {
     TITLE,
     CUSTOMER,
-    DATAMATRIX,
+    SENSORDATAMATRIX,
     JOBDATE,
     JOBID,
     CUSTOMERWINDFARM,
@@ -112,7 +112,7 @@ const AddJob = ({ navigation, route }) => {
   } = JOBKEYMapper;
 
   const initialFormValues = {
-    [DATAMATRIX]: '',
+    [SENSORDATAMATRIX]: '',
     [JOBDATE]: startDate,
     [CUSTOMERWINDFARM]: '',
     [STATE]: '',
@@ -154,7 +154,7 @@ const AddJob = ({ navigation, route }) => {
     //  console.log('fetched job details', customerId, operatorId, selectedJobId, filterJob);
       
     let formValues = { 
-      [DATAMATRIX]: filterJob[DATAMATRIX] ? filterJob[DATAMATRIX] : '',
+      [SENSORDATAMATRIX]: filterJob[SENSORDATAMATRIX] ? filterJob[SENSORDATAMATRIX] : '',
       [JOBDATE]: filterJob[JOBDATE] ? filterJob[JOBDATE] : '',
       [CUSTOMERWINDFARM]: filterJob[CUSTOMERWINDFARM] && filterJob[CUSTOMERWINDFARM][0] ? filterJob[CUSTOMERWINDFARM] : '',
       [STATE]: filterJob[STATE] && filterJob[STATE][0] ? filterJob[STATE] : '',
@@ -193,9 +193,9 @@ const AddJob = ({ navigation, route }) => {
         setShowNDEDataMatrix(false);
       }
       if(filterJob[SENSORBATCHNUMBER]){
-        setShowDataMatrix(false);
+        setShowSensorDataMatrix(false);
       } else {
-        setResult(filterJob[DATAMATRIX]);
+        setResult(filterJob[SENSORDATAMATRIX]);
       }
       if(filterJob[REMOVEDDEBATCHNUMBER]){
         setShowRemovedDataMatrix(false);
@@ -213,7 +213,7 @@ const AddJob = ({ navigation, route }) => {
       setFailureDate(failedDate);
       dispatch({
         type: SHOW_BARCODE_BUTTON,
-        payload: filterJob[DATAMATRIX] ? true : false,
+        payload: filterJob[SENSORDATAMATRIX] ? true : false,
       });
       j = `${filterJob[JOBID]}`;
     } else {
@@ -237,7 +237,7 @@ const AddJob = ({ navigation, route }) => {
 
 
   const addJobSchema = Yup.object().shape({
-    [DATAMATRIX]: Yup.string(),
+    [SENSORDATAMATRIX]: Yup.string(),
     [DEDATAMATRIX]: showDEDataMatrix ? Yup.string().required('Required New DE DataMatrix') : Yup.string(), 
     [NDEDATAMATRIX]: showNDEDataMatrix ? Yup.string().required('Required New NDE DataMatrix') : Yup.string(),
     [REMOVEDDEDATAMATRIX]: Yup.string(),
@@ -356,10 +356,10 @@ const AddJob = ({ navigation, route }) => {
     if (type && data != null) {
       let f;
       switch(scanType) {
-        case "DATAMATRIX":
+        case "SENSORDATAMATRIX":
         setResult(data);
         console.log(tempFormdata);
-        f = { ...tempFormdata, [DATAMATRIX]: data};
+        f = { ...tempFormdata, [SENSORDATAMATRIX]: data};
        setFormData(f);
         break;
         case "DE":
@@ -410,13 +410,13 @@ const AddJob = ({ navigation, route }) => {
       ...values,
       [NDEDATAMATRIX]: showNDEDataMatrix ? ndeResult: '',
       [DEDATAMATRIX]: showDEDataMatrix ? deResult : '',
-      [DATAMATRIX]: showDataMatrix ? result : '',
+      [SENSORDATAMATRIX]: showSensorDataMatrix ? result : '',
       [REMOVEDDEDATAMATRIX]: showRemovedDataMatrix ? removedDEResult: '',
       [REMOVEDNDEDATAMATRIX]: showRemovedNdeDataMatrix ? removedNdeResult: '',
 
       [DEBATCHNUMBER]: showDEDataMatrix ? '' : values[DEBATCHNUMBER],
       [NDEBATCHNUMBER]: showNDEDataMatrix ? '' : values[NDEBATCHNUMBER],
-      [SENSORBATCHNUMBER]: showDataMatrix ? '' : values[SENSORBATCHNUMBER],
+      [SENSORBATCHNUMBER]: showSensorDataMatrix ? '' : values[SENSORBATCHNUMBER],
       [REMOVEDDEBATCHNUMBER]: showRemovedDataMatrix ? '' : values[REMOVEDDEBATCHNUMBER],
       [REMOVEDNDEBATCHNUMBER]: showRemovedNdeDataMatrix ? '' : values[REMOVEDNDEBATCHNUMBER],
 
@@ -568,21 +568,21 @@ const AddJob = ({ navigation, route }) => {
                  <Row style={Styles.SwitchContainer}>
                   <Switch
                       trackColor={{false: theme.bgWhite, true: theme.bgBlue}}
-                      thumbColor={showDataMatrix ? theme.bgWhite : theme.bgLight}
-                      ios_backgroundColor={showDataMatrix ? theme.bgWhite : theme.bgLight}
-                      onValueChange={() => setShowDataMatrix(!showDataMatrix)}
-                      value={showDataMatrix}
+                      thumbColor={showSensorDataMatrix ? theme.bgWhite : theme.bgLight}
+                      ios_backgroundColor={showSensorDataMatrix ? theme.bgWhite : theme.bgLight}
+                      onValueChange={() => setShowSensorDataMatrix(!showSensorDataMatrix)}
+                      value={showSensorDataMatrix}
                   />
                   </Row>
 
-                  {showDataMatrix ? <Input
+                  {showSensorDataMatrix ? <Input
                     labelName="Sensor DataMatrix"
                     placeholder="Scan Sensor DataMatrix"
                     value={result}
                     appendIconName="DataMatrix"
                     appendIconColor={theme.textBlue}
                     appendIconSize={24}
-                    handlePress={() => showScanner('DATAMATRIX')}
+                    handlePress={() => showScanner('SENSORDATAMATRIX')}
                   /> : <>
                       <Input
                       labelName="Sensor Batch"

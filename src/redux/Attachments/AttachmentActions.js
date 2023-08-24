@@ -204,7 +204,6 @@ export function getUserLogo() {
         let squery = '(RefId,eq,'+customerId+')~and(Type,eq,CustomerLogo)';
         API.GET(`${BASE_URL}`, token, {where: squery})
             .then(res => {
-                console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&',customerId, res);
                 //Hide Loader
                 try {
                 if (res && res.list && res.list.length > 0) {
@@ -226,7 +225,6 @@ export function getUserLogo() {
 
 
 function downloadUserLogo(path,token, dispatch) {
-    console.log(path, token, dispatch);
     API.DOWNLOAD(`nocodb/download`, token, {path, type: 'base64'})
                     .then(res => {
                         //Hide Loader

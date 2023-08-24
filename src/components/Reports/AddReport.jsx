@@ -28,7 +28,7 @@ const AddReport = ({navigation, route }) => {
   const loading = useSelector((state) => state.masterReducer.pageLoader);
   const [reportName, setReportName] = useState('');
   const [reportDate, setReportDate] = useState(new Date());
-  const [lastLubricationDate, setLastLubricationDate] = useState(new Date());
+  const [lastLubricationDate, setLastLubricationDate] = useState();
   const [showReporDate, setReportDateShow] = useState(false);
   const [showLastLubricationDate, setLastLubricationDateShow] = useState(false);
   const dispatch = useDispatch();
@@ -102,11 +102,13 @@ const AddReport = ({navigation, route }) => {
     let j = '';
     if (Id && selectedReportId && reports && reports.length > 0) {
       const filterReport = reports.filter(r => r.Id === selectedReportId)[0];
-      console.log('fetched report details', selectedReportId, filterReport);
       let lubricationDate = filterReport[LASTLUBRICATION] ? new Date(filterReport[LASTLUBRICATION]) : '';
+      filterReport[NOKBEARING] = filterReport[NOKBEARING] ? [{Id: filterReport[NOKBEARING], Name: filterReport[NOKBEARING]}] : '';
+      console.log('fetched report details', selectedReportId, filterReport, SHAFTDEMAX);
+     
       let formValues = {
         ...filterReport,
-      [NOKBEARING]: filterReport[NOKBEARING] && filterReport[NOKBEARING][0] ? filterReport[NOKBEARING] : '',
+      [NOKBEARING]: filterReport[NOKBEARING][0] ? filterReport[NOKBEARING] : '',
       [NAME]: filterReport[NAME] ?  filterReport[NAME] : '',
       [SERIALNUMBER]: filterReport[SERIALNUMBER] ?  filterReport[SERIALNUMBER] : '',
       [SHAFTNDEMAX]: filterReport[SHAFTNDEMAX] ?  filterReport[SHAFTNDEMAX] : '',
@@ -120,7 +122,7 @@ const AddReport = ({navigation, route }) => {
       [INSULATERESISTANCE]: filterReport[INSULATERESISTANCE] ?  filterReport[INSULATERESISTANCE] : '',
       [VOLTAGETESTED]: filterReport[VOLTAGETESTED] ?  filterReport[VOLTAGETESTED] : '',
       [COMMENTS]: filterReport[COMMENTS],
-      [LASTLUBRICATION]: lastLubricationDate ? lastLubricationDate.toISOString().split("T")[0] : '',
+      [LASTLUBRICATION]: filterReport[LASTLUBRICATION] ? filterReport[LASTLUBRICATION] : '',
       [JOBID]: selectedJobId,
       [LUBRICATIONTYPE]: filterReport[LUBRICATIONTYPE][0] ? filterReport[LUBRICATIONTYPE] : '',
       [LUBRICATIONGRADE]: filterReport[LUBRICATIONGRADE][0] ? filterReport[LUBRICATIONGRADE] : ''
@@ -157,9 +159,6 @@ const AddReport = ({navigation, route }) => {
   const handleSubmitPress = (values) => {
     let originalData = {
       ...values,
-      Id
-    };
-    let data = {
       [NAME]: values[NAME] ?  values[NAME] : null,
       [SERIALNUMBER]: values[SERIALNUMBER] ?  values[SERIALNUMBER] : null,
       [SHAFTNDEMAX]: values[SHAFTNDEMAX] ?  values[SHAFTNDEMAX].replace(/,/g , ".") : null,
@@ -177,10 +176,20 @@ const AddReport = ({navigation, route }) => {
       [LASTLUBRICATION]: lastLubricationDate ? lastLubricationDate.toISOString().split("T")[0] : null,
       [JOBID]: selectedJobId,
       [REPORTID]: reportName,
+      Id
+    };
+    
+    let updateValues = {
       [NOKBEARING]: values[NOKBEARING][0] ? values[NOKBEARING][0].Id : null,
       [LUBRICATIONTYPE]: values[LUBRICATIONTYPE][0] ? values[LUBRICATIONTYPE][0].Id : null,
       [LUBRICATIONGRADE]: values[LUBRICATIONGRADE][0] ? values[LUBRICATIONGRADE][0].Id : null
     };
+
+    let data = {
+      ...originalData,
+      ...updateValues
+    };
+
     console.log('submit clicked', data);
 
     if (Id) {
@@ -231,7 +240,10 @@ const AddReport = ({navigation, route }) => {
           <DateTimePicker
             value={reportDate}
             mode="date"
-            onChange={onReportDateChange}
+            onChange={(event, selectedDate) => {
+              setFieldValue(REPORTDATE, selectedDate);
+              onReportDateChange(event, selectedDate);
+            }}
             display={Platform.OS === "ios" ? "spinner" : "calendar"}
           />
         )}
@@ -323,9 +335,12 @@ const AddReport = ({navigation, route }) => {
         />
         {showLastLubricationDate && (
           <DateTimePicker
-            value={lastLubricationDate}
+            value={lastLubricationDate ? lastLubricationDate : new Date()}
             mode="date"
-            onChange={onlastLubricationDateChange}
+            onChange={(event, selectedDate) => {
+              setFieldValue(LASTLUBRICATION, selectedDate);
+              onlastLubricationDateChange(event, selectedDate);
+            }}
             display={Platform.OS === "ios" ? "spinner" : "calendar"}
           />
         )}

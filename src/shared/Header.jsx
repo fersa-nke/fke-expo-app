@@ -43,7 +43,6 @@ const HeaderMiddle = () => {
   const userLogo = useSelector(
     (state) => state.attachmentsReducer.userLogo
   );
-  console.log('userLogo----------->', userLogo);
   return (
     <>
     {userLogo &&  <Image

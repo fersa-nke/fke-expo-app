@@ -51,7 +51,7 @@ const DetailsView = () => {
     useEffect(() => {
      if(selectedJobId && jobs && jobs.length > 0) {
       const filterJob = jobs.filter(j => j.Id === selectedJobId)[0];
-      console.log(filterJob, filterJob[JOBKEYMapper.JOBID]);
+      console.log(filterJob, filterJob[JOBKEYMapper.WINDLOCATION], JOBKEYMapper.WINDLOCATION);
       setJob(filterJob);
       dispatch({
         type: SET_JOB_TITLE,
@@ -79,7 +79,7 @@ const DetailsView = () => {
     } */}
         {job[JOBKEYMapper.DEDATAMATRIX] ? <ListItem label="New DE DataMatrix" value={job[JOBKEYMapper.DEDATAMATRIX]} /> : <ListItem label="New DE Batch" value={job[JOBKEYMapper.DEBATCHNUMBER]} />}
         {job[JOBKEYMapper.NDEDATAMATRIX] ? <ListItem label="New NDE DataMatrix" value={job[JOBKEYMapper.NDEDATAMATRIX]} /> : <ListItem label="New NDE Batch" value={job[JOBKEYMapper.NDEBATCHNUMBER]} />}
-        {job[JOBKEYMapper.SENSORBATCHNUMBER] ?<ListItem label="Sensor Batch" value={job[JOBKEYMapper.SENSORBATCHNUMBER]} /> : <ListItem label="Sensor DataMatrix" value={job[JOBKEYMapper.DATAMATRIX]} /> }
+        {job[JOBKEYMapper.SENSORBATCHNUMBER] ?<ListItem label="Sensor Batch" value={job[JOBKEYMapper.SENSORBATCHNUMBER]} /> : <ListItem label="Sensor DataMatrix" value={job[JOBKEYMapper.SENSORDATAMATRIX]} /> }
         <ListItem label="Replacement Date" value={job[JOBKEYMapper.FAILUREDATE]} />
         <ListItem label="Exchange Type" value={job[JOBKEYMapper.EXCHANGETYPE] ? job[JOBKEYMapper.EXCHANGETYPE][0]?.Name : ''} />
         <ListItem label="Reason of Change" value={job[JOBKEYMapper.REASONS] ? job[JOBKEYMapper.REASONS][0]?.Name : ''} />
@@ -162,7 +162,7 @@ const ReportsView = () => {
         [VOLTAGETESTED]: null,
         [COMMENTS]: '',
         [REPORTDATE]: new Date().toISOString().split("T")[0],
-        [LASTLUBRICATION]: new Date().toISOString().split("T")[0],
+        [LASTLUBRICATION]: null,
         [JOBID]: selectedJobId,
         [REPORTID]: reportName,
         [NOKBEARING]: null,
@@ -271,7 +271,7 @@ const JobDetails = ({route}) => {
           marginRight: 8}}>
         <Image
               
-              source={(job[JOBKEYMapper.DATAMATRIX] || job[JOBKEYMapper.NDEDATAMATRIX] || job[JOBKEYMapper.DEDATAMATRIX]) ? BarCode : defaultIcon}
+              source={(job[JOBKEYMapper.SENSORDATAMATRIX] || job[JOBKEYMapper.NDEDATAMATRIX] || job[JOBKEYMapper.DEDATAMATRIX]) ? BarCode : defaultIcon}
               width={30}
               height={30}
               style={{marginTop: 40 , marginLeft: 10, marginBottom: 5, marginRight: 14 }}

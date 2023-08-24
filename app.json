@@ -39,14 +39,14 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.mro-tracker.app",
-      "buildNumber": "5",
+      "buildNumber": "6",
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to Scan DataMatrix, QR code or Barcode of the bearings traceability.",
         "NSPhotoLibraryUsageDescription": "This app uses your gallery to Capture/Upload/Save photos of components previous and after the bearings installation."
       }
     },
     "android": {
-      "versionCode": 5,
+      "versionCode": 6,
       "adaptiveIcon": {
         "backgroundColor": "#384E63"
       },

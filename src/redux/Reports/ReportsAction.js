@@ -96,7 +96,7 @@ export const updateJobReport = (reportFormData, originalData, Id, callBack) => {
                 let reports = getState().reportsReducer.reports;
                 let reportIndex = reports.findIndex(x => x.Id === Id);
                 reports[reportIndex] = originalData;
-                console.log(originalData);
+                console.log('original form report data', originalData);
                 dispatch({
                   type: UPDATE_REPORT_ITEM,
                   payload: reports
