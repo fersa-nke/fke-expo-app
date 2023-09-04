@@ -6,6 +6,7 @@ import jobsReducer from './Jobs/JobsReducer';
 import masterReducer from './Master/MasterReducer';
 import reportsReducer from './Reports/ReportsReducer';
 import attachmentsReducer from './Attachments/AttachmentReducer';
+import createAccountReducer from './CreateAccount/CreateAccountReducer';
 import { persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { composeWithDevTools } from 'redux-devtools-extension';
@@ -34,7 +35,8 @@ const appReducer = combineReducers({
     jobsReducer,
 	reportsReducer,
 	attachmentsReducer,
-	masterReducer
+	masterReducer,
+	createAccountReducer
 });
 
 

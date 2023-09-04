@@ -17,7 +17,9 @@ export const APIConfig = {
     CUSTOMERWINDFARM: 'CustomerWindFarm',
     CUSTOMERWINDLOCATION: 'CustomerWindLocation',
     LUBRICATIONTYPE: 'LubricationType',
-    LUBRICATIONGRADE: 'LubricationGrade'
+    LUBRICATIONGRADE: 'LubricationGrade',
+    COUNTRY: 'Country',
+    CUSTOMERSECTOR: 'CustomerSector'
 }
 
 export const KEYMapper = {

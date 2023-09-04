@@ -46,6 +46,10 @@ export const GET_OPERATORS = 'GET_OPERATORS';
 export const GET_LUBRICATION_TYPES = 'GET_LUBRICATION_TYPES';
 export const GET_LUBRICATION_GRADES = 'GET_LUBRICATION_GRADES';
 
+export const GET_COUNTRIES = 'GET_COUNTRIES';
+export const GET_CUSTOMER_SECTOR = 'GET_CUSTOMER_SECTOR';
+
+
 export const GET_API_Mapper = 'GET_API_Mapper';
 export const GET_KEY_Mapper = 'GET_KEY_Mapper';
 

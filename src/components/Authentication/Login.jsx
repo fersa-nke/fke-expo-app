@@ -64,8 +64,8 @@ const Login = ({ navigation }) => {
   
   const loginSchema = Yup.object().shape({
     email: Yup.string()
-      .email("Enter Operator Id")
-      .required("Enter Operator Id"),
+      .email("Enter Email Id")
+      .required("Enter Email Id"),
     password: Yup.string().required("Enter Password."),
     //.min(8, "Password is too short - should be 8 chars minimum.")
     //.matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
@@ -200,7 +200,7 @@ const Login = ({ navigation }) => {
                 </>
               )}
             </Formik>
-            {/* <Button type="Secondary" style={{marginTop: 15}} text="REQUEST ACCESS" onPress={() => navigation.navigate('CreateAccount')} /> */}
+            <Button type="Secondary" style={{marginTop: 15}} text="REQUEST ACCESS" onPress={() => navigation.navigate('CreateAccount')} />
           <Image
             source={fersa_logo}
             style={{ marginTop: 36, alignSelf: "center" }}
