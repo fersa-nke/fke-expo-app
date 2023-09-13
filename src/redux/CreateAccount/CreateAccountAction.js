@@ -18,9 +18,9 @@ export function createRequest(data, callBack) {
     return async function requestThunk(dispatch, getState) {
     dispatch({ type: LOADING_DATA, payload: true });
     const URL = 'RequestAccess';  
-    API.POST(`nocodb/data/FG-MRO-Tracker/${URL}`, data)
+    Authservice.POST(`nocodb/data/FG-MRO-Tracker/${URL}`, data)
     .then(response => {
-      console.log('user data--->', response);
+    console.log('user data--->', response);
     //Hide Loader
         dispatch({
           type: LOADING_DATA,

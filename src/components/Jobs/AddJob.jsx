@@ -63,7 +63,8 @@ const AddJob = ({ navigation, route }) => {
   
   const [showDEDataMatrix, setShowDEDataMatrix] = useState(true);
   const [showNDEDataMatrix, setShowNDEDataMatrix] = useState(true);
-  const [showSensorDataMatrix, setShowSensorDataMatrix] = useState(true);
+  const [showSensorDEDataMatrix, setShowSensorDEDataMatrix] = useState(true);
+  const [showSensorNDEDataMatrix, setShowSensorNDEDataMatrix] = useState(true);
   const [showRemovedDataMatrix, setShowRemovedDataMatrix] = useState(true);
   const [showRemovedNdeDataMatrix, setShowRemovedNdeDataMatrix] = useState(true);
   const [tempFormdata, setTempFormdata] = useState();
@@ -79,7 +80,6 @@ const AddJob = ({ navigation, route }) => {
   const {
     TITLE,
     CUSTOMER,
-    SENSORDATAMATRIX,
     JOBDATE,
     JOBID,
     CUSTOMERWINDFARM,
@@ -105,14 +105,18 @@ const AddJob = ({ navigation, route }) => {
     REMOVEDDEDATAMATRIX,
     DEBATCHNUMBER,
     NDEBATCHNUMBER,
-    SENSORBATCHNUMBER,
+    SENSORDEBATCHNUMBER,
+    SENSORNDEBATCHNUMBER,
+    SENSORDEDATAMATRIX,
+    SENSORNDEDATAMATRIX,
     REMOVEDDEBATCHNUMBER,
     REMOVEDNDEDATAMATRIX,
     REMOVEDNDEBATCHNUMBER 
   } = JOBKEYMapper;
 
   const initialFormValues = {
-    [SENSORDATAMATRIX]: '',
+    [SENSORDEDATAMATRIX]: '',
+    [SENSORNDEDATAMATRIX]: '',
     [JOBDATE]: startDate,
     [CUSTOMERWINDFARM]: '',
     [STATE]: '',
@@ -136,7 +140,8 @@ const AddJob = ({ navigation, route }) => {
     //[REMOVEDDATAMATRIX]: '',
     [DEBATCHNUMBER]: '',
     [NDEBATCHNUMBER]: '',
-    [SENSORBATCHNUMBER]: '',
+    [SENSORDEBATCHNUMBER]: '',
+    [SENSORNDEBATCHNUMBER]: '',
     [REMOVEDNDEDATAMATRIX]: ''
   };
 
@@ -151,10 +156,10 @@ const AddJob = ({ navigation, route }) => {
     let j = '';
     if (Id && selectedJobId && jobs && jobs.length > 0) {
       const filterJob = jobs.filter(j => j.Id === selectedJobId)[0];
-    //  console.log('fetched job details', customerId, operatorId, selectedJobId, filterJob);
       
     let formValues = { 
-      [SENSORDATAMATRIX]: filterJob[SENSORDATAMATRIX] ? filterJob[SENSORDATAMATRIX] : '',
+      [SENSORDEDATAMATRIX]: filterJob[SENSORDEDATAMATRIX] ? filterJob[SENSORDEDATAMATRIX] : '',
+      [SENSORNDEDATAMATRIX]: filterJob[SENSORNDEDATAMATRIX] ? filterJob[SENSORNDEDATAMATRIX] : '',
       [JOBDATE]: filterJob[JOBDATE] ? filterJob[JOBDATE] : '',
       [CUSTOMERWINDFARM]: filterJob[CUSTOMERWINDFARM] && filterJob[CUSTOMERWINDFARM][0] ? filterJob[CUSTOMERWINDFARM] : '',
       [STATE]: filterJob[STATE] && filterJob[STATE][0] ? filterJob[STATE] : '',
@@ -178,9 +183,12 @@ const AddJob = ({ navigation, route }) => {
       [REMOVEDNDEBATCHNUMBER]: filterJob[REMOVEDNDEBATCHNUMBER] ? filterJob[REMOVEDNDEBATCHNUMBER] : '',
       [DEBATCHNUMBER]: filterJob[DEBATCHNUMBER] ? filterJob[DEBATCHNUMBER] : '',
       [NDEBATCHNUMBER]: filterJob[NDEBATCHNUMBER] ? filterJob[NDEBATCHNUMBER] : '',
-      [SENSORBATCHNUMBER]: filterJob[SENSORBATCHNUMBER] ? filterJob[SENSORBATCHNUMBER] : ''
+      [SENSORDEBATCHNUMBER]: filterJob[SENSORDEBATCHNUMBER] ? filterJob[SENSORDEBATCHNUMBER] : '',
+      [SENSORNDEBATCHNUMBER]: filterJob[SENSORNDEBATCHNUMBER] ? filterJob[SENSORNDEBATCHNUMBER] : '',
     };
-       
+ 
+    console.log('fetched job details', formValues);
+ 
       setFormData(formValues);
       if(filterJob[DEDATAMATRIX]){
         setDEResult(filterJob[DEDATAMATRIX]);
@@ -192,10 +200,15 @@ const AddJob = ({ navigation, route }) => {
       } else {
         setShowNDEDataMatrix(false);
       }
-      if(filterJob[SENSORBATCHNUMBER]){
-        setShowSensorDataMatrix(false);
+      if(filterJob[SENSORDEBATCHNUMBER]){
+        setShowSensorDEDataMatrix(false);
       } else {
-        setResult(filterJob[SENSORDATAMATRIX]);
+        setResult(filterJob[SENSORDEDATAMATRIX]);
+      }
+      if(filterJob[SENSORNDEBATCHNUMBER]){
+        setShowSensorNDEDataMatrix(false);
+      } else {
+        setResult(filterJob[SENSORNDEDATAMATRIX]);
       }
       if(filterJob[REMOVEDDEBATCHNUMBER]){
         setShowRemovedDataMatrix(false);
@@ -237,7 +250,8 @@ const AddJob = ({ navigation, route }) => {
 
 
   const addJobSchema = Yup.object().shape({
-    [SENSORDATAMATRIX]: Yup.string(),
+    [SENSORDEDATAMATRIX]: Yup.string(),
+    [SENSORNDEDATAMATRIX]: Yup.string(),
     [DEDATAMATRIX]: showDEDataMatrix ? Yup.string().required('Required New DE DataMatrix') : Yup.string(), 
     [NDEDATAMATRIX]: showNDEDataMatrix ? Yup.string().required('Required New NDE DataMatrix') : Yup.string(),
     [REMOVEDDEDATAMATRIX]: Yup.string(),
@@ -245,7 +259,8 @@ const AddJob = ({ navigation, route }) => {
 
     [DEBATCHNUMBER]: showDEDataMatrix ? Yup.string() : Yup.string().required('Required New DE Batch'),
     [NDEBATCHNUMBER]: showNDEDataMatrix ? Yup.string() : Yup.string().required('Required New NDE Batch'),
-    [SENSORBATCHNUMBER]: Yup.string(),
+    [SENSORDEBATCHNUMBER]: Yup.string(),
+    [SENSORNDEBATCHNUMBER]: Yup.string(),
     [REMOVEDDEBATCHNUMBER]: Yup.string(),
     [REMOVEDNDEBATCHNUMBER]: Yup.string(),
     
@@ -356,11 +371,17 @@ const AddJob = ({ navigation, route }) => {
     if (type && data != null) {
       let f;
       switch(scanType) {
-        case "SENSORDATAMATRIX":
+        case "SENSORDEDATAMATRIX":
         setResult(data);
         console.log(tempFormdata);
-        f = { ...tempFormdata, [SENSORDATAMATRIX]: data};
+        f = { ...tempFormdata, [SENSORDEDATAMATRIX]: data};
        setFormData(f);
+        break;
+        case "SENSORNDEDATAMATRIX":
+          setResult(data);
+          console.log(tempFormdata);
+          f = { ...tempFormdata, [SENSORNDEDATAMATRIX]: data};
+         setFormData(f);
         break;
         case "DE":
           console.log(tempFormdata);
@@ -410,13 +431,15 @@ const AddJob = ({ navigation, route }) => {
       ...values,
       [NDEDATAMATRIX]: showNDEDataMatrix ? ndeResult: '',
       [DEDATAMATRIX]: showDEDataMatrix ? deResult : '',
-      [SENSORDATAMATRIX]: showSensorDataMatrix ? result : '',
+      [SENSORDEDATAMATRIX]: showSensorDEDataMatrix ? result : '',
+      [SENSORNDEDATAMATRIX]: showSensorNDEDataMatrix ? result : '',
       [REMOVEDDEDATAMATRIX]: showRemovedDataMatrix ? removedDEResult: '',
       [REMOVEDNDEDATAMATRIX]: showRemovedNdeDataMatrix ? removedNdeResult: '',
 
       [DEBATCHNUMBER]: showDEDataMatrix ? '' : values[DEBATCHNUMBER],
       [NDEBATCHNUMBER]: showNDEDataMatrix ? '' : values[NDEBATCHNUMBER],
-      [SENSORBATCHNUMBER]: showSensorDataMatrix ? '' : values[SENSORBATCHNUMBER],
+      [SENSORDEBATCHNUMBER]: showSensorDEDataMatrix ? '' : values[SENSORDEBATCHNUMBER],
+      [SENSORNDEBATCHNUMBER]: showSensorNDEDataMatrix ? '' : values[SENSORNDEBATCHNUMBER],
       [REMOVEDDEBATCHNUMBER]: showRemovedDataMatrix ? '' : values[REMOVEDDEBATCHNUMBER],
       [REMOVEDNDEBATCHNUMBER]: showRemovedNdeDataMatrix ? '' : values[REMOVEDNDEBATCHNUMBER],
 
@@ -568,27 +591,57 @@ const AddJob = ({ navigation, route }) => {
                  <Row style={Styles.SwitchContainer}>
                   <Switch
                       trackColor={{false: theme.bgWhite, true: theme.bgBlue}}
-                      thumbColor={showSensorDataMatrix ? theme.bgWhite : theme.bgLight}
-                      ios_backgroundColor={showSensorDataMatrix ? theme.bgWhite : theme.bgLight}
-                      onValueChange={() => setShowSensorDataMatrix(!showSensorDataMatrix)}
-                      value={showSensorDataMatrix}
+                      thumbColor={showSensorDEDataMatrix ? theme.bgWhite : theme.bgLight}
+                      ios_backgroundColor={showSensorDEDataMatrix ? theme.bgWhite : theme.bgLight}
+                      onValueChange={() => setShowSensorDEDataMatrix(!showSensorDEDataMatrix)}
+                      value={showSensorDEDataMatrix}
                   />
                   </Row>
 
-                  {showSensorDataMatrix ? <Input
-                    labelName="Sensor DataMatrix"
-                    placeholder="Scan Sensor DataMatrix"
+                  {showSensorDEDataMatrix ? <Input
+                    labelName="Sensor DE DataMatrix"
+                    placeholder="Scan Sensor DE DataMatrix"
                     value={result}
                     appendIconName="DataMatrix"
                     appendIconColor={theme.textBlue}
                     appendIconSize={24}
-                    handlePress={() => showScanner('SENSORDATAMATRIX')}
+                    handlePress={() => showScanner('SENSORDEDATAMATRIX')}
                   /> : <>
                       <Input
-                      labelName="Sensor Batch"
-                      placeholder="Enter Sensor Batch"
-                      handleChangeText={handleChange(SENSORBATCHNUMBER)}
-                      value={values[SENSORBATCHNUMBER]}
+                      labelName="Sensor DE Batch"
+                      placeholder="Enter Sensor DE Batch"
+                      handleChangeText={handleChange(SENSORDEBATCHNUMBER)}
+                      value={values[SENSORDEBATCHNUMBER]}
+                    />
+                  </>
+                } 
+                </View>
+
+                <View style={{ marginBottom: 20, paddingTop: 20 }}>
+                 <Row style={Styles.SwitchContainer}>
+                  <Switch
+                      trackColor={{false: theme.bgWhite, true: theme.bgBlue}}
+                      thumbColor={showSensorNDEDataMatrix ? theme.bgWhite : theme.bgLight}
+                      ios_backgroundColor={showSensorNDEDataMatrix ? theme.bgWhite : theme.bgLight}
+                      onValueChange={() => setShowSensorNDEDataMatrix(!showSensorNDEDataMatrix)}
+                      value={showSensorNDEDataMatrix}
+                  />
+                  </Row>
+
+                  {showSensorNDEDataMatrix ? <Input
+                    labelName="Sensor NDE DataMatrix"
+                    placeholder="Scan Sensor NDE DataMatrix"
+                    value={result}
+                    appendIconName="DataMatrix"
+                    appendIconColor={theme.textBlue}
+                    appendIconSize={24}
+                    handlePress={() => showScanner('SENSORNDEDATAMATRIX')}
+                  /> : <>
+                      <Input
+                      labelName="Sensor NDE Batch"
+                      placeholder="Enter Sensor NDE Batch"
+                      handleChangeText={handleChange(SENSORNDEBATCHNUMBER)}
+                      value={values[SENSORNDEBATCHNUMBER]}
                     />
                   </>
                 } 

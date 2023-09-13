@@ -71,13 +71,16 @@ export const KEYMapper = {
    NAME: 'Name',
    NDEDATAMATRIX: 'NDEDataMatrix',
    DEDATAMATRIX: 'DEDataMatrix',
-   SENSORDATAMATRIX: 'SensorDataMatrix',
+   SENSORDEDATAMATRIX : 'SensorDEDataMatrix',
+   SENSORNDEDATAMATRIX : 'SensorNDEDataMatrix',
    REMOVEDDEDATAMATRIX: 'RemovedDEDataMatrix',
    DEBATCHNUMBER: 'DEBatchNumber',
    NDEBATCHNUMBER: 'NDEBatchNumber',
-   SENSORBATCHNUMBER: 'SensorBatchNumber',
+   SENSORDEBATCHNUMBER: 'SensorDEBatchNumber',
+   SENSORNDEBATCHNUMBER: 'SensorNDEBatchNumber',
    REMOVEDDEBATCHNUMBER: 'RemovedDEBatchNumber',
    REMOVEDNDEDATAMATRIX: 'RemovedNDEDataMatrix',
-   REMOVEDNDEBATCHNUMBER: 'RemovedNDEBatchNumber'
+   REMOVEDNDEBATCHNUMBER: 'RemovedNDEBatchNumber',
+
 
 };

@@ -79,7 +79,8 @@ const DetailsView = () => {
     } */}
         {job[JOBKEYMapper.DEDATAMATRIX] ? <ListItem label="New DE DataMatrix" value={job[JOBKEYMapper.DEDATAMATRIX]} /> : <ListItem label="New DE Batch" value={job[JOBKEYMapper.DEBATCHNUMBER]} />}
         {job[JOBKEYMapper.NDEDATAMATRIX] ? <ListItem label="New NDE DataMatrix" value={job[JOBKEYMapper.NDEDATAMATRIX]} /> : <ListItem label="New NDE Batch" value={job[JOBKEYMapper.NDEBATCHNUMBER]} />}
-        {job[JOBKEYMapper.SENSORBATCHNUMBER] ?<ListItem label="Sensor Batch" value={job[JOBKEYMapper.SENSORBATCHNUMBER]} /> : <ListItem label="Sensor DataMatrix" value={job[JOBKEYMapper.SENSORDATAMATRIX]} /> }
+        {job[JOBKEYMapper.SENSORDEBATCHNUMBER] ?<ListItem label="Sensor DE Batch" value={job[JOBKEYMapper.SENSORDEBATCHNUMBER]} /> : <ListItem label="Sensor DE DataMatrix" value={job[JOBKEYMapper.SENSORDEDATAMATRIX]} /> }
+        {job[JOBKEYMapper.SENSORNDEBATCHNUMBER] ?<ListItem label="Sensor NDE Batch" value={job[JOBKEYMapper.SENSORNDEBATCHNUMBER]} /> : <ListItem label="Sensor NDE DataMatrix" value={job[JOBKEYMapper.SENSORNDEDATAMATRIX]} /> }
         <ListItem label="Replacement Date" value={job[JOBKEYMapper.FAILUREDATE]} />
         <ListItem label="Exchange Type" value={job[JOBKEYMapper.EXCHANGETYPE] ? job[JOBKEYMapper.EXCHANGETYPE][0]?.Name : ''} />
         <ListItem label="Reason of Change" value={job[JOBKEYMapper.REASONS] ? job[JOBKEYMapper.REASONS][0]?.Name : ''} />
