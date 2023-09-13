@@ -39,7 +39,7 @@ export const setSelectedReportId = id => dispatch => {
 
 export const saveJobReport = (reportData, callBack) => {
     return async (dispatch, getState) => {
-        console.log('calling save method-->',reportData);    
+    console.log('calling save method-->',reportData);    
     const token = getState().userReducer.token;
     dispatch({
         type: LOADING_DATA,
@@ -96,7 +96,6 @@ export const updateJobReport = (reportFormData, originalData, Id, callBack) => {
                 let reports = getState().reportsReducer.reports;
                 let reportIndex = reports.findIndex(x => x.Id === Id);
                 reports[reportIndex] = originalData;
-                console.log('original form report data', originalData);
                 dispatch({
                   type: UPDATE_REPORT_ITEM,
                   payload: reports

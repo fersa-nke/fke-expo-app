@@ -151,7 +151,6 @@ const AddJob = ({ navigation, route }) => {
     let j = '';
     if (Id && selectedJobId && jobs && jobs.length > 0) {
       const filterJob = jobs.filter(j => j.Id === selectedJobId)[0];
-    //  console.log('fetched job details', customerId, operatorId, selectedJobId, filterJob);
       
     let formValues = { 
       [SENSORDATAMATRIX]: filterJob[SENSORDATAMATRIX] ? filterJob[SENSORDATAMATRIX] : '',
@@ -180,7 +179,9 @@ const AddJob = ({ navigation, route }) => {
       [NDEBATCHNUMBER]: filterJob[NDEBATCHNUMBER] ? filterJob[NDEBATCHNUMBER] : '',
       [SENSORBATCHNUMBER]: filterJob[SENSORBATCHNUMBER] ? filterJob[SENSORBATCHNUMBER] : ''
     };
-       
+ 
+    console.log('fetched job details', formValues);
+ 
       setFormData(formValues);
       if(filterJob[DEDATAMATRIX]){
         setDEResult(filterJob[DEDATAMATRIX]);

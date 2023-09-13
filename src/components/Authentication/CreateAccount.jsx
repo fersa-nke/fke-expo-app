@@ -39,7 +39,6 @@ function CreateAccount({navigation}) {
 
     const [formData, setFormData] = useState(initialFormValues);
 
-    console.log('countries list', countries);
     useEffect(() => {
       fetchCountries();
       fetchCustomerSectors();
@@ -68,8 +67,10 @@ function CreateAccount({navigation}) {
         Email: values.email,
         Company: values.company, 
         Country: values.country[0].Id,
-        Sector: values.sector[0].Id
+        Sector: `${values.sector[0].Id}`
       };
+
+      console.log(data);
 
       dispatch(createRequest(data, callBack));
 
