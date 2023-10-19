@@ -42,7 +42,8 @@ const AddJob = ({ navigation, route }) => {
   console.log("Edit Id--->", Id)
   const [scan, setScan] = useState(false);
   const [scanType, setScanType] = useState('');
-  const [result, setResult] = useState("");
+  const [deSensorResult, setSensorDEResult] = useState('');
+  const [ndeSensorResult, setSensorNDEResult] = useState('');
   const [deResult, setDEResult] = useState('');
   const [ndeResult, setNDEResult] = useState('');
   const [removedDEResult, setRemovedDEResult] = useState('');
@@ -203,12 +204,12 @@ const AddJob = ({ navigation, route }) => {
       if(filterJob[SENSORDEBATCHNUMBER]){
         setShowSensorDEDataMatrix(false);
       } else {
-        setResult(filterJob[SENSORDEDATAMATRIX]);
+        setSensorDEResult(filterJob[SENSORDEDATAMATRIX]);
       }
       if(filterJob[SENSORNDEBATCHNUMBER]){
         setShowSensorNDEDataMatrix(false);
       } else {
-        setResult(filterJob[SENSORNDEDATAMATRIX]);
+        setSensorNDEResult(filterJob[SENSORNDEDATAMATRIX]);
       }
       if(filterJob[REMOVEDDEBATCHNUMBER]){
         setShowRemovedDataMatrix(false);
@@ -226,7 +227,7 @@ const AddJob = ({ navigation, route }) => {
       setFailureDate(failedDate);
       dispatch({
         type: SHOW_BARCODE_BUTTON,
-        payload: filterJob[SENSORDATAMATRIX] ? true : false,
+        payload: filterJob[SENSORDEDATAMATRIX] ? true : false,
       });
       j = `${filterJob[JOBID]}`;
     } else {
@@ -372,13 +373,13 @@ const AddJob = ({ navigation, route }) => {
       let f;
       switch(scanType) {
         case "SENSORDEDATAMATRIX":
-        setResult(data);
+        setSensorDEResult(data);
         console.log(tempFormdata);
         f = { ...tempFormdata, [SENSORDEDATAMATRIX]: data};
        setFormData(f);
         break;
         case "SENSORNDEDATAMATRIX":
-          setResult(data);
+          setSensorNDEResult(data);
           console.log(tempFormdata);
           f = { ...tempFormdata, [SENSORNDEDATAMATRIX]: data};
          setFormData(f);
@@ -431,8 +432,8 @@ const AddJob = ({ navigation, route }) => {
       ...values,
       [NDEDATAMATRIX]: showNDEDataMatrix ? ndeResult: '',
       [DEDATAMATRIX]: showDEDataMatrix ? deResult : '',
-      [SENSORDEDATAMATRIX]: showSensorDEDataMatrix ? result : '',
-      [SENSORNDEDATAMATRIX]: showSensorNDEDataMatrix ? result : '',
+      [SENSORDEDATAMATRIX]: showSensorDEDataMatrix ? deSensorResult : '',
+      [SENSORNDEDATAMATRIX]: showSensorNDEDataMatrix ? ndeSensorResult : '',
       [REMOVEDDEDATAMATRIX]: showRemovedDataMatrix ? removedDEResult: '',
       [REMOVEDNDEDATAMATRIX]: showRemovedNdeDataMatrix ? removedNdeResult: '',
 
@@ -601,7 +602,7 @@ const AddJob = ({ navigation, route }) => {
                   {showSensorDEDataMatrix ? <Input
                     labelName="Sensor DE DataMatrix"
                     placeholder="Scan Sensor DE DataMatrix"
-                    value={result}
+                    value={deResult}
                     appendIconName="DataMatrix"
                     appendIconColor={theme.textBlue}
                     appendIconSize={24}
@@ -631,7 +632,7 @@ const AddJob = ({ navigation, route }) => {
                   {showSensorNDEDataMatrix ? <Input
                     labelName="Sensor NDE DataMatrix"
                     placeholder="Scan Sensor NDE DataMatrix"
-                    value={result}
+                    value={ndeResult}
                     appendIconName="DataMatrix"
                     appendIconColor={theme.textBlue}
                     appendIconSize={24}
