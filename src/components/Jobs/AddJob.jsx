@@ -602,7 +602,7 @@ const AddJob = ({ navigation, route }) => {
                   {showSensorDEDataMatrix ? <Input
                     labelName="Sensor DE DataMatrix"
                     placeholder="Scan Sensor DE DataMatrix"
-                    value={deResult}
+                    value={deSensorResult}
                     appendIconName="DataMatrix"
                     appendIconColor={theme.textBlue}
                     appendIconSize={24}
@@ -632,7 +632,7 @@ const AddJob = ({ navigation, route }) => {
                   {showSensorNDEDataMatrix ? <Input
                     labelName="Sensor NDE DataMatrix"
                     placeholder="Scan Sensor NDE DataMatrix"
-                    value={ndeResult}
+                    value={ndeSensorResult}
                     appendIconName="DataMatrix"
                     appendIconColor={theme.textBlue}
                     appendIconSize={24}
