@@ -6,7 +6,7 @@ import {
   Text,
   StyleSheet,
   StatusBar,
-  Platform
+  Platform,
 } from "react-native";
 import Ripple from "react-native-material-ripple";
 import nke_logo from "../../assets/images/nke_logo.png";
@@ -16,22 +16,28 @@ import Button from "../../shared/Button";
 import theme from "../../assets/theme";
 import Loader from "../../shared/Loader";
 import { useSelector, useDispatch } from "react-redux";
-import { login } from "../../redux/Login/LoginActions";
+import { login, displayErrorMessage } from "../../redux/Login/LoginActions";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import Message from "../../shared/Message";
 import { LOGIN_LOADING, LOGIN_SUCCESS } from "../../redux/ReduxConsants";
 import gbStyles from "../../assets/globalstyles";
-import Constants from "expo-constants"
-
+import Constants from "expo-constants";
 
 const Login = ({ navigation }) => {
   const version = Constants.manifest.version;
-  const buildNumber = Platform.OS === 'ios' ?  Constants.expoConfig.ios.buildNumber : Constants.expoConfig.android.versionCode;
+  const buildNumber =
+    Platform.OS === "ios"
+      ? Constants.expoConfig.ios.buildNumber
+      : Constants.expoConfig.android.versionCode;
 
   const [loading, setLoading] = useState(false);
-  const isAuthenticate = useSelector((state) => state.userReducer.isAuthenticate);
+  const isAuthenticate = useSelector(
+    (state) => state.userReducer.isAuthenticate
+  );
   const isLoginFailed = useSelector((state) => state.userReducer.failed);
+
+  const message1 = useSelector((state) => state.userReducer.logicMessage);
   const loginMessage = useSelector((state) => state.userReducer.message);
   const loginLoader = useSelector((state) => state.userReducer.loading);
   const loginEmail = useSelector((state) => state.userReducer?.user?.Email);
@@ -43,6 +49,7 @@ const Login = ({ navigation }) => {
 
   const dispatch = useDispatch();
 
+  const customRoute = useSelector((state) => state.userReducer.logicMessage);
   // const customerLoginSchema = Yup.object().shape({
   //   username: Yup.string()
   //     .email("Enter Customer Id")
@@ -61,22 +68,17 @@ const Login = ({ navigation }) => {
   //   //.matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
   // });
 
-  
   const loginSchema = Yup.object().shape({
-    email: Yup.string()
-      .email("Enter Email Id")
-      .required("Enter Email Id"),
+    email: Yup.string().email("Enter Email Id").required("Enter Email Id"),
     password: Yup.string().required("Enter Password."),
     //.min(8, "Password is too short - should be 8 chars minimum.")
     //.matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
   });
 
   useEffect(() => {
-
     setTimeout(() => {
       dispatch({ type: LOGIN_LOADING, payload: false });
     }, 100);
-
   }, []);
 
   const handleSubmitPress = (values) => {
@@ -93,7 +95,7 @@ const Login = ({ navigation }) => {
     //  const callLogin = login(d);
     //  dispatch(callLogin);
     dispatch(login(d));
-   // navigation.navigate('Jobs');
+    // navigation.navigate('Jobs');
   };
 
   const handleCustomerLogin = () => {
@@ -148,59 +150,68 @@ const Login = ({ navigation }) => {
               <Text style={Styles.tabText}>Operator</Text>
             </Ripple>
           </View> */}
-          {isLoginFailed && <Message title="Warning!" description={loginMessage} />}
-            <Formik
-              initialValues={{
-                email: loginEmail ? loginEmail : '',
-                password: "",
-              }}
-              onSubmit={(values) => {
-                handleSubmitPress(values);
-              }}
-              validationSchema={loginSchema}
-            >
-              {({ handleChange, errors, values, handleSubmit, touched }) => (
-                <>
-                  <View style={{ marginBottom: 20 }}>
-                    <Input
-                      labelName="Email ID"
-                      placeholder="Enter Email ID"
-                      mand={true}
-                      handleChangeText={handleChange("email")}
-                      value={values.email}
-                    />
-                    {errors.email && touched.email && (
-                      <Text style={Styles.validateError}>
-                        {errors.email}
-                      </Text>
-                    )}
-                  </View>
-                  <View style={{ marginBottom: 24 }}>
-                    <Input
-                      labelName="Password"
-                      placeholder="Enter Password"
-                      mand={true}
-                      secureTextEntry={showCustomerPswd}
-                      appendIconName={
-                        showCustomerPswd === true ? "Eye" : "Eyeoff"
-                      }
-                      appendIconSize={showCustomerPswd === true ? 24 : 22}
-                      appendIconColor={theme.textBlue}
-                      handleChangeText={handleChange("password")}
-                      handlePress={() => setShowCustomerPswd(!showCustomerPswd)}
-                      value={values.password}
-                    />
-                    {errors.password && touched.password ? (
-                      <Text style={Styles.validateError}>
-                        {errors.password}
-                      </Text>
-                    ) : null}
-                  </View>
-                  <Button text="login" onPress={() => handleSubmit()} />
-                </>
-              )}
-            </Formik>
-            <Button type="Secondary" style={{marginTop: 15}} text="REQUEST ACCESS" onPress={() => navigation.navigate('CreateAccount')} />
+          {isLoginFailed && (
+            <Message title="Warning!" description={loginMessage} />
+          )}
+          <Formik
+            initialValues={{
+              email: loginEmail ? loginEmail : "",
+              password: "",
+            }}
+            onSubmit={(values) => {
+              handleSubmitPress(values);
+            }}
+            validationSchema={loginSchema}
+          >
+            {({ handleChange, errors, values, handleSubmit, touched }) => (
+              <>
+                <View style={{ marginBottom: 20 }}>
+                  <Input
+                    labelName="Email ID"
+                    placeholder="Enter Email ID"
+                    mand={true}
+                    handleChangeText={handleChange("email")}
+                    value={values.email}
+                  />
+                  {errors.email && touched.email && (
+                    <Text style={Styles.validateError}>{errors.email}</Text>
+                  )}
+                </View>
+                <View style={{ marginBottom: 24 }}>
+                  <Input
+                    labelName="Password"
+                    placeholder="Enter Password"
+                    mand={true}
+                    secureTextEntry={showCustomerPswd}
+                    appendIconName={
+                      showCustomerPswd === true ? "Eye" : "Eyeoff"
+                    }
+                    appendIconSize={showCustomerPswd === true ? 24 : 22}
+                    appendIconColor={theme.textBlue}
+                    handleChangeText={handleChange("password")}
+                    handlePress={() => setShowCustomerPswd(!showCustomerPswd)}
+                    value={values.password}
+                  />
+                  {errors.password && touched.password ? (
+                    <Text style={Styles.validateError}>{errors.password}</Text>
+                  ) : null}
+                </View>
+                <Button
+                  text="login"
+                  onPress={() => {
+                    handleSubmit();
+                  }}
+                />
+              </>
+            )}
+          </Formik>
+
+          <Button
+            type="Secondary"
+            style={{ marginTop: 15 }}
+            text="REQUEST ACCESS"
+            onPress={() => navigation.navigate("CreateAccount")}
+          />
           <Image
             source={fersa_logo}
             style={{ marginTop: 36, alignSelf: "center" }}
@@ -208,17 +219,22 @@ const Login = ({ navigation }) => {
             resizeMethod="auto"
             resizeMode="contain"
           />
-          
-        <View style={{
-            alignItems: "center",
-            justifyContent: "flex-end",
-            marginTop: 5
-          }}>
-          <Text
-          style={{
-            color: theme.textGray
-          }}>Version {version} ({buildNumber})</Text>
-        </View>
+
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "flex-end",
+              marginTop: 5,
+            }}
+          >
+            <Text
+              style={{
+                color: theme.textGray,
+              }}
+            >
+              Version {version} ({buildNumber})
+            </Text>
+          </View>
         </View>
       </ScrollView>
     </>

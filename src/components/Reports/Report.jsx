@@ -21,7 +21,7 @@ const AllReport = ({ list, onHandlePress, ReportEdit, ReportDelete }) => {
   const { NAME, REPORTDATE } = ReportKEYMapper;
 
   const onOpen = (index) => {
-    console.log(index);
+    //console.log(index);
     let currswipeable = reportRow[index];
     if (currentlyOpenSwipeable && currentlyOpenSwipeable !== currswipeable) {
       currentlyOpenSwipeable.close();
@@ -34,7 +34,7 @@ const AllReport = ({ list, onHandlePress, ReportEdit, ReportDelete }) => {
   };
 
   const closeSwipe = () => {
-    console.log("close opened swipe");
+    //console.log("close opened swipe");
     if (currentlyOpenSwipeable) {
       currentlyOpenSwipeable.close();
     }
@@ -84,23 +84,35 @@ const AllReport = ({ list, onHandlePress, ReportEdit, ReportDelete }) => {
       </Row>
     );
   };
-
+ 
   return (
     <>
-      {reports?.map((report, index) => (
+      {reports?.map((report) => {
+        return (
         // <GestureHandlerRootView  key={report.Id}>
         // <Swipeable ref={ref => reportRow[index] = ref} renderRightActions={()=>renderLeftActions(report.Id)} onSwipeableOpen={() => onOpen(index)}
         // onSwipeableClose={() => onClose(index)}>
-        <TouchableOpacity key={report.Id} onPress={() => ReportEdit(report.Id)}>
+        <TouchableOpacity key={report?.Id} onPress={() => ReportEdit(report?.Id)}>
           <Row style={[Styles.report]} justifyContent="space-between">
-            <View style={{flex: 1}}>
+             
+            <View style={{ flex: 1 }}>
+               {report?.isSync === 1 && (
+                  <Image
+                      source={require("../../assets/images/offline.png")}
+                      style={{ width: 20, height: 20 }}
+                        resizeMethod="auto"
+                            resizeMode="center"
+                          />        
+                )}
               <Text style={Styles.reportName} numberOfLines={1}>
-                {report[NAME]}
+                {report?.Name}
               </Text>
-              <Text style={Styles.reportDate}>{report[REPORTDATE]}</Text>
+              <Text style={Styles.reportDate}>{report?.ReportDate}</Text>
             </View>
             <View>
+             
               <Row>
+                
                 <Ripple
                   style={Styles.roundBtn}
                   onPress={() => {
@@ -123,7 +135,8 @@ const AllReport = ({ list, onHandlePress, ReportEdit, ReportDelete }) => {
         </TouchableOpacity>
         // </Swipeable>
         // </GestureHandlerRootView>
-      ))}
+      )
+      })}
     </>
   );
 };
@@ -159,7 +172,7 @@ const Styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginLeft: 12,
-    overflow: 'hidden',
+    overflow: "hidden",
     backgroundColor: theme.bgLight,
   },
 });

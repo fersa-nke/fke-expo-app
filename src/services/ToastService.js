@@ -30,4 +30,6 @@ const displayToast = (
   }
 };
 
+//displayToast.defaultOptions = defaultOptions;
+
 export default displayToast;

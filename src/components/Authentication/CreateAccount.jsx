@@ -1,48 +1,49 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from "react";
 import {
-    Image,
-    ScrollView,
-    View,
-    Text,
-    StyleSheet,
+  Image,
+  ScrollView,
+  View,
+  Text,
+  StyleSheet,
     StatusBar
-  } from "react-native";
-  import Ripple from "react-native-material-ripple";
-  import nke_logo from "../../assets/images/nke_logo.png";
-  import Loader from "../../shared/Loader";
-  import fersa_logo from "../../assets/images/fersa.png";
-  import Input from "../../shared/Input";
-  import Button from "../../shared/Button";
-  import theme from "../../assets/theme";
-  import Select from "../../shared/Select";
-  import { Formik } from "formik";
-  import * as Yup from "yup";
+} from "react-native";
+import Ripple from "react-native-material-ripple";
+import nke_logo from "../../assets/images/nke_logo.png";
+import Loader from "../../shared/Loader";
+import fersa_logo from "../../assets/images/fersa.png";
+import Input from "../../shared/Input";
+import Button from "../../shared/Button";
+import theme from "../../assets/theme";
+import Select from "../../shared/Select";
+import { Formik } from "formik";
+import * as Yup from "yup";
 import { getCountries, getCustomerSectors, createRequest } from '../../redux/CreateAccount/CreateAccountAction';
 import { useSelector, useDispatch } from "react-redux";
 
-function CreateAccount({navigation}) {
-    const dispatch = useDispatch();
-    const [showPswd, setShowPswd] = useState(true);
-    const countries = useSelector((state) => state.createAccountReducer.countries);
-    const customerSectors = useSelector((state) => state.createAccountReducer.customerSectors);
-    const pageLoader = useSelector((state) => state.createAccountReducer.loading);
-    const fetchCountries = () => dispatch(getCountries());
+function CreateAccount({ navigation }) {
+  const dispatch = useDispatch();
+  const [showPswd, setShowPswd] = useState(true);
+  const countries = useSelector((state) => state.createAccountReducer.countries);
+  const customerSectors = useSelector((state) => state.createAccountReducer.customerSectors);
+  const pageLoader = useSelector((state) => state.createAccountReducer.loading);
+  const fetchCountries = () => dispatch(getCountries());
 
-    const fetchCustomerSectors = () => dispatch(getCustomerSectors());
+  const fetchCustomerSectors = () => dispatch(getCustomerSectors());
 
-    const initialFormValues = {
-      email: '',
-      company: '',
-      country: null,
-      sector: null,
-    };
+  const initialFormValues = {
+    email: "",
+    company: "",
+    country: null,
+    sector: null,
+  };
 
-    const [formData, setFormData] = useState(initialFormValues);
+  const [formData, setFormData] = useState(initialFormValues);
 
-    useEffect(() => {
-      fetchCountries();
-      fetchCustomerSectors();
-    }, []);
+  //console.log('countries list', countries);
+  useEffect(() => {
+    fetchCountries();
+    fetchCustomerSectors();
+  }, []);
 
 
     const createAccountSchema = Yup.object().shape({
@@ -54,28 +55,25 @@ function CreateAccount({navigation}) {
         sector: Yup.array(Yup.object()).required("Select Sector")
     });
 
- 
-      const callBack = () => {
-        console.log('call back called');
-        //    setFormData(initialFormValues);
-          navigation.navigate('Login');
-      }     
+  const callBack = () => {
+    // console.log('call back called');
+    //    setFormData(initialFormValues);
+    navigation.navigate("Login");
+  };
 
-    const handleSubmitPress = (values) => {
-    console.log(values);
-      let data = {
-        Email: values.email,
-        Company: values.company, 
-        Country: values.country[0].Id,
-        Sector: `${values.sector[0].Id}`
-      };
+  const handleSubmitPress = (values) => {
+    //console.log(values);
+    let data = {
+      Email: values.email,
+      Company: values.company,
+      Country: values.country[0].Id,
+      Sector: `${values.sector[0].Id}`,
+    };
 
-      console.log(data);
+    console.log(data);
 
-      dispatch(createRequest(data, callBack));
-
-    }
-
+    dispatch(createRequest(data, callBack));
+  };
 
   return (
     <>

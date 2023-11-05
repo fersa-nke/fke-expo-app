@@ -4,7 +4,9 @@ import {GET_REPORTS, ADD_REPORT_ITEM, DELETE_REPORT_ITEM, SELECTED_REPORT_ID,
 const initialReportState = {
   reports: [],
   selectedReportId: null,
-  reportTitle: ''
+  reportTitle: '',
+  localRoute: true,
+  showSyncReports: false
 }
 
 export default function reportsReducer(state = initialReportState, action) {
@@ -31,6 +33,14 @@ export default function reportsReducer(state = initialReportState, action) {
             report => report.Id !== action.payload,
         ),
       };  
+    case "LOCAL_ROUTE":
+    return {
+      ...state, localRoute: action.payload
+    }
+    case "SHOW_SYNC_REPORTS":
+      return {
+        ...state, showSyncReports: action.payload
+      }
     default:
       return state;
   }

@@ -40,21 +40,19 @@ const HeaderLeft = () => {
 };
 
 const HeaderMiddle = () => {
-  const userLogo = useSelector(
-    (state) => state.attachmentsReducer.userLogo
-  );
+  const userLogo = useSelector((state) => state.attachmentsReducer.userLogo);
   return (
     <>
-    {userLogo &&  <Image
+      {/* {userLogo &&  <Image
         source={{ uri: `data:image/png;base64,${userLogo}` }}
         resizeMode="contain"
         resizeMethod="auto"
         style={{ height: 36, width: 64 }}
-      />
-    }
+      /> 
+      } */}
     </>
-  )
-}
+  );
+};
 
 const HeaderRight = ({ showSeach = false, isAddPage = false }) => {
   const dispatch = useDispatch();
@@ -64,8 +62,10 @@ const HeaderRight = ({ showSeach = false, isAddPage = false }) => {
   const showBarCode = useSelector(
     (state) => state.jobsReducer.showBarCodeScanButton
   );
-  
-  const isAuthenticate = useSelector((state) => state.userReducer.isAuthenticate);
+
+  const isAuthenticate = useSelector(
+    (state) => state.userReducer.isAuthenticate
+  );
 
   const handleLogoutPress = () => {
     const callLogOut = logout();
@@ -88,7 +88,7 @@ const HeaderRight = ({ showSeach = false, isAddPage = false }) => {
   // if (!isAuthenticate) {
   //   navigation.navigate("Login");
   // }
-  
+
   if (isAddPage) {
     return (
       <>
@@ -118,26 +118,25 @@ const HeaderRight = ({ showSeach = false, isAddPage = false }) => {
       <Modal visible={searchModal} animationType="slide" transparent={true}>
         <SafeAreaView style={{ flex: 1 }}>
           <View style={Styles.modalContent}>
-          <Ribbon />
+            <Ribbon />
             <View style={Styles.modalBody}>
-            <Row style={Styles.modalHeader} justifyContent={"space-between"}>
-        <Ripple
-          style={GBStyles.rippleBtn}
-          onPress={() => setSearchModal(false)}
-        >
-          <Icon name="LeftAngle" size={20} color={theme.textBlue} />
-        </Ripple>
-        <Text style={Styles.modalTitle}>Search</Text>
-        <Ripple
-          style={GBStyles.rippleBtn}
-          onPress={() => setSearchModal(false)}
-        >
-          <Icon name="Close" size={20} color={theme.textBlue} />
-        </Ripple>
-      </Row>
+              <Row style={Styles.modalHeader} justifyContent={"space-between"}>
+                <Ripple
+                  style={GBStyles.rippleBtn}
+                  onPress={() => setSearchModal(false)}
+                >
+                  <Icon name="LeftAngle" size={20} color={theme.textBlue} />
+                </Ripple>
+                <Text style={Styles.modalTitle}>Search</Text>
+                <Ripple
+                  style={GBStyles.rippleBtn}
+                  onPress={() => setSearchModal(false)}
+                >
+                  <Icon name="Close" size={20} color={theme.textBlue} />
+                </Ripple>
+              </Row>
 
-      <SearchForm setSearchModal={setSearchModal} />
-
+              <SearchForm setSearchModal={setSearchModal} />
             </View>
           </View>
         </SafeAreaView>
@@ -151,17 +150,17 @@ const Styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.75)",
     paddingHorizontal: 30,
     paddingVertical: 50,
-    flex: 1
+    flex: 1,
   },
   modalBody: {
     backgroundColor: theme.bgWhite,
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     alignSelf: "center",
-    justifyContent: 'center'
+    justifyContent: "center",
   },
   modalHeader: {
-    padding: 12
+    padding: 12,
   },
   modalTitle: {
     fontSize: 14,
