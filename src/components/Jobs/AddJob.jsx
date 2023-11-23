@@ -157,6 +157,7 @@ const AddJob = ({ navigation, route }) => {
     let j = '';
     if (Id && selectedJobId && jobs && jobs.length > 0) {
       const filterJob = jobs.filter(j => j.Id === selectedJobId)[0];
+      console.log("Filter Job",filterJob)
       
     let formValues = { 
       [SENSORDEDATAMATRIX]: filterJob[SENSORDEDATAMATRIX] ? filterJob[SENSORDEDATAMATRIX] : '',
@@ -425,6 +426,8 @@ const AddJob = ({ navigation, route }) => {
     navigation.navigate('Jobs');
   }
 
+  const _job = jobs.filter(j => j.Id === selectedJobId)[0];
+
   const handleSubmitPress = (values) => {
     console.log('submit clicked',showBarCodeScanButton, values);
 
@@ -450,7 +453,8 @@ const AddJob = ({ navigation, route }) => {
       [CUSTOMERID]: AuthService.isOperator() ? userData?.CustomerId : userData?.UserId,
       [CUSTOMER]: AuthService.isOperator() ? userData?.CustomerId : userData?.UserId,
       [OPERATORID]: AuthService.isOperator() ? userData?.UserId : null,
-      [OPERATORNAME]: userData?.Name
+      [OPERATORNAME]: Id ? _job.OperatorName : userData?.Name
+      //[OPERATORNAME]: userData?.Name
     };
     let updateValues = {
       [CUSTOMERWINDFARM]: values[CUSTOMERWINDFARM] && values[CUSTOMERWINDFARM][0] ? values[CUSTOMERWINDFARM][0].Id : null,
@@ -839,7 +843,7 @@ const AddJob = ({ navigation, route }) => {
                   placeholder="Select Bearing Model"
                   label="Bearing Model"
                   modalTitle="Select Bearing Model"
-                  items={masterData.shaftPositions}
+                  items={masterData.models}
                   modalObj={{ id: "Id", name: "Name" }}
                 />
                 {errors[POSITION] && touched[POSITION] && (
