@@ -88,7 +88,7 @@ const AddJob = ({ navigation, route }) => {
     GENERATORMODEL,
     REASONS,
     EXCHANGETYPE,
-    POSITION,
+    BEARINGMODEL,
     REMOVEDBEARINGBRAND,
     REMOVEDBEARINGTYPE,
     NEWBEARINGBRAND,
@@ -128,7 +128,7 @@ const AddJob = ({ navigation, route }) => {
     [COMMENTS]: '',
     [REASONS]: '',
     [EXCHANGETYPE]: '',
-    [POSITION]: '',
+    [BEARINGMODEL]: '',
     [NEWBEARINGBRAND]: '',
     [NEWBEARINGTYPE]: '',
     [REMOVEDBEARINGBRAND]: '',
@@ -172,7 +172,7 @@ const AddJob = ({ navigation, route }) => {
       [COMMENTS]: filterJob[COMMENTS] ? filterJob[COMMENTS] : '',
       [REASONS]: filterJob[REASONS] && filterJob[REASONS][0] ? filterJob[REASONS] : '',
       [EXCHANGETYPE]: filterJob[EXCHANGETYPE] && filterJob[EXCHANGETYPE][0] ? filterJob[EXCHANGETYPE] : '',
-      [POSITION]: filterJob[POSITION] && filterJob[POSITION][0] ? filterJob[POSITION] : '',
+      [BEARINGMODEL]: filterJob[BEARINGMODEL] && filterJob[BEARINGMODEL][0] ? filterJob[BEARINGMODEL] : '',
       [NEWBEARINGBRAND]: filterJob[NEWBEARINGBRAND] && filterJob[NEWBEARINGBRAND][0] ? filterJob[NEWBEARINGBRAND] : '',
       [NEWBEARINGTYPE]: filterJob[NEWBEARINGTYPE] && filterJob[NEWBEARINGTYPE][0] ? filterJob[NEWBEARINGTYPE] : '',
       [REMOVEDBEARINGBRAND]: filterJob[REMOVEDBEARINGBRAND] && filterJob[REMOVEDBEARINGBRAND][0] ? filterJob[REMOVEDBEARINGBRAND] : '',
@@ -278,7 +278,7 @@ const AddJob = ({ navigation, route }) => {
     [NEWBEARINGTYPE]: Yup.array(Yup.object()),
     [REMOVEDBEARINGBRAND]: Yup.array(Yup.object()),
     [REMOVEDBEARINGTYPE]: Yup.array(Yup.object()),
-    [POSITION]: Yup.array(Yup.object()),
+    [BEARINGMODEL]: Yup.array(Yup.object()),
     [EXCHANGETYPE]: Yup.array(Yup.object()).required('Required Exchange Type'),
     [COMMENTS]: Yup.string(Yup.string()),
   });
@@ -463,7 +463,7 @@ const AddJob = ({ navigation, route }) => {
       [GENERATORMODEL]: values[GENERATORMODEL] && values[GENERATORMODEL][0] ? values[GENERATORMODEL][0].Id : null,
       [EXCHANGETYPE]: values[EXCHANGETYPE] && values[EXCHANGETYPE][0] ? values[EXCHANGETYPE][0].Id : null,
       [REASONS]: values[REASONS] && values[REASONS][0] ? values[REASONS][0].Id : null,
-      [POSITION]: values[POSITION] && values[POSITION][0] ? values[POSITION][0].Id : null,
+      [BEARINGMODEL]: values[BEARINGMODEL] && values[BEARINGMODEL][0] ? values[BEARINGMODEL][0].Id : null,
       [NEWBEARINGBRAND]: values[NEWBEARINGBRAND] && values[NEWBEARINGBRAND][0] ? values[NEWBEARINGBRAND][0].Id : null,
       [NEWBEARINGTYPE]: values[NEWBEARINGTYPE] && values[NEWBEARINGTYPE][0] ? values[NEWBEARINGTYPE][0].Id : null,
       [REMOVEDBEARINGBRAND]: values[REMOVEDBEARINGBRAND] && values[REMOVEDBEARINGBRAND][0] ? values[REMOVEDBEARINGBRAND][0].Id : null,
@@ -834,11 +834,11 @@ const AddJob = ({ navigation, route }) => {
               </View>
               <View style={{ marginBottom: 20 }}>
                 <Select
-                  selectedValue={values[POSITION][0]?.Name}
+                  selectedValue={values[BEARINGMODEL][0]?.Name}
                   disabled={false}
                   onChange={(item) => {
                     let obj = { Id: item.Id, Name: item.Name };
-                    setFieldValue(POSITION, [obj]);
+                    setFieldValue(BEARINGMODEL, [obj]);
                   }}
                   placeholder="Select Bearing Model"
                   label="Bearing Model"
@@ -846,9 +846,9 @@ const AddJob = ({ navigation, route }) => {
                   items={masterData.models}
                   modalObj={{ id: "Id", name: "Name" }}
                 />
-                {errors[POSITION] && touched[POSITION] && (
+                {errors[BEARINGMODEL] && touched[BEARINGMODEL] && (
                   <Text style={Styles.validateError}>
-                    {errors[POSITION]}
+                    {errors[BEARINGMODEL]}
                   </Text>
                 )}
               </View>
