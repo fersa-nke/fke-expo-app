@@ -1,0 +1,66 @@
+{
+  "expo": {
+    "name": "MRO Tracker by Fersa Group",
+    "slug": "mro-tracker-by-fersa-group",
+    "version": "1.0.5",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "icon": "./src/assets/images/app-icon.png",
+    "splash": {
+      "image": "./src/assets/images/splash-screen.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#384E63"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) access to your camera for Scan DataMatrix, QR code or Barcode of the bearings traceability. and Capture photos of components previous and after the bearings installation.",
+          "photosPermission": "Allow $(PRODUCT_NAME) accesss to your gallery to Capture/Upload photos of components previous and after the bearings installation."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow $(PRODUCT_NAME) accesss to your gallery to Capture/Upload photos of components previous and after the bearings installation.",
+          "savePhotosPermission": "Allow $(PRODUCT_NAME) accesss to your gallery to Capture/Upload/Save photos of components previous and after the bearings installation."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow $(PRODUCT_NAME) accesss to your gallery to Capture/Upload photos of components previous and after the bearings installation."
+        }
+      ]
+    ],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.mro-tracker.app",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to Scan DataMatrix, QR code or Barcode of the bearings traceability.",
+        "NSPhotoLibraryUsageDescription": "This app uses your gallery to Capture/Upload/Save photos of components previous and after the bearings installation."
+      }
+    },
+    "android": {
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#384E63"
+      },
+      "package": "com.mro_tracker.app",
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "extra": {
+      "eas": {
+        "projectId": "84ea0753-0268-47ea-9a01-e5b2de792b67"
+      }
+    }
+  }
+}
